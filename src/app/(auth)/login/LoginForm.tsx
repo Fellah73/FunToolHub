@@ -103,8 +103,8 @@ export default function LoginForm({
                     title: 'login in succesfully',
                     description: data.message
                 })
-
-                localStorage.setItem('connectionStatus',  `c${data.userWithouPass.id}c`)
+                //i've to change this method
+                localStorage.setItem('connectionStatus', `c${data.userWithouPass.id}c`)
 
                 window.location.href = (`/redirect`)
             }

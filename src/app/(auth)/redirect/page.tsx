@@ -13,11 +13,12 @@ export default function page() {
   useEffect(() => {
     console.log('message', message)
     if (fetch.current) return
+    const connectionStatus = localStorage.getItem('connectionStatus')
     if (message) {
       localStorage.setItem('connectionStatus', 'd')
       window.location.href = (`/`)
     }
-    const connectionStatus = localStorage.getItem('connectionStatus')
+    
     if (connectionStatus?.startsWith('c') && connectionStatus.endsWith('c')) {
       const userId = extractedUserId(connectionStatus)
       window.location.href = (`/dashboard?id=${userId}`)

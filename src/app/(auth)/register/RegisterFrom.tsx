@@ -115,6 +115,7 @@ export default function RegisterFrom({
                 })
                 
                 // string begin with C  data.userWithouPass.id and end with C
+                // i've to change this method
                 const userId = `c${data.userWithouPass.id}c`
                 
                 localStorage.setItem('connectionStatus', userId)
