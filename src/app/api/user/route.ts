@@ -16,13 +16,12 @@ export async function GET(request: NextRequest) {
            id: id
         }
       })
-      console.log('the user is ', user)
+      
 
       if (!user) {
           return new Response(JSON.stringify({ message: "User not found" }), { status: 404 });
       }
 
-      console.log('the user is ', user)
       return new Response(JSON.stringify({user : user , message : "User fetched successfully"}), { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
