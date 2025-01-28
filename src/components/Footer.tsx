@@ -8,7 +8,7 @@ import { MdEmail } from 'react-icons/md'
 export default function Footer() {
     return (
 
-        <footer className='flex flex-col items-center mt-2 justify-center px-5 mx-auto'>
+        <footer className='flex flex-col items-center mt-2 justify-center px-5 py-8 mx-auto'>
             <MaxWidthWrapper className=''>
                
                 <div className='flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 gap-y-8'>
