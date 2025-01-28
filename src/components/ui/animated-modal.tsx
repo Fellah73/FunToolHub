@@ -159,6 +159,7 @@ export const ModalFooter = ({
   children: ReactNode;
   className?: string;
 }) => {
+  const { setOpen } = useModal();
   return (
     <div
       className={cn(
@@ -166,6 +167,11 @@ export const ModalFooter = ({
         className
       )}
     >
+
+      <button className="px-2 py-1 bg-pink-800 text-white border-gray-800 border-2 rounded-md text-sm w-28"
+        onClick={() => setOpen(false)}>
+        Cancel
+      </button>
       {children}
     </div>
   );
@@ -190,7 +196,7 @@ const Overlay = ({ className }: { className?: string }) => {
   );
 };
 
-const CloseIcon = () => {
+export const CloseIcon = () => {
   const { setOpen } = useModal();
   return (
     <button

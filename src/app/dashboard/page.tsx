@@ -1,6 +1,6 @@
 import decryptId from '@/lib/auth';
 import { User } from '@prisma/client';
-import { Calendar, Mail, Pencil } from 'lucide-react';
+import { Calendar, Mail } from 'lucide-react';
 import ModalComponent from './modal/modal';
 
 interface PageProps {
@@ -28,7 +28,6 @@ export default async function Page({ searchParams }: PageProps) {
       console.error('Error fetching data:', error);
     }
   }
-
   if (!id) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -36,7 +35,6 @@ export default async function Page({ searchParams }: PageProps) {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-900 px-6 md:px-8 lg:px-10 py-8  ">
       <div className="w-[90%] md:w-[85%] mx-auto bg-gray-800 rounded-lg shadow-lg shadow-pink-800 overflow-hidden border-pink-800  border-t-2">
@@ -64,7 +62,6 @@ export default async function Page({ searchParams }: PageProps) {
             </div>
           </div>
         </div>
-
         {/* Profile Content */}
         <div className="pt-11 pb-8 px-8">
           <div className="flex justify-between items-start mb-6">
@@ -72,12 +69,8 @@ export default async function Page({ searchParams }: PageProps) {
               <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
               <p className="text-gray-400">{user?.pseudoname}</p>
             </div>
-
             <ModalComponent user={user!} />
-
-
           </div>
-
           {/* Profile Info */}
           <div className="space-y-4">
             <div className="flex items-center text-gray-300 gap-2">
@@ -88,9 +81,7 @@ export default async function Page({ searchParams }: PageProps) {
               <Calendar size={18} />
               <span>Joined  us in {new Date(user?.createdAt || 0).toLocaleDateString()}</span>
             </div>
-
           </div>
-
           {/* Stats */}
           <div className="mt-8 flex flex-col gap-y-3 sm:flex sm:flex-row sm:justify-between sm:px-5 border-t border-gray-700 pt-6">
             <div className="text-center">
@@ -101,7 +92,6 @@ export default async function Page({ searchParams }: PageProps) {
               <div className="text-2xl font-bold text-white">0</div>
               <div className="text-gray-400">Contributions</div>
             </div>
-
           </div>
         </div>
       </div>

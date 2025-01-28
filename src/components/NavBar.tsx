@@ -47,7 +47,7 @@ export default function NavBar() {
                                     Logout
                                 </Link>
                                 <Link href={`/dashboard?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    Dashboard
+                                    Profil
                                 </Link>
 
                             </>
