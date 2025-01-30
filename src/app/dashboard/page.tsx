@@ -41,16 +41,13 @@ export default async function Page({ searchParams }: PageProps) {
 
         {/* Profile Header */}
         <div className="relative h-48 bg-gradient-to-l non-pointer-events select-none">
-          {
-            user?.name?.[0]?.toLocaleUpperCase()! < 'M'
-              ? <img src="/londonAtNight.webp" alt="web" className="w-full h-48 object-cover pointer-events-none select-none" />
-              : <img src="/romeAtNight.webp" alt="web" className="w-full h-48 object-cover pointer-events-none select-none" />
-          }
+          <img src={user?.backgroundImage} alt="web" className="w-full h-48 object-cover pointer-events-none select-none" />
+
 
           <div className="absolute -bottom-12 md:-bottom-16 left-1/2 transform -translate-x-1/2">
-            <div className="relative size-36 md:size-40 lg:size-44 bg-gray-700 rounded-full border-4 border-gray-800">
+            <div className="relative size-36 md:size-40 lg:size-44rounded-full border-4 border-gray-800">
               <img
-                src="/user.jpg"
+                src={user?.profileImage}
                 alt="web"
                 className="size-full object-cover rounded-full pointer-events-none select-none "
               />

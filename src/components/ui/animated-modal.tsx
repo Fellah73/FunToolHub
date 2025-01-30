@@ -1,3 +1,4 @@
+// the outiside click hook is disabled in the above code 
 "use client";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -77,9 +78,9 @@ export const ModalBody = ({
     }
   }, [open]);
 
-  const modalRef = useRef(null);
-  const { setOpen } = useModal();
-  useOutsideClick(modalRef, () => setOpen(false));
+  //const modalRef = useRef(null);
+  //const { setOpen } = useModal();
+  //useOutsideClick(modalRef, () => setOpen(false));
 
   return (
     <AnimatePresence>
@@ -101,7 +102,7 @@ export const ModalBody = ({
           <Overlay />
 
           <motion.div
-            ref={modalRef}
+            //ref={modalRef}
             className={cn(
               "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
               className
@@ -231,6 +232,14 @@ export const useOutsideClick = (
 ) => {
   useEffect(() => {
     const listener = (event: any) => {
+      // Vérifier si le clic est sur un élément avec la classe 'image-upload-modal'
+      // we can put any class name here
+      const isImageModalClick = event.target.closest('.image-upload-modal');
+      
+      // Ne rien faire si c'est un clic sur le modal d'image
+      if (isImageModalClick) {
+        return;
+      }
       // DO NOTHING if the element being clicked is the target element or their children
       if (!ref.current || ref.current.contains(event.target)) {
         return;
