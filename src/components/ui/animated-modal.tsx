@@ -7,8 +7,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useRef,
-  useState,
+  useState
 } from "react";
 
 interface ModalContextType {
@@ -156,9 +155,11 @@ export const ModalContent = ({
 export const ModalFooter = ({
   children,
   className,
+  reset
 }: {
   children: ReactNode;
   className?: string;
+  reset : () => void;
 }) => {
   const { setOpen } = useModal();
   return (
@@ -170,7 +171,7 @@ export const ModalFooter = ({
     >
 
       <button className="px-2 py-1 bg-pink-800 text-white border-gray-800 border-2 rounded-md text-sm w-28"
-        onClick={() => setOpen(false)}>
+        onClick={() => {reset(); setOpen(false)}}>
         Cancel
       </button>
       {children}

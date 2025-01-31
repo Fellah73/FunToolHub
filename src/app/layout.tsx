@@ -30,23 +30,21 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${recursive.className} antialiased`}
       >
-       
-          <NavBar />
-          <main className="flex flex-col grainy-light min-h-[calc(100vh-3.5rem-1px)]">
-            <div className="flex flex-1 flex-col h-full">
-              {children}
-            </div>
-            <Footer />
-          </main>
-          <Toaster />
-       
+        <NavBar />
+        <main className="flex flex-col grainy-light min-h-[calc(100vh-3.5rem-1px)]">
+          <div className="flex flex-1 flex-col h-full">
+            {children}
+          </div>
+          <Footer />
+        </main>
+        <Toaster />
       </body>
     </html>
   );

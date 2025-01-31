@@ -22,6 +22,19 @@ body {
   background-color: rgb(125, 35, 139); /* Fond de la zone de défilement */
 }
 
+/* Désactiver l'icône d'œil de Chrome et Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-reveal {
+  display: none !important;
+}
+
+.input-password-without-eye::-ms-reveal,
+.input-password-without-eye::-ms-clear,
+.input-password-without-eye::-webkit-reveal {
+  display: none !important;
+}
+
 .custom-scroll-area {
   overflow-y: auto;
 }

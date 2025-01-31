@@ -5,12 +5,31 @@ import { useState } from "react";
 interface ImageUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (url: string) => void;
     type: 'profile' | 'background';
+    selectedImage: File | null;
+    setSelectedImage: (file: File | null) => void;
+    formData: {
+        name: string | null;
+        currentPassword: string;
+        newPassword: string | null;
+        confirmPassword: string | null;
+        profileImage: string | null;
+        backgroundImage: string | null;
+        bio : string| null;
+    };
+    setFormData: React.Dispatch<React.SetStateAction<{
+        name: string | null;
+        currentPassword: string;
+        newPassword: string | null;
+        confirmPassword: string | null;
+        profileImage: string | null;
+        backgroundImage: string | null;
+        bio : string| null;
+    }>>;
 }
 
-const ImageUploadModal = ({ isOpen, onClose, onSave, type }: ImageUploadModalProps) => {
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+const ImageUploadModal = ({ isOpen, onClose,  type, selectedImage, setSelectedImage, setFormData }: ImageUploadModalProps) => {
+    
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -44,10 +63,11 @@ const ImageUploadModal = ({ isOpen, onClose, onSave, type }: ImageUploadModalPro
         if (selectedImage) {
             // Here you would typically upload the image to your server
             // and get back a URL. This is a mock implementation
-            const mockUrl = `/uploads/${type}/${Date.now()}-${selectedImage.name}`;
-            onSave(mockUrl);
+           setFormData((prev) => {
+            return { ...prev, [`${type}Image`]: URL.createObjectURL(selectedImage) };
+          });
             onClose();
-            console.log('Image uploaded:', mockUrl);
+         
         }
     };
 
