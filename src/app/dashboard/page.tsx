@@ -45,7 +45,7 @@ export default async function Page({ searchParams }: PageProps) {
 
 
           <div className="absolute -bottom-12 md:-bottom-16 left-1/2 transform -translate-x-1/2">
-            <div className="relative size-36 md:size-40 lg:size-44rounded-full border-4 border-gray-800">
+            <div className="relative size-36 md:size-40 lg:size-44 rounded-full border-4 border-gray-800">
               <img
                 src={user?.profileImage}
                 alt="web"

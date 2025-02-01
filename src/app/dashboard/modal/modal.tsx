@@ -147,6 +147,20 @@ export default function ModalComponent({ user }: { user: User }) {
     }, [selectedImage]);
 
     useEffect(() => {
+        console.log("Preview URLs:", previewUrls);
+    }, [previewUrls]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            console.log('Modal closed and all reset');
+            resetFormData();
+            resetPasswordEyes();
+            setErrors({ ...{} });
+        }
+    }, [isOpen]);
+
+
+    useEffect(() => {
         if (formData.profileImage) {
             setPreviewUrls(prev => ({
                 ...prev,
@@ -162,12 +176,10 @@ export default function ModalComponent({ user }: { user: User }) {
     }, [formData.profileImage, formData.backgroundImage]);
 
     useEffect(() => {
-        if (!isOpen) {
-            resetFormData();
-            resetPasswordEyes();
-            setErrors({ ...{} });
+        if (progressBars.profile !== 0 && progressBars.background !== 0) {
+            console.log('Progress bars:', progressBars)
         }
-    }, [isOpen]);
+    }, [progressBars.profile, progressBars.background]);
 
     const { toast } = useToast();
 
@@ -185,15 +197,13 @@ export default function ModalComponent({ user }: { user: User }) {
         });
     }
     const resetFormData = () => {
-        setFormData({
-            name: user?.name || '',
+        setFormData(prev => ({
+            ...prev,
             currentPassword: '',
             newPassword: '',
             confirmPassword: '',
-            profileImage: user?.profileImage || null,
-            backgroundImage: user?.backgroundImage || null,
-            bio: user?.bio || null
-        });
+        }))
+
         setErrors({ ...{} });
     };
 
@@ -215,58 +225,53 @@ export default function ModalComponent({ user }: { user: User }) {
         }
     }
 
-
-
-    const handleUploadImage = async (file: File, type: 'profile' | 'background') => {
+    const handleUploadImageToCloud = async (file: File, type: 'profile' | 'background') => {
         if (file) {
-            const res = await edgestore.myPublicImage.upload({
-                file,
-                input: { type: "post" },
-                onProgressChange(progress) {
-                    // update the progress bar for the current image uploading
+            try {
+                const res = await edgestore.myPublicImage.upload({
+                    file,
+                    input: { type: "post" },
+                    onProgressChange(progress) {
+                        setProgressBars(prev => ({
+                            ...prev,
+                            [type]: progress
+                        }));
+                    },
+                });
+
+                if (res) {
                     setProgressBars(prev => ({
                         ...prev,
-                        [type]: progress
+                        [type]: 0
                     }));
-                },
-            });
-            //si l'image est uploadé avec success
-            if (res) {
-                // update the form data
-                setFormData((prev) => ({
-                    ...prev,
-                    [`${type}Image`]: res.url,
-                }));
 
-                // update the preview urls
-                setPreviewUrls((prev) => ({
-                    ...prev,
-                    [type]: res.url,
-                }));
 
-                // reset the progress bar
-                setProgressBars(prev => ({
-                    ...prev,
-                    [type]: 0
-                }));
+                    setPreviewUrls((prev) => ({
+                        ...prev,
+                        [type]: res.url,
+                    }));
 
-                console.log(`Image uploaded successfully: ${res.url}`);
 
+
+                    return res.url; // Return the URL directly
+                }
+            } catch (error) {
+                console.error(`Error uploading ${type} image:`, error);
+                throw error;
             }
         }
-    }
+        return null;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors({ ...{} });
+        setErrors({});
         setIsLoading(true);
-        // Handle form submission here
+
         try {
-            // request to backend
             const validatedData = updateSchema.parse(formData);
 
-            // check if the current password is correct
-
+            // Check current password
             const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -279,14 +284,12 @@ export default function ModalComponent({ user }: { user: User }) {
             });
 
             const data = await res.json();
-            // wrong password
+
             if (!res.ok) {
-                // update the errors
                 setErrors(prev => ({
                     ...prev,
                     currentPassword: [data.message]
                 }));
-
 
                 toast({
                     title: 'Wrong password',
@@ -296,39 +299,55 @@ export default function ModalComponent({ user }: { user: User }) {
                 throw new Error(data.message);
             }
 
-            // update the user data
+            // Handle image uploads and get URLs
+            let profileImageUrl = formData.profileImage;
+            let backgroundImageUrl = formData.backgroundImage;
 
-            if (previewUrls.profile !== user.profileImage) {
-                // store to cloud storage
-                await handleUploadImage(selectedImage.profileImage as File, 'profile');
-                console.log('Uploading profile images to cloud storage...');
+            if (selectedImage.profileImage && formData.profileImage !== user.profileImage) {
+                profileImageUrl = await handleUploadImageToCloud(selectedImage.profileImage, 'profile');
             }
 
-            if (validatedData.backgroundImage) {
-                // store to cloud storage
-                // await handleUploadImage(selectedImage as File, 'background');
-                console.log('Uploading  background images to cloud storage...');
+            if (selectedImage.backgroundImage && formData.backgroundImage !== user.backgroundImage) {
+                backgroundImageUrl = await handleUploadImageToCloud(selectedImage.backgroundImage, 'background');
             }
 
-            toast({
-                title: 'Profile updated',
-                description: 'Your profile has been updated successfully',
-                variant: 'customize',
+            // Make update request with final URLs
+            const updateRes = await fetch('/api/update', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: user.id,
+                    email: user.email,
+                    name: formData.name,
+                    password: formData.newPassword ? validatedData.newPassword : validatedData.currentPassword,
+                    bio: formData.bio ? validatedData.bio : user.bio,
+                    backgroundImage: backgroundImageUrl,
+                    profileImage: profileImageUrl
+                }),
             });
 
+            setFormData(prev => ({
+                ...prev,
+                profileImage: profileImageUrl,
+                backgroundImage: backgroundImageUrl
+            }))
+
+            const updateData = await updateRes.json();
+
+            if (!updateRes.ok) {
+                throw new Error(updateData.message);
+            }
+
             setIsOpen(false);
-            console.log('Validated data:', validatedData);
 
         } catch (err) {
             if (err instanceof z.ZodError) {
-                // ✅ Formatage des erreurs sous forme d'un objet `Record<string, string[]>`
                 const formattedErrors: Record<string, string[]> = {};
-
                 err.errors.forEach((error) => {
-                    const field = error.path[0]; // Nom du champ (ex: 'name')
-
+                    const field = error.path[0];
                     if (field) {
-                        // ✅ Stocker plusieurs erreurs par champ sous forme d'un tableau
                         if (formattedErrors[field.toString()]) {
                             formattedErrors[field.toString()].push(error.message);
                         } else {
@@ -336,19 +355,11 @@ export default function ModalComponent({ user }: { user: User }) {
                         }
                     }
                 });
-                setErrors(formattedErrors)
-                console.log("validation errors ", err)
+                setErrors(formattedErrors);
             }
-
-        }
-        finally {
+        } finally {
             setIsLoading(false);
-            // Close modal after successful submission
-
-
         }
-
-
     };
 
     return (
@@ -376,7 +387,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                         <div className="absolute -bottom-4 lg:-bottom-8 left-8 transform">
                                             <div className="relative size-24 lg:size-24  bg-gray-700 rounded-full border-2 border-pink-800">
                                                 <img
-                                                    src={user?.profileImage}
+                                                    src={formData.profileImage!}
                                                     alt="user"
                                                     className="w-full h-full object-cover rounded-full pointer-events-none select-none"
                                                 />
@@ -548,6 +559,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 }
                                             </div>
                                         </div>
+                                        {/* Profile Image Section */}
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4">
                                             <label className="text-white text-base lg:text-lg">Update profile picture</label>
@@ -559,39 +571,47 @@ export default function ModalComponent({ user }: { user: User }) {
                                                         className="size-24 lg:size-28 text-white text-sm font-semibold rounded-full border-4 border-pink-800"
                                                     />
                                                     <button
+                                                        type="button"
                                                         onClick={() => handleImageUpload('profile')}
                                                         className="bg-pink-700 hover:bg-pink-800 text-white text-sm font-semibold px-4 py-2 rounded-md border-2 border-pink-800"
                                                     >
                                                         Change Picture
                                                     </button>
                                                 </div>
-                                                {
-                                                    progressBars.profile > 0 && (
-                                                        <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
-                                                            <div className="h-full bg-white transition-all duration-300"
-                                                                style={{ width: `${progressBars.profile}%` }}
-                                                            />
-                                                        </div>
-                                                    )
-                                                }
-
+                                                {progressBars.profile > 0 && (
+                                                    <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
+                                                        <div className="h-full bg-white transition-all duration-[2000ms] ease-out"
+                                                            style={{ width: `${progressBars.profile}%` }}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         {/* Background Image Section */}
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4">
                                             <label className="text-white text-base lg:text-lg">Update background picture</label>
-                                            <div className="flex items-center justify-between gap-x-6 sm:gap-x-2">
-                                                <img
-                                                    src={previewUrls.background}
-                                                    alt="profile"
-                                                    className="size-24 lg:size-28 text-white text-sm font-semibold rounded-full border-4 border-pink-800"
-                                                />
-                                                <button
-                                                    onClick={() => handleImageUpload('background')}
-                                                    className="bg-pink-700 hover:bg-pink-800 text-white text-sm font-semibold px-4 py-2 rounded-md border-2 border-pink-800"
-                                                >
-                                                    Change Picture
-                                                </button>
+                                            <div className="flex flex-col gap-y-2">
+                                                <div className="flex items-center justify-between gap-x-6 sm:gap-x-2">
+                                                    <img
+                                                        src={previewUrls.background}
+                                                        alt="profile"
+                                                        className="size-24 lg:size-28 text-white text-sm font-semibold rounded-full border-4 border-pink-800"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleImageUpload('background')}
+                                                        className="bg-pink-700 hover:bg-pink-800 text-white text-sm font-semibold px-4 py-2 rounded-md border-2 border-pink-800"
+                                                    >
+                                                        Change Picture
+                                                    </button>
+                                                </div>
+                                                {progressBars.background > 0 && (
+                                                    <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
+                                                        <div className="h-full bg-white transition-all duration-[2000ms] ease-out"
+                                                            style={{ width: `${progressBars.background}%` }}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -636,8 +656,12 @@ export default function ModalComponent({ user }: { user: User }) {
 // UI handling -->  done
 // gather data --> done
 // cloud storage --> done
-// solve problem : previewUrl state hook duplication
-// solve problem : progress bar not updating animation time
-// solve problem : submmited form when entering password before updating the image
-// create /upload endpoint
-// request and response handling
+// solve problem : previewUrl state hook duplication   --> done (that's not a problem cause we had to save the upladed image in dropImage component thne dislay it in the modal component)
+// solve problem : progress bar not updating animation time  // done
+// solve problem : progress bar for the background image --> done
+// solve problem : submmited form when entering password before updating the image --> done
+// create /upload endpoint --> done
+// request and response handling  // problem in passing the file to the endpoint the passed file is empty  --> done
+// update the input fields UI
+// clean all the code
+// update the toast ui a little animation

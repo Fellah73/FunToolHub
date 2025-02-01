@@ -33,6 +33,7 @@ interface ImageUploadModalProps {
         confirmPassword?: string | undefined;
     }>>;
 
+
 }
 
 const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedImage, setFormData }: ImageUploadModalProps) => {
