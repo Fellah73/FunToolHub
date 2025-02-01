@@ -103,7 +103,7 @@ export const ModalBody = ({
           <motion.div
             //ref={modalRef}
             className={cn(
-              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
+              "min-h-[50%] max-h-[90%] max-w-[90%] md:max-w-[70%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
               className
             )}
             initial={{
@@ -155,11 +155,13 @@ export const ModalContent = ({
 export const ModalFooter = ({
   children,
   className,
-  reset
+  reset,
+
 }: {
   children: ReactNode;
   className?: string;
   reset : () => void;
+ 
 }) => {
   const { setOpen } = useModal();
   return (
@@ -171,7 +173,7 @@ export const ModalFooter = ({
     >
 
       <button className="px-2 py-1 bg-pink-800 text-white border-gray-800 border-2 rounded-md text-sm w-28"
-        onClick={() => {reset(); setOpen(false)}}>
+        onClick={() => {reset();  setOpen(false)}}>
         Cancel
       </button>
       {children}

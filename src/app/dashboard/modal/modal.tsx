@@ -1,9 +1,13 @@
 "use client";
 import ImageUploadModal from "@/components/dropImage";
+import { useToast } from "@/components/ui/use-toast";
+import { useEdgeStore } from "@/lib/edgestore";
 import { User } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useEffect, useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
+import { z } from 'zod';
 import {
     Modal,
     ModalBody,
@@ -11,38 +15,52 @@ import {
     ModalFooter,
     ModalTrigger
 } from "../../../components/ui/animated-modal";
-import { set, z } from 'zod';
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
 
 
 const updateSchema = z.object({
     name: z.string()
-        .min(3, { message: 'at least 3 characters' })
-        .max(20, { message: 'max 20 characters' })
-        .regex(/[A-Z]/, { message: 'contain at least one uppercase letter' })
-        .nullable(), // ✅ Permettre que le nom soit null
+        .min(3, { message: 'At least 3 characters' })
+        .max(20, { message: 'Max 20 characters' })
+        .regex(/[A-Z]/, { message: 'At least one uppercase letter' })
+        .nullable()
+        .optional(), // ✅ Name peut être null ou optionnel
 
     bio: z.string()
-        .max(150, { message: 'max 150 characters' })
-        .nullable(), // ✅ Peut être null
+        .max(150, { message: 'Max 150 characters' })
+        .nullable()
+        .optional(), // ✅ Bio peut être null ou optionnel
 
-    backgroundImage: z.string().nullable(),
-    profileImage: z.string().nullable(),
+    backgroundImage: z.string()
+        .nullable()
+        .optional(),
 
-    currentPassword: z.string()
-        .min(8, { message: 'at least 8 caracters' }),
-    // ✅ Correction du regex
+    profileImage: z.string()
+        .nullable()
+        .optional(),
 
-    newPassword: z.string()
-        .min(8, { message: 'at least 8 characters long' })
-        .regex(/[A-Z]/, { message: 'contain at least one uppercase letter' })
-        .regex(/[0-9]/, { message: 'contain at least one number' })
-        .regex(/[^A-Za-z0-9]/, { message: 'contain at least one special character' })
-        .nullable(), // ✅ Peut être non rempli
+    currentPassword: z.preprocess(
+        (val) => val === "" ? undefined : val, // ✅ Ignore si vide
+        z.string()
+            .min(8, { message: 'At least 8 characters' })
+    ),
 
-    confirmPassword: z.string().nullable() // ✅ Peut être vide sauf si newPassword est rempli
+    newPassword: z.preprocess(
+        (val) => val === "" ? undefined : val, // ✅ Ignore si vide
+        z.string()
+            .min(8, { message: 'At least 8 characters long' })
+            .regex(/[A-Z]/, { message: 'At least one uppercase letter' })
+            .regex(/[0-9]/, { message: 'At least one number' })
+            .regex(/[^A-Za-z0-9]/, { message: 'At least one special character' })
+            .optional() // ✅ Optionnel
+    ),
+
+    confirmPassword: z.preprocess(
+        (val) => val === "" ? undefined : val, // ✅ Ignore si vide
+        z.string()
+            .optional()
+    )
 })
+    // ✅ Si `newPassword` est rempli, `confirmPassword` doit être aussi rempli
     .refine((data) => {
         if (data.newPassword && !data.confirmPassword) {
             return false;
@@ -52,6 +70,7 @@ const updateSchema = z.object({
         message: "Confirm password is required when new password is provided",
         path: ["confirmPassword"]
     })
+    // ✅ Vérification que `confirmPassword` correspond bien à `newPassword`
     .refine((data) => {
         if (data.newPassword && data.confirmPassword && data.newPassword !== data.confirmPassword) {
             return false;
@@ -62,6 +81,7 @@ const updateSchema = z.object({
         path: ["confirmPassword"]
     });
 
+
 type FormData = z.infer<typeof updateSchema>
 
 interface showPasswordInputs {
@@ -70,14 +90,31 @@ interface showPasswordInputs {
     confirmPassword: boolean
 }
 
+interface selectedImage {
+    profileImage: File | null,
+    backgroundImage: File | null
+}
+
+interface progressBars {
+    profile: number,
+    background: number
+}
 export default function ModalComponent({ user }: { user: User }) {
     const [isOpen, setIsOpen] = useState(true);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imageModalType, setImageModalType] = useState<'profile' | 'background'>('profile');
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImage, setSelectedImage] = useState<selectedImage>({
+        profileImage: null,
+        backgroundImage: null
+    });
     const [previewUrls, setPreviewUrls] = useState({
         profile: user?.profileImage || "/updateModal.webp",
         background: user?.backgroundImage || "/updateModal.webp"
+    });
+
+    const [progressBars, setProgressBars] = useState<progressBars>({
+        profile: 0,
+        background: 0
     });
 
     const [formData, setFormData] = useState<FormData>({
@@ -91,7 +128,7 @@ export default function ModalComponent({ user }: { user: User }) {
 
     });
 
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -104,6 +141,10 @@ export default function ModalComponent({ user }: { user: User }) {
     useEffect(() => {
         console.log('Form data:', formData);
     }, [formData]);
+
+    useEffect(() => {
+        console.log("Selected image:", selectedImage);
+    }, [selectedImage]);
 
     useEffect(() => {
         if (formData.profileImage) {
@@ -124,9 +165,13 @@ export default function ModalComponent({ user }: { user: User }) {
         if (!isOpen) {
             resetFormData();
             resetPasswordEyes();
+            setErrors({ ...{} });
         }
     }, [isOpen]);
 
+    const { toast } = useToast();
+
+    const { edgestore } = useEdgeStore();
     const handleImageUpload = (type: 'profile' | 'background') => {
         setImageModalType(type);
         setIsImageModalOpen(true);
@@ -149,6 +194,7 @@ export default function ModalComponent({ user }: { user: User }) {
             backgroundImage: user?.backgroundImage || null,
             bio: user?.bio || null
         });
+        setErrors({ ...{} });
     };
 
 
@@ -161,58 +207,154 @@ export default function ModalComponent({ user }: { user: User }) {
         }));
         {/*  clear all the errors if there are en error in this input*/ }
         if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    }
+
+
+
+    const handleUploadImage = async (file: File, type: 'profile' | 'background') => {
+        if (file) {
+            const res = await edgestore.myPublicImage.upload({
+                file,
+                input: { type: "post" },
+                onProgressChange(progress) {
+                    // update the progress bar for the current image uploading
+                    setProgressBars(prev => ({
+                        ...prev,
+                        [type]: progress
+                    }));
+                },
+            });
+            //si l'image est uploadé avec success
+            if (res) {
+                // update the form data
+                setFormData((prev) => ({
+                    ...prev,
+                    [`${type}Image`]: res.url,
+                }));
+
+                // update the preview urls
+                setPreviewUrls((prev) => ({
+                    ...prev,
+                    [type]: res.url,
+                }));
+
+                // reset the progress bar
+                setProgressBars(prev => ({
+                    ...prev,
+                    [type]: 0
+                }));
+
+                console.log(`Image uploaded successfully: ${res.url}`);
+
+            }
         }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setErrors({});
+        setErrors({ ...{} });
         setIsLoading(true);
         // Handle form submission here
         try {
             // request to backend
             const validatedData = updateSchema.parse(formData);
 
+            // check if the current password is correct
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    password: formData.currentPassword,
+                }),
+            });
+
+            const data = await res.json();
+            // wrong password
+            if (!res.ok) {
+                // update the errors
+                setErrors(prev => ({
+                    ...prev,
+                    currentPassword: [data.message]
+                }));
+
+
+                toast({
+                    title: 'Wrong password',
+                    description: data.message,
+                    variant: 'customize',
+                });
+                throw new Error(data.message);
+            }
+
+            // update the user data
+
+            if (previewUrls.profile !== user.profileImage) {
+                // store to cloud storage
+                await handleUploadImage(selectedImage.profileImage as File, 'profile');
+                console.log('Uploading profile images to cloud storage...');
+            }
+
+            if (validatedData.backgroundImage) {
+                // store to cloud storage
+                // await handleUploadImage(selectedImage as File, 'background');
+                console.log('Uploading  background images to cloud storage...');
+            }
+
+            toast({
+                title: 'Profile updated',
+                description: 'Your profile has been updated successfully',
+                variant: 'customize',
+            });
+
+            setIsOpen(false);
             console.log('Validated data:', validatedData);
 
         } catch (err) {
             if (err instanceof z.ZodError) {
-                // Créez un objet pour stocker les messages d'erreur par champ
-                const formattedErrors: Record<string, string> = {};
+                // ✅ Formatage des erreurs sous forme d'un objet `Record<string, string[]>`
+                const formattedErrors: Record<string, string[]> = {};
 
                 err.errors.forEach((error) => {
-                    const field = error.path[0]; // Le nom du champ (ex: 'name')
-                    {/* cas ou un champ a plus d'une erreur par exemple le password ne conteint pas 8 char et pas de Maj et pas de Number */ }
+                    const field = error.path[0]; // Nom du champ (ex: 'name')
+
                     if (field) {
-                        // Si ce champ a déjà une erreur, on concatène les messages
+                        // ✅ Stocker plusieurs erreurs par champ sous forme d'un tableau
                         if (formattedErrors[field.toString()]) {
-                            formattedErrors[field.toString()] += `, ${error.message}`;
+                            formattedErrors[field.toString()].push(error.message);
                         } else {
-                            // Sinon on crée une nouvelle entrée
-                            formattedErrors[field.toString()] = error.message;
+                            formattedErrors[field.toString()] = [error.message];
                         }
                     }
                 });
                 setErrors(formattedErrors)
-                console.log(err)
+                console.log("validation errors ", err)
             }
 
         }
         finally {
             setIsLoading(false);
+            // Close modal after successful submission
+
+
         }
-        // Close modal after successful submission
-        // setIsOpen(false);
+
+
     };
 
     return (
 
         <div className="select-none">
-            <Modal>
+            <Modal >
                 <ModalTrigger className="bg-pink-800 dark:bg-gray-700 dark:text-neutral-400 text-white flex justify-center group/modal-btn">
 
                     <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">
@@ -224,7 +366,7 @@ export default function ModalComponent({ user }: { user: User }) {
                 </ModalTrigger>
                 {isOpen && (
                     <form onSubmit={handleSubmit}>
-                        <ModalBody className="border-2 border-pink-800">
+                        <ModalBody className="border-2 border-pink-800 rounded-xl">
 
                             <ScrollArea className="relative flex-1 overflow-auto custom-scroll-area">
                                 <ModalContent className="bg-gradient-to-br from-gray-800 to-gray-900">
@@ -265,8 +407,18 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 name="name"
                                                 value={formData.name || ''}
                                                 className="bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-[50%]" />
-                                            {errors.name && <p className="text-white">{errors.name}</p>}
                                         </div>
+                                        {/* name erros */}
+                                        <div className="w-[95%] mx-auto flex items-start justify-end" >
+                                            <div className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-6 items-center justify-end">
+                                                {
+                                                    errors.name && errors.name.map((error, index) => (
+                                                        <p key={index} className="font-semibold text-white text-sm md:text-base lg:text-lg">{error}</p>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
                                         {/* bio */}
                                         <div className="flex flex-col gap-y-3 md:gap-y-4 lg:gap-y-6 ">
@@ -281,10 +433,21 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 disabled={isLoading}
                                                 className="bg-gray-800 text-white px-3 py-2 rounded-md border-2 border-pink-800 w-[95%]"
                                             />
-                                            {errors.bio && <p className="text-white">{errors.bio}</p>}
+
                                         </div>
-                                        {/* Current password */}
+                                        {/* bio erros */}
+                                        <div className="w-[95%] mx-auto flex items-start justify-end" >
+                                            <div className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-6 items-center justify-end">
+                                                {
+                                                    errors.bio && errors.bio.map((error, index) => (
+                                                        <p key={index} className="font-semibold text-white text-sm md:text-base lg:text-lg">{error}</p>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
+                                        {/* Current password */}
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4 md:gap-x-8 lg:gap-x-12">
                                             <label className="text-white text-base  lg:text-lg">current password</label>
                                             <div className="relative w-[50%]">
@@ -304,7 +467,17 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 >
                                                     {!showPassword?.currentPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
-                                                {errors.currentPassword && <p className="text-white text-sm">{errors.currentPassword}</p>}
+
+                                            </div>
+                                        </div>
+                                        {/* current password erros */}
+                                        <div className="w-[95%] mx-auto flex items-start justify-end" >
+                                            <div className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-6 items-center justify-end">
+                                                {
+                                                    errors.currentPassword && errors.currentPassword.map((error, index) => (
+                                                        <p key={index} className="font-semibold text-white text-sm md:text-base lg:text-lg">{error}</p>
+                                                    ))
+                                                }
                                             </div>
                                         </div>
                                         {/* New password */}
@@ -328,7 +501,17 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 >
                                                     {!showPassword?.newPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
-                                                {errors.newPassword && <p className="text-white text-sm">{errors.newPassword}</p>}
+
+                                            </div>
+                                        </div>
+                                        {/* new password    erros */}
+                                        <div className="w-[95%] mx-auto flex items-start justify-end" >
+                                            <div className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-6 items-center justify-end">
+                                                {
+                                                    errors.newPassword && errors.newPassword.map((error, index) => (
+                                                        <p key={index} className="font-semibold text-white text-sm md:text-base lg:text-lg">{error}</p>
+                                                    ))
+                                                }
                                             </div>
                                         </div>
                                         {/* Confirm password */}
@@ -352,24 +535,46 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 >
                                                     {!showPassword?.confirmPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
-                                                {errors.confirmPassword && <p className="text-white text-sm">{errors.confirmPassword}</p>}
+
+                                            </div>
+                                        </div>
+                                        {/* confirm password erros */}
+                                        <div className="w-[95%] mx-auto flex items-start justify-end" >
+                                            <div className="flex flex-col gap-y-2 md:gap-y-4 lg:gap-y-6 items-center justify-end">
+                                                {
+                                                    errors.confirmPassword && errors.confirmPassword.map((error, index) => (
+                                                        <p key={index} className="font-semibold text-white text-sm md:text-base lg:text-lg">{error}</p>
+                                                    ))
+                                                }
                                             </div>
                                         </div>
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4">
                                             <label className="text-white text-base lg:text-lg">Update profile picture</label>
-                                            <div className="flex items-center justify-between gap-x-6 sm:gap-x-2">
-                                                <img
-                                                    src={previewUrls.profile}
-                                                    alt="profile"
-                                                    className="size-24 lg:size-28 text-white text-sm font-semibold rounded-full border-4 border-pink-800"
-                                                />
-                                                <button
-                                                    onClick={() => handleImageUpload('profile')}
-                                                    className="bg-pink-700 hover:bg-pink-800 text-white text-sm font-semibold px-4 py-2 rounded-md border-2 border-pink-800"
-                                                >
-                                                    Change Picture
-                                                </button>
+                                            <div className="flex flex-col gap-y-2">
+                                                <div className="flex items-center justify-between gap-x-6 sm:gap-x-2">
+                                                    <img
+                                                        src={previewUrls.profile}
+                                                        alt="profile"
+                                                        className="size-24 lg:size-28 text-white text-sm font-semibold rounded-full border-4 border-pink-800"
+                                                    />
+                                                    <button
+                                                        onClick={() => handleImageUpload('profile')}
+                                                        className="bg-pink-700 hover:bg-pink-800 text-white text-sm font-semibold px-4 py-2 rounded-md border-2 border-pink-800"
+                                                    >
+                                                        Change Picture
+                                                    </button>
+                                                </div>
+                                                {
+                                                    progressBars.profile > 0 && (
+                                                        <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
+                                                            <div className="h-full bg-white transition-all duration-300"
+                                                                style={{ width: `${progressBars.profile}%` }}
+                                                            />
+                                                        </div>
+                                                    )
+                                                }
+
                                             </div>
                                         </div>
                                         {/* Background Image Section */}
@@ -392,7 +597,9 @@ export default function ModalComponent({ user }: { user: User }) {
                                     </div>
                                 </ModalContent>
                             </ScrollArea>
-                            <ModalFooter reset={()=>{resetFormData()}} className="gap-4 bg-gradient-to-b from-gray-800 to-pink-800">
+                            <ModalFooter reset={() => { resetFormData() }}
+
+                                className="gap-4 bg-gradient-to-b from-gray-800 to-pink-800">
                                 <button
                                     type="submit"
                                     className="bg-gray-800 text-white text-sm px-2 py-1 rounded-md border-2 border-pink-800 w-32"
@@ -420,3 +627,17 @@ export default function ModalComponent({ user }: { user: User }) {
         </div>
     );
 }
+
+
+//  the width of the modal --> done
+// the nullability of the new password field  --> done
+//update error handling (logic and UI)
+// logic handling --> done
+// UI handling -->  done
+// gather data --> done
+// cloud storage --> done
+// solve problem : previewUrl state hook duplication
+// solve problem : progress bar not updating animation time
+// solve problem : submmited form when entering password before updating the image
+// create /upload endpoint
+// request and response handling

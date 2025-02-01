@@ -6,30 +6,37 @@ interface ImageUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
     type: 'profile' | 'background';
-    selectedImage: File | null;
-    setSelectedImage: (file: File | null) => void;
+    selectedImage: {
+        profileImage: File | null;
+        backgroundImage: File | null;
+    }
+    setSelectedImage: React.Dispatch<React.SetStateAction<{
+        profileImage: File | null;
+        backgroundImage: File | null;
+    }>>;
     formData: {
-        name: string | null;
+        name?: string | null;
+        bio?: string | null;
+        backgroundImage?: string | null;
+        profileImage?: string | null;
         currentPassword: string;
-        newPassword: string | null;
-        confirmPassword: string | null;
-        profileImage: string | null;
-        backgroundImage: string | null;
-        bio : string| null;
+        newPassword?: string | undefined;
+        confirmPassword?: string | undefined;
     };
     setFormData: React.Dispatch<React.SetStateAction<{
-        name: string | null;
+        name?: string | null;
+        bio?: string | null;
+        backgroundImage?: string | null;
+        profileImage?: string | null;
         currentPassword: string;
-        newPassword: string | null;
-        confirmPassword: string | null;
-        profileImage: string | null;
-        backgroundImage: string | null;
-        bio : string| null;
+        newPassword?: string | undefined;
+        confirmPassword?: string | undefined;
     }>>;
+
 }
 
-const ImageUploadModal = ({ isOpen, onClose,  type, selectedImage, setSelectedImage, setFormData }: ImageUploadModalProps) => {
-    
+const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedImage, setFormData }: ImageUploadModalProps) => {
+
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -53,8 +60,11 @@ const ImageUploadModal = ({ isOpen, onClose,  type, selectedImage, setSelectedIm
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && validateFile(file)) {
-            setSelectedImage(file);
+            setSelectedImage((prev) => {
+                return { ...prev, [`${type}Image`]: file };
+            });
             setPreviewUrl(URL.createObjectURL(file));
+            console.log(file);
             setError(null);
         }
     };
@@ -63,11 +73,18 @@ const ImageUploadModal = ({ isOpen, onClose,  type, selectedImage, setSelectedIm
         if (selectedImage) {
             // Here you would typically upload the image to your server
             // and get back a URL. This is a mock implementation
-           setFormData((prev) => {
+
+            {/*
+                setFormData((prev) => {
             return { ...prev, [`${type}Image`]: URL.createObjectURL(selectedImage) };
           });
+                */}
+
+            setFormData((prev) => {
+                return { ...prev, [`${type}Image`]: URL.createObjectURL(selectedImage[`${type}Image`]!) };
+            });
             onClose();
-         
+
         }
     };
 
