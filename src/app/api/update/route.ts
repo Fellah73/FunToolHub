@@ -58,7 +58,7 @@ export async function PATCH(request: Request) {
     console.log("User updated successfully", updatedUser);
 
     return new Response(
-      JSON.stringify({ message: "User updated successfully" }),
+      JSON.stringify({ message: `${name} updated successfully` }),
       { status: 200 }
     );
   } catch (err) {

@@ -2,8 +2,10 @@
 import ImageUploadModal from "@/components/dropImage";
 import { useToast } from "@/components/ui/use-toast";
 import { useEdgeStore } from "@/lib/edgestore";
+import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
@@ -199,9 +201,13 @@ export default function ModalComponent({ user }: { user: User }) {
     const resetFormData = () => {
         setFormData(prev => ({
             ...prev,
+            name: user?.name || '',
             currentPassword: '',
             newPassword: '',
             confirmPassword: '',
+            profileImage: user?.profileImage || null,
+            backgroundImage: user?.backgroundImage || null,
+            bio: user?.bio || null
         }))
 
         setErrors({ ...{} });
@@ -232,18 +238,24 @@ export default function ModalComponent({ user }: { user: User }) {
                     file,
                     input: { type: "post" },
                     onProgressChange(progress) {
-                        setProgressBars(prev => ({
-                            ...prev,
-                            [type]: progress
-                        }));
+                        // ✅ Ajout d'un délai pour un effet plus fluide
+                        setTimeout(() => {
+                            setProgressBars(prev => ({
+                                ...prev,
+                                [type]: progress
+                            }));
+                        }, 200); // ✅ Décalage de 200ms
                     },
                 });
 
                 if (res) {
-                    setProgressBars(prev => ({
-                        ...prev,
-                        [type]: 0
-                    }));
+
+                    setTimeout(() => {
+                        setProgressBars(prev => ({
+                            ...prev,
+                            [type]: 0
+                        }));
+                    }, 1000); // ✅ Animation plus lente à la fin
 
 
                     setPreviewUrls((prev) => ({
@@ -292,9 +304,9 @@ export default function ModalComponent({ user }: { user: User }) {
                 }));
 
                 toast({
-                    title: 'Wrong password',
+                    title: 'Wrong access data',
                     description: data.message,
-                    variant: 'customize',
+                    variant: 'form',
                 });
                 throw new Error(data.message);
             }
@@ -336,9 +348,26 @@ export default function ModalComponent({ user }: { user: User }) {
 
             const updateData = await updateRes.json();
 
+            // adding the response handling and toasts
             if (!updateRes.ok) {
                 throw new Error(updateData.message);
             }
+
+            if (!updateData.ok) {
+                toast({
+                    title: 'Error updating profile',
+                    description: updateData.message + ` please ${validatedData.name} try again`,
+                    variant: 'form',
+                })
+            }
+
+
+            //success toast
+            toast({
+                title: 'Profile updated successfully',
+                description: updateData.message,
+                variant: 'form',
+            });
 
             setIsOpen(false);
 
@@ -384,10 +413,11 @@ export default function ModalComponent({ user }: { user: User }) {
                                     {/* Rest of your existing modal content structure */}
                                     <div className="relative h-32 w-full rounded-xl bg-gray-600 non-pointer-events select-none">
                                         {/* Photo ronde (avatar) */}
+                                        <img src={previewUrls.background} alt="web" className="w-full h-full object-cover" />
                                         <div className="absolute -bottom-4 lg:-bottom-8 left-8 transform">
                                             <div className="relative size-24 lg:size-24  bg-gray-700 rounded-full border-2 border-pink-800">
                                                 <img
-                                                    src={formData.profileImage!}
+                                                    src={previewUrls.profile}
                                                     alt="user"
                                                     className="w-full h-full object-cover rounded-full pointer-events-none select-none"
                                                 />
@@ -417,7 +447,9 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 onChange={handleInputChange}
                                                 name="name"
                                                 value={formData.name || ''}
-                                                className="bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-[50%]" />
+                                                className={cn("bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-[75%] sm:w-[50%]",
+                                                    errors.name && errors.name.length > 0 && 'border-4 border-white rounded-md'
+                                                )} />
                                         </div>
                                         {/* name erros */}
                                         <div className="w-[95%] mx-auto flex items-start justify-end" >
@@ -442,8 +474,9 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 name="bio"
                                                 value={formData?.bio || ''}
                                                 disabled={isLoading}
-                                                className="bg-gray-800 text-white px-3 py-2 rounded-md border-2 border-pink-800 w-[95%]"
-                                            />
+                                                className={cn("bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-[80%] sm:w-[70%]",
+                                                    errors.bio && errors.bio.length > 0 && 'border-4 border-white rounded-md'
+                                                )} />
 
                                         </div>
                                         {/* bio erros */}
@@ -461,7 +494,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                         {/* Current password */}
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4 md:gap-x-8 lg:gap-x-12">
                                             <label className="text-white text-base  lg:text-lg">current password</label>
-                                            <div className="relative w-[50%]">
+                                            <div className="relative w-[75%] sm:w-[50%]">
                                                 <input
                                                     disabled={isLoading}
                                                     type={showPassword.currentPassword ? "text" : "password"}
@@ -469,12 +502,14 @@ export default function ModalComponent({ user }: { user: User }) {
                                                     name="currentPassword"
                                                     value={formData.currentPassword}
                                                     placeholder="current password"
-                                                    className="bg-gray-800 text-white px-3 py-2 rounded-md border-2 border-pink-800 w-full pr-10"
+                                                    className={cn("bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-full",
+                                                        errors.currentPassword && errors.currentPassword.length > 0 && 'border-4 border-white rounded-md'
+                                                    )}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPassword((prev) => ({ ...prev, currentPassword: !prev.currentPassword }))}
-                                                    className="absolute inset-y-0 right-3 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
+                                                    className="absolute inset-y-0 right-1 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
                                                 >
                                                     {!showPassword?.currentPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
@@ -495,7 +530,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
                                         <div className="flex flex-col gap-y-3 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4 md:gap-x-8 lg:gap-x-12">
                                             <label className="text-white text-base lg:text-lg">update password</label>
-                                            <div className="relative w-[50%]">
+                                            <div className="relative w-[75%] sm:w-[50%]">
                                                 <input
                                                     disabled={isLoading}
                                                     type={showPassword.newPassword ? "text" : "password"}
@@ -503,12 +538,14 @@ export default function ModalComponent({ user }: { user: User }) {
                                                     name="newPassword"
                                                     value={formData.newPassword || ''}
                                                     placeholder="update password"
-                                                    className="bg-gray-800 text-white px-3 py-2 rounded-md border-2 border-pink-800 w-full pr-10"
+                                                    className={cn("bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-full",
+                                                        errors.newPassword && errors.newPassword.length > 0 && 'border-4 border-white rounded-md'
+                                                    )}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPassword((prev) => ({ ...prev, newPassword: !prev.newPassword }))}
-                                                    className="absolute inset-y-0 right-3 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
+                                                    className="absolute inset-y-0 right-1 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
                                                 >
                                                     {!showPassword?.newPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
@@ -529,7 +566,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                         <div className="w-[95%] mx-auto h-0.5 bg-pink-800" />
                                         <div className="flex flex-col gap-y-2 items-center justify-center sm:flex-row sm:justify-between sm:gap-x-4 md:gap-x-8 lg:gap-x-12">
                                             <label className="text-white text-base lg:text-lg">confirm password</label>
-                                            <div className="relative w-[50%]">
+                                            <div className="relative w-[75%] sm:w-[50%]">
                                                 <input
                                                     disabled={isLoading}
                                                     type={showPassword.confirmPassword ? "text" : "password"}
@@ -537,12 +574,14 @@ export default function ModalComponent({ user }: { user: User }) {
                                                     name="confirmPassword"
                                                     value={formData.confirmPassword || ''}
                                                     placeholder="Confirm password"
-                                                    className="bg-gray-800 text-white px-3 py-2 rounded-md border-2 border-pink-800 w-full pr-10"
+                                                    className={cn("bg-gray-800 text-white  px-3 py-2 rounded-md border-2 border-pink-800 w-[100%]",
+                                                        errors.confirmPassword && errors.confirmPassword.length > 0 && 'border-4 border-white rounded-md'
+                                                    )}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPassword((prev) => ({ ...prev, confirmPassword: !prev.confirmPassword }))}
-                                                    className="absolute inset-y-0 right-3 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
+                                                    className="absolute inset-y-0 right-1 flex items-center text-pink-600 hover:text-pink-400 input-password-without-eye"
                                                 >
                                                     {!showPassword?.confirmPassword ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
                                                 </button>
@@ -618,14 +657,23 @@ export default function ModalComponent({ user }: { user: User }) {
                                 </ModalContent>
                             </ScrollArea>
                             <ModalFooter reset={() => { resetFormData() }}
-
                                 className="gap-4 bg-gradient-to-b from-gray-800 to-pink-800">
-                                <button
-                                    type="submit"
-                                    className="bg-gray-800 text-white text-sm px-2 py-1 rounded-md border-2 border-pink-800 w-32"
-                                >
-                                    Save Changes
-                                </button>
+                                {
+                                    isLoading ? (
+                                        <button
+                                            type="button"
+                                            disabled={isLoading}
+                                            className="flex  items-center justify-between bg-gray-800 text-white text-sm px-2 py-1 rounded-md border-2 border-pink-800 w-32">
+                                            <Loader2 className='animate-spin  size-6' />
+                                            <p className="text-sm font-semibold">{" "}is Uploading</p>
+                                        </button>
+                                    ) : (<button
+                                        type="submit"
+                                        className="bg-gray-800 text-white text-sm px-2 py-1 rounded-md border-2 border-pink-800 w-32"
+                                    >
+                                        Save Changes
+                                    </button>)
+                                }
                             </ModalFooter>
                         </ModalBody>
                     </form>
@@ -657,11 +705,15 @@ export default function ModalComponent({ user }: { user: User }) {
 // gather data --> done
 // cloud storage --> done
 // solve problem : previewUrl state hook duplication   --> done (that's not a problem cause we had to save the upladed image in dropImage component thne dislay it in the modal component)
-// solve problem : progress bar not updating animation time  // done
 // solve problem : progress bar for the background image --> done
 // solve problem : submmited form when entering password before updating the image --> done
 // create /upload endpoint --> done
 // request and response handling  // problem in passing the file to the endpoint the passed file is empty  --> done
-// update the input fields UI
-// clean all the code
-// update the toast ui a little animation
+// update the input fields UI mzal (eyes should to be resonsive) -> done
+// solve problem : progress bar not updating animation time mzal --> done
+// update the toast ui --> done
+// continue handling the errors --> done
+//  a little animation (for buttons)  --> done
+// clean all the code //mzal
+
+
