@@ -17,7 +17,7 @@ export default function page() {
                 return userId?.substring(1, userId?.length - 1)
             }
             const userId = extractedUserId(connectionStaus)
-            router.push(`/dashboard?id=${userId}`)
+            router.push(`/profile?id=${userId}`)
         }
         fetch.current = true
     }, [])

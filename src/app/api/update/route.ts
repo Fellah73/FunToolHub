@@ -1,5 +1,6 @@
 import { db } from "@/app/db";
 import bcrypt from "bcryptjs";
+import { revalidateTag } from "next/cache";
 
 export async function PATCH(request: Request) {
   try {
@@ -55,10 +56,16 @@ export async function PATCH(request: Request) {
       });
     }
 
+    updatedUser.password = "";
+
     console.log("User updated successfully", updatedUser);
 
+    // every update will delete the cache and refresh the profil page fetch
+    revalidateTag("user-profile");
+
+    //response
     return new Response(
-      JSON.stringify({ message: `${name} updated successfully` }),
+      JSON.stringify({ message: `${name} updated successfully`, updatedUser }),
       { status: 200 }
     );
   } catch (err) {

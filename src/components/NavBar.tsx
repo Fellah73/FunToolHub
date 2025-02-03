@@ -46,7 +46,7 @@ export default function NavBar() {
                                 <Link href='/logout' className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
                                     Logout
                                 </Link>
-                                <Link href={`/dashboard?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
+                                <Link href={`/profile?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
                                     Profil
                                 </Link>
 

@@ -21,7 +21,7 @@ export default function page() {
     
     if (connectionStatus?.startsWith('c') && connectionStatus.endsWith('c')) {
       const userId = extractedUserId(connectionStatus)
-      window.location.href = (`/dashboard?id=${userId}`)
+      window.location.href = (`/profile?id=${userId}`)
     }
     fetch.current = true
   }, [])

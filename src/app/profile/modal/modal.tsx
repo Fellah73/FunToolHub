@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
-import { z } from 'zod';
+import { set, z } from 'zod';
 import {
     Modal,
     ModalBody,
@@ -101,7 +101,14 @@ interface progressBars {
     profile: number,
     background: number
 }
-export default function ModalComponent({ user }: { user: User }) {
+
+
+interface ModalComponentProps {
+    user: User;
+    setUser: Dispatch<SetStateAction<User | null>>;
+}
+
+export default function ModalComponent({ user, setUser }: ModalComponentProps) {
     const [isOpen, setIsOpen] = useState(true);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imageModalType, setImageModalType] = useState<'profile' | 'background'>('profile');
@@ -246,6 +253,9 @@ export default function ModalComponent({ user }: { user: User }) {
                             }));
                         }, 200); // ✅ Décalage de 200ms
                     },
+                    options: {
+                        replaceTargetUrl: type == 'profile' ? user.profileImage : user.backgroundImage
+                    }
                 });
 
                 if (res) {
@@ -368,6 +378,10 @@ export default function ModalComponent({ user }: { user: User }) {
                 description: updateData.message,
                 variant: 'form',
             });
+
+            // Update the user state 
+            setUser(updateData.updatedUser)
+
 
             setIsOpen(false);
 
@@ -619,7 +633,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 </div>
                                                 {progressBars.profile > 0 && (
                                                     <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
-                                                        <div className="h-full bg-white transition-all duration-[2000ms] ease-out"
+                                                        <div className="h-full bg-white transition-all ease-out"
                                                             style={{ width: `${progressBars.profile}%` }}
                                                         />
                                                     </div>
@@ -646,7 +660,7 @@ export default function ModalComponent({ user }: { user: User }) {
                                                 </div>
                                                 {progressBars.background > 0 && (
                                                     <div className="h-[6px] w-[95%] mx-auto border-2 border-l-pink-800 rounded-sm overflow-hidden">
-                                                        <div className="h-full bg-white transition-all duration-[2000ms] ease-out"
+                                                        <div className="h-full bg-white transition-all ease-out"
                                                             style={{ width: `${progressBars.background}%` }}
                                                         />
                                                     </div>
@@ -714,6 +728,7 @@ export default function ModalComponent({ user }: { user: User }) {
 // update the toast ui --> done
 // continue handling the errors --> done
 //  a little animation (for buttons)  --> done
-// clean all the code //mzal
+// replace a file in the cloud storage --> done
+// setUser problem  probleme de typage (solved by returning the user from the backend) --> done
 
 

@@ -2,6 +2,7 @@ import { db } from "@/app/db";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
+  console.log("user endoint entred");
     try {
       const searchParams = request.nextUrl.searchParams;
       const id = searchParams.get('id');
