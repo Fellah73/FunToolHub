@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { GrUpdate } from "react-icons/gr";
-import { set, z } from 'zod';
+import { z } from 'zod';
 import {
     Modal,
     ModalBody,
@@ -17,6 +17,8 @@ import {
     ModalFooter,
     ModalTrigger
 } from "../../../components/ui/animated-modal";
+import { useUser } from "@/app/context/userContext";
+
 
 
 const updateSchema = z.object({
@@ -104,11 +106,13 @@ interface progressBars {
 
 
 interface ModalComponentProps {
-    user: User;
-    setUser: Dispatch<SetStateAction<User | null>>;
+    user: User | null;
+    setUser: (user: User) => void;
 }
 
 export default function ModalComponent({ user, setUser }: ModalComponentProps) {
+
+      const {revalidateUser } = useUser()
     const [isOpen, setIsOpen] = useState(true);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imageModalType, setImageModalType] = useState<'profile' | 'background'>('profile');
@@ -118,7 +122,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
     });
     const [previewUrls, setPreviewUrls] = useState({
         profile: user?.profileImage || "/updateModal.webp",
-        background: user?.backgroundImage || "/updateModal.webp"
+        background: user?.backgroundImage || "/profile/defaultBackground.jpg"
     });
 
     const [progressBars, setProgressBars] = useState<progressBars>({
@@ -147,18 +151,13 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
         confirmPassword: false
     });
 
-    useEffect(() => {
-        console.log('Form data:', formData);
-    }, [formData]);
 
+    //check user
     useEffect(() => {
-        console.log("Selected image:", selectedImage);
-    }, [selectedImage]);
+        console.log('user in Modal Comoponent:', user);
+    }, [user]);
 
-    useEffect(() => {
-        console.log("Preview URLs:", previewUrls);
-    }, [previewUrls]);
-
+    //reset the form data after closing the modal
     useEffect(() => {
         if (!isOpen) {
             console.log('Modal closed and all reset');
@@ -168,7 +167,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
         }
     }, [isOpen]);
 
-
+    //update the preview urls
     useEffect(() => {
         if (formData.profileImage) {
             setPreviewUrls(prev => ({
@@ -184,6 +183,8 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
         }
     }, [formData.profileImage, formData.backgroundImage]);
 
+
+    //update the progress bars for both of profile and background image
     useEffect(() => {
         if (progressBars.profile !== 0 && progressBars.background !== 0) {
             console.log('Progress bars:', progressBars)
@@ -254,7 +255,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                         }, 200); // ✅ Décalage de 200ms
                     },
                     options: {
-                        replaceTargetUrl: type == 'profile' ? user.profileImage : user.backgroundImage
+                        replaceTargetUrl: type == 'profile' ? user?.profileImage : user?.backgroundImage
                     }
                 });
 
@@ -300,7 +301,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: user.email,
+                    email: user?.email,
                     password: formData.currentPassword,
                 }),
             });
@@ -325,11 +326,11 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
             let profileImageUrl = formData.profileImage;
             let backgroundImageUrl = formData.backgroundImage;
 
-            if (selectedImage.profileImage && formData.profileImage !== user.profileImage) {
+            if (selectedImage.profileImage && formData.profileImage !== user?.profileImage) {
                 profileImageUrl = await handleUploadImageToCloud(selectedImage.profileImage, 'profile');
             }
 
-            if (selectedImage.backgroundImage && formData.backgroundImage !== user.backgroundImage) {
+            if (selectedImage.backgroundImage && formData.backgroundImage !== user?.backgroundImage) {
                 backgroundImageUrl = await handleUploadImageToCloud(selectedImage.backgroundImage, 'background');
             }
 
@@ -340,11 +341,11 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    id: user.id,
-                    email: user.email,
+                    id: user?.id,
+                    email: user?.email,
                     name: formData.name,
                     password: formData.newPassword ? validatedData.newPassword : validatedData.currentPassword,
-                    bio: formData.bio ? validatedData.bio : user.bio,
+                    bio: formData.bio ? validatedData.bio : user?.bio,
                     backgroundImage: backgroundImageUrl,
                     profileImage: profileImageUrl
                 }),
@@ -379,10 +380,13 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                 variant: 'form',
             });
 
-            // Update the user state 
-            setUser(updateData.updatedUser)
 
 
+            // Update the user context
+            await revalidateUser()
+
+
+            // Close the modal
             setIsOpen(false);
 
         } catch (err) {
@@ -431,7 +435,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                                         <div className="absolute -bottom-4 lg:-bottom-8 left-8 transform">
                                             <div className="relative size-24 lg:size-24  bg-gray-700 rounded-full border-2 border-pink-800">
                                                 <img
-                                                    src={previewUrls.profile}
+                                                    src={previewUrls.profile!}
                                                     alt="user"
                                                     className="w-full h-full object-cover rounded-full pointer-events-none select-none"
                                                 />

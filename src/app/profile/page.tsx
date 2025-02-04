@@ -1,5 +1,5 @@
 import decryptId from '@/lib/auth';
-import { User } from '@prisma/client';
+import { UserProvider } from '../context/userContext';
 import ProfileCardComponent from './profileCard';
 
 interface PageProps {
@@ -9,24 +9,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const { id: encryptedId } = await searchParams;
   const id = encryptedId ? decryptId(encryptedId) : null;
-  let user: User | null = null;
 
-  if (id) {
-    try {
-      const res = await fetch(`http://localhost:3000/api/user?id=${id}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        next: { tags: ['user-profile'] },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch user');
-      }
-      user = data?.user || null;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
   if (!id) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -35,8 +18,12 @@ export default async function Page({ searchParams }: PageProps) {
     );
   }
   return (
-    <>
-     <ProfileCardComponent user={user!} />
-    </>
+    <UserProvider userId={id}>
+      <>
+        <ProfileCardComponent />
+      </>
+    </UserProvider>
   );
 }
+
+// delete the fetch and don't pass the user
