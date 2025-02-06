@@ -10,7 +10,8 @@ const UserContext = createContext<{
     user: User | null;
     setUser: (user: User) => void;
     revalidateUser: () => Promise<void>;
-    loading: boolean
+    loading: boolean,
+    currentUserId: string
 } | null>(null);
 
 // 3️⃣ `UserProvider` qui récupère et partage `user`
@@ -18,6 +19,7 @@ export function UserProvider({ userId, children }: { userId: string, children: R
 
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [currentUserId, setCurrentUserId] = useState(userId);
 
     useEffect(() => {
         if (!userId) {
@@ -54,7 +56,7 @@ export function UserProvider({ userId, children }: { userId: string, children: R
 
     // 4️⃣ Fonction pour revalider le cache
     const revalidateUser = async () => {
-
+       console.log("revalidating user process...");
        // function to refech every time the user is change 
        const res =  await fetch(`http://localhost:3000/api/user?id=${userId}`, { method: "GET", next: { tags: ["user-profile"] } });
        const data = await res.json();
@@ -63,7 +65,7 @@ export function UserProvider({ userId, children }: { userId: string, children: R
     };
 
     return (
-        <UserContext.Provider value={{ user, setUser, revalidateUser , loading }}>
+        <UserContext.Provider value={{ user, setUser, revalidateUser , loading,currentUserId }}>
             {children}
         </UserContext.Provider>
     );

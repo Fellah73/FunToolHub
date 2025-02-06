@@ -29,7 +29,7 @@ export default function profileCardComponent() {
 
 
   return (
-    <div className="min-h-screen bg-gray-900 px-6 md:px-8 lg:px-10 py-8  ">
+    <div className=" bg-gray-900 px-6 md:px-8 lg:px-10   ">
       <div className="w-[90%] md:w-[85%] mx-auto bg-gray-800 rounded-lg shadow-lg shadow-pink-800 overflow-hidden border-pink-800  border-t-2">
 
         {/* Profile Header */}

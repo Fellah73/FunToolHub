@@ -1,16 +1,17 @@
-import React from 'react'
+import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
+import { MdEmail } from 'react-icons/md'
+import { SiFiverr } from 'react-icons/si'
 import MaxWidthWrapper from './MaxWidthWrapper'
 import SocialMedia from './SocialMedia'
-import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
-import { SiFiverr } from 'react-icons/si'
-import { MdEmail } from 'react-icons/md'
 
 export default function Footer() {
+
+    
     return (
 
         <footer className='flex flex-col items-center mt-2 justify-center px-5 py-8 mx-auto'>
             <MaxWidthWrapper className=''>
-               
+
                 <div className='flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 gap-y-8'>
                     <SocialMedia url='https://github.com/Fellah73' socialMediaName='Github' socialMediaLogo={<FaGithub size={30} className='text-white' />} />
                     <SocialMedia url='https://github.com/Fellah73' socialMediaName='Instagram' socialMediaLogo={<FaInstagram size={30} className='text-rose-500' />} />

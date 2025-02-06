@@ -1,6 +1,8 @@
 import decryptId from '@/lib/auth';
 import { UserProvider } from '../context/userContext';
 import ProfileCardComponent from './profileCard';
+import ServicesGrid from './servicesGrid';
+import GamesGrid from './gamesGrid';
 
 interface PageProps {
   searchParams: { [key: string]: string | undefined };
@@ -17,11 +19,21 @@ export default async function Page({ searchParams }: PageProps) {
       </div>
     );
   }
+
   return (
     <UserProvider userId={id}>
-      <>
+      <div className="min-h-screen bg-gray-900 px-6 py-8 flex flex-col gap-y-10 md:gap-y-14 lg:gap-y-20">
+
+        {/* 🔥 ProfileCardComponent (Carte Profil) */}
         <ProfileCardComponent />
-      </>
+
+        {/* 🔥 Games Grid (Grid des Jeux) */}
+        <GamesGrid />
+
+        {/* 🔥 Services Grid (Grid des Services) */}
+        <ServicesGrid />
+
+      </div>
     </UserProvider>
   );
 }
