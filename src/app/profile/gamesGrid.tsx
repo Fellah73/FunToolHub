@@ -1,18 +1,26 @@
 'use client';
 
+import ExpandableCard from "@/components/expandableComponent";
 import { ThreeDCardDemo } from "@/components/services";
-import { games } from "@/data/providedServices";
-import { useUser } from "../context/userContext";
-import { useState } from "react";
-import Link from "next/link";
+import { games,serviceProps } from "@/data/providedServices";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useUser } from "../context/userContext";
+ 
 
 
 export default function GamesGrid() {
-
     const { currentUserId } = useUser()
+
+    const [activeCard, setActiveCard] = useState<serviceProps | null>(null);
+
+
     let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+    useEffect(() => {
+        console.log("is active", activeCard);
+    }, [activeCard]);
+    
     return (
         <div className="w-[90%] md:w-[85%] mx-auto px-6 flex flex-col gap-y-4 sm:gap-y-8">
             <div className="flex flex-row w-full items-center justify-center">
@@ -22,9 +30,8 @@ export default function GamesGrid() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-10">
 
                 {games.map((game, index) => (
-                    <Link
-                        href={game?.link}
-                        key={game?.link}
+                    <div
+                        key={index}
                         className="relative group  block p-2 h-full w-full"
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
@@ -52,10 +59,26 @@ export default function GamesGrid() {
                             link={`${game.link}?userId=${currentUserId}`}
                             image={game.image}
                             type="game"
-                            borderGlow={true} />
+                            borderGlow={true}
+                            setActiveCard={() => setActiveCard(game)} // ✅ On stocke l'objet service 
+                        />
 
-                    </Link>))}
+
+                    </div>
+                ))}
             </div>
+            {
+                activeCard && (
+                    <ExpandableCard
+                        title={activeCard.name}
+                        description={activeCard.description}
+                        image={activeCard.image}
+                        ctaText="Play"
+                        ctaLink={`${activeCard.link}?userId=${currentUserId}`}
+                        onClose={() => setActiveCard(null)}
+                    />
+                )
+            }
         </div>
     );
 }

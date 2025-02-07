@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import ExpandableCard from "./expandableComponent";
 import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
 import { GlowingEffect } from "./ui/glowing-effect";
 
@@ -12,10 +10,14 @@ interface CardDemoProps {
   link: string,
   image: string,
   type?: string,
-  borderGlow?: boolean
+  borderGlow?: boolean,
+  setActiveCard: (title: string | null) => void; // 🔥 Ajout de la prop
+ 
 }
-export function ThreeDCardDemo({ title, description, link, image, type, borderGlow }: CardDemoProps) {
-  const [activeCard, setActiveCard] = useState<string | null>(null);
+export function ThreeDCardDemo({ title, description, link, image, type, borderGlow,setActiveCard }: CardDemoProps) {
+
+  
+  
 
   const progress = Math.floor(Math.random() * 100);
 
@@ -99,29 +101,15 @@ export function ThreeDCardDemo({ title, description, link, image, type, borderGl
               onClick={() => setActiveCard(title)}
               className="px-4 py-2 rounded-xl bg-pink-800 border-pink-800 border-4 text-white text-base sm:text-lg  font-semibold"
             >
-
               more details
-
-
             </CardItem>
           </div>
         </CardBody>
       </CardContainer>
-      {
-        activeCard && (
-          <ExpandableCard
-            title={title}
-            description={description}
-            image={image}
-            ctaText={type === "game" ? "Play it" : "Try it"}
-            ctaLink={link}
-            onClose={() => setActiveCard(null)}
-          />
-        )
-      }
+      
     </div>
   );
 }
 
-// adding the details modal
-// ading the hover background for the gris videos
+// adding the details modal --> done
+// ading the hover background for the gris videos --> done

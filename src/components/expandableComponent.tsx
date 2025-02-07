@@ -1,8 +1,9 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef } from "react";
 import { GlowingEffect } from "./ui/glowing-effect";
+import Link from "next/link";
 
 interface ExpandableCardProps {
     title: string;
@@ -16,6 +17,9 @@ interface ExpandableCardProps {
 export default function ExpandableCard({ title, description, image, ctaText, ctaLink, onClose }: ExpandableCardProps) {
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
+    const router = useRouter();
+    const playButtonRef = useRef<HTMLAnchorElement | null>(null);
+
 
     // 🔥 Fermer la carte avec Escape
     useEffect(() => {
@@ -34,15 +38,19 @@ export default function ExpandableCard({ title, description, image, ctaText, cta
     }, [onClose]);
 
     // 🔥 Fermer en cliquant en dehors
+
+
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
+            if (ref.current && !ref.current.contains(event.target as Node) && playButtonRef.current == event.target) {
                 onClose();
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [onClose]);
+
+
 
 
     return (
@@ -83,7 +91,10 @@ export default function ExpandableCard({ title, description, image, ctaText, cta
                                     Close
                                 </button>
                                 <Link
-                                    href={ctaLink!}
+                                   onClick={onClose}
+                                    ref={playButtonRef}
+                                   // onClick={(event) => event.stopPropagation()} //✅ Empêche le clic de fermer `ExpandableComponent`
+                                    href={ctaLink! || "games/flappy-bird"}
                                     target="_blank"
                                     className="mt-4 px-4 py-2 text-sm rounded-xl font-bold bg-pink-800 text-white hover:bg-pink-600 transition">
                                     {ctaText}

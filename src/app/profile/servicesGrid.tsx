@@ -1,16 +1,20 @@
 'use client';
-
+import ExpandableCard from "@/components/expandableComponent";
 import { ThreeDCardDemo } from "@/components/services";
-import { services } from "@/data/providedServices";
+import { services,serviceProps } from "@/data/providedServices";
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../context/userContext";
 
 export default function ServicesGrid() {
 
     let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [activeCard, setActiveCard] = useState<serviceProps | null>(null);
     const { currentUserId } = useUser()
+
+    useEffect(() => {
+        console.log("is active", activeCard);
+    }, [activeCard]);
     return (
         <div className="w-[90%] md:w-[85%] mx-auto px-6 flex flex-col gap-y-4 sm:gap-y-8">
             <div className="flex flex-row w-full items-center justify-center">
@@ -19,8 +23,7 @@ export default function ServicesGrid() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-10">
                 {services.map((service, index) => (
-                    <Link
-                        href={service?.link}
+                    <div
                         key={service?.link}
                         className="relative group  block p-2 h-full w-full"
                         onMouseEnter={() => setHoveredIndex(index)}
@@ -49,11 +52,25 @@ export default function ServicesGrid() {
                             link={`${service.link}?userId=${currentUserId}`}
                             image={service.image}
                             type="game"
-                            borderGlow={true} />
+                            borderGlow={true}
+                            setActiveCard={() => setActiveCard(service)} // ✅ On stocke l'objet service
+                             />
 
-                    </Link>
+
+
+                    </div>
                 ))}
-            </div>
+            </div>  {
+                activeCard && (
+                    <ExpandableCard
+                        title={activeCard.name}
+                        description={activeCard.description}
+                        image={activeCard.image}
+                        ctaText="Try"
+                        ctaLink={`${activeCard.link}?userId=${currentUserId}`}
+                        onClose={() => setActiveCard(null)} />
+                )
+            }
         </div>
     );
 }

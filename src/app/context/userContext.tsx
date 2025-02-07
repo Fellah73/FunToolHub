@@ -1,6 +1,7 @@
 'use client';
 import { User } from '@prisma/client';
 import { createContext, useState, useContext, useEffect } from 'react';
+import { set } from 'zod';
 
 // 1️⃣ Définition du type `User`
 
@@ -11,7 +12,7 @@ const UserContext = createContext<{
     setUser: (user: User) => void;
     revalidateUser: () => Promise<void>;
     loading: boolean,
-    currentUserId: string
+    currentUserId: string | null
 } | null>(null);
 
 // 3️⃣ `UserProvider` qui récupère et partage `user`
@@ -19,7 +20,7 @@ export function UserProvider({ userId, children }: { userId: string, children: R
 
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [currentUserId, setCurrentUserId] = useState(userId);
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!userId) {
@@ -27,6 +28,8 @@ export function UserProvider({ userId, children }: { userId: string, children: R
             return;
         }; // 🔥 Empêche de fetch si `id` est absent
         console.log("user id", userId);
+        setCurrentUserId(userId);
+        
         const fetchUser = async () => {
             try {
                 const res = await fetch(`http://localhost:3000/api/user?id=${userId}`, {

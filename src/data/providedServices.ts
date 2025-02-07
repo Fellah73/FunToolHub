@@ -35,3 +35,9 @@ export const games = [
     }
 ];
 
+export interface serviceProps {
+    name: string;
+    description: string;
+    image: string;
+    link: string;
+}
