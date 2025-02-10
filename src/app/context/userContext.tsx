@@ -1,9 +1,6 @@
 'use client';
 import { User } from '@prisma/client';
-import { createContext, useState, useContext, useEffect } from 'react';
-import { set } from 'zod';
-
-// 1️⃣ Définition du type `User`
+import { createContext, useContext, useEffect, useState } from 'react';
 
 
 // 2️⃣ Création du contexte `UserContext`

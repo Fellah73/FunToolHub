@@ -83,7 +83,6 @@ export function ThreeDCardDemo({ title, description, link, image, type, borderGl
               translateY={-5}
               as={Link}
               href={link}
-              target="__blank"
               className="px-4 py-2 text-white font-semibold text-lg sm:text-xl lg:text-2xl "
             >
               {

@@ -56,7 +56,7 @@ export default function GamesGrid() {
                         <ThreeDCardDemo key={index}
                             title={game.name}
                             description={game.description}
-                            link={`${game.link}?userId=${currentUserId}`}
+                            link={`${game.link}?id=${currentUserId}`}
                             image={game.image}
                             type="game"
                             borderGlow={true}
@@ -74,7 +74,7 @@ export default function GamesGrid() {
                         description={activeCard.description}
                         image={activeCard.image}
                         ctaText="Play"
-                        ctaLink={`${activeCard.link}?userId=${currentUserId}`}
+                        ctaLink={`${activeCard.link}?id=${currentUserId}`}
                         onClose={() => setActiveCard(null)}
                     />
                 )

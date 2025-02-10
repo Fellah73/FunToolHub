@@ -93,9 +93,7 @@ export default function ExpandableCard({ title, description, image, ctaText, cta
                                 <Link
                                    onClick={onClose}
                                     ref={playButtonRef}
-                                   // onClick={(event) => event.stopPropagation()} //✅ Empêche le clic de fermer `ExpandableComponent`
                                     href={ctaLink! || "games/flappy-bird"}
-                                    target="_blank"
                                     className="mt-4 px-4 py-2 text-sm rounded-xl font-bold bg-pink-800 text-white hover:bg-pink-600 transition">
                                     {ctaText}
                                 </Link>

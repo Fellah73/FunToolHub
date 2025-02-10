@@ -112,7 +112,7 @@ interface ModalComponentProps {
 
 export default function ModalComponent({ user, setUser }: ModalComponentProps) {
 
-      const {revalidateUser } = useUser()
+    const { revalidateUser } = useUser()
     const [isOpen, setIsOpen] = useState(true);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [imageModalType, setImageModalType] = useState<'profile' | 'background'>('profile');
@@ -372,7 +372,6 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                 })
             }
 
-
             //success toast
             toast({
                 title: 'Profile updated successfully',
@@ -380,14 +379,11 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                 variant: 'form',
             });
 
-
+            // Close the modal
+            setIsOpen(false);
 
             // Update the user context
             await revalidateUser()
-
-
-            // Close the modal
-            setIsOpen(false);
 
         } catch (err) {
             if (err instanceof z.ZodError) {

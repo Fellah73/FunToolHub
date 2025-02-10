@@ -49,7 +49,7 @@ export default function ServicesGrid() {
                         <ThreeDCardDemo key={index}
                             title={service.name}
                             description={service.description}
-                            link={`${service.link}?userId=${currentUserId}`}
+                            link={`${service.link}?id=${currentUserId}`}
                             image={service.image}
                             type="game"
                             borderGlow={true}
@@ -67,7 +67,7 @@ export default function ServicesGrid() {
                         description={activeCard.description}
                         image={activeCard.image}
                         ctaText="Try"
-                        ctaLink={`${activeCard.link}?userId=${currentUserId}`}
+                        ctaLink={`${activeCard.link}?id=${currentUserId}`}
                         onClose={() => setActiveCard(null)} />
                 )
             }

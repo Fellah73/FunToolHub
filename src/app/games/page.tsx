@@ -1,12 +1,25 @@
 'use client';
 import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { useUser } from "../context/userContext";
+
+interface PageProps {
+  searchParams: { [key: string]: string | undefined };
+}
 
 export default function Page() {
+
+
+  const { user } = useUser()
   return (
-    <div className="max-w-5xl mx-auto px-8">
+
+    <div className="flex flex-col max-w-5xl mx-auto px-8">
+      <p className="text-white text-3xl md:text-5xl tracking-wider">{user ? user.name : "No user data available"}</p>
       <HoverEffect items={projects} />
     </div>
+
   );
+
+
 }
 export const projects = [
   {
@@ -46,3 +59,7 @@ export const projects = [
     link: "https://microsoft.com",
   },
 ];
+
+
+
+//a corriger
