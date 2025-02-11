@@ -18,4 +18,13 @@ model User {
   profileImage    String    @default("")
   backgroundImage String    @default("")
   bio             String    @default("")
+  flappyScores    FlappyScore[]
+}
+model FlappyScore {
+  id        String   @id @default(uuid())
+  score     Int
+  playedAt  DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
 }

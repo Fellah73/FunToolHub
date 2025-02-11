@@ -22,11 +22,15 @@ interface Pipe {
 interface PipeConfig {
     width: number;
     gap: number;
-    speed: number;
     spawnInterval: number;
 }
 
-export default function FlappyBirdGame() {
+interface FlappyBirdGameProps {
+    setFinalScore: React.Dispatch<React.SetStateAction<number>>;
+}
+
+
+export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameStarted, setGameStarted] = useState<boolean>(false);
     const [gameOver, setGameOver] = useState<boolean>(false);
@@ -47,16 +51,18 @@ export default function FlappyBirdGame() {
 
     const [bird, setBird] = useState<BirdConfig>({ ...birdConfig });
     const [pipes, setPipes] = useState<Pipe[]>([]);
+    const [speed, setSpeed] = useState<number>(4.5); // ✅ Vitesse initiale du jeu
+    const [pipeSpacing, setPipeSpacing] = useState<number>(300); // ✅ Espace horizontal entre les tuyaux
+
 
     // Configuration des obstacles
     const pipeConfig: PipeConfig = {
         width: 70,
         gap: 200, // ✅ Ajusté pour laisser de la place
-        speed: 3,
         spawnInterval: 1500,
     };
 
-    const pipeSpacing = 275; // ✅ Espace horizontal entre les tuyaux
+
 
 
     // 🔥 Fonction pour dessiner l'oiseau (Jaune)
@@ -132,12 +138,26 @@ export default function FlappyBirdGame() {
 
     // 🔥 Réinitialiser le jeu
     const resetGame = (): void => {
+
         setBird({ ...birdConfig });
+
         setPipes([]);
+
         setScore(0);
+
+        setSpeed(4.5);
+
+        setPipeSpacing(300);
+
         setGameOver(false);
+
         setGameStarted(false);
     };
+
+    useEffect(() => {
+        console.log("score ", score, " speed ", speed, " pipeSpacing ", pipeSpacing);
+    }, [speed, score, pipeSpacing]);
+
 
     // 🔥 Gestion du jeu (mise à jour du canvas)
     useEffect(() => {
@@ -199,13 +219,21 @@ export default function FlappyBirdGame() {
                     .filter(pipe => pipe.x + pipeConfig.width > 0)
                     .map(pipe => {
                         if (!pipe.passed && pipe.x + pipeConfig.width < bird.x) {
-                            // ✅ Augmente de 1 SEULEMENT
-                            setScore(prev => prev + 1);
+                            setScore(prev => {
+                                const newScore = prev + 1;
+                                // ✅ Augmenter la vitesse et l'espacement entre pipe si le score est un multiple de 20
+                                if (newScore % 10 === 0) {
+                                    setSpeed(prevSpeed => prevSpeed + 0.4);
+                                    setPipeSpacing(prevSpacing => prevSpacing + 30);
+                                }
+                                return newScore;
+                            });
                             return { ...pipe, passed: true };
                         }
-                        return { ...pipe, x: pipe.x - pipeConfig.speed };
+                        return { ...pipe, x: pipe.x - speed }; // ✅ Utiliser `speed` dynamique
                     })
             );
+
 
             drawBird(ctx, bird);
 
@@ -280,9 +308,33 @@ export default function FlappyBirdGame() {
         };
     }, [gameStarted, gameOver, bird, pipes, isPaused]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") { // ✅ Vérifie si la touche est Escape
+                setIsPaused(prev => !prev);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown); // ✅ Nettoyage de l'événement
+        };
+    }, []);
+
+
+    // use Effect to gather the score 
+    useEffect(() => {
+        if (gameOver) {
+            console.log("game over and score is ", score);
+            setFinalScore(score);
+        }
+    }, [gameOver]);
+
+
 
     return (
-        <div className="relative w-[80%] md:w-[70%] lg:w-[60%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl shadow-pink-800">
+        <div className="relative w-[80%] md:w-[70%] lg:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800">
             <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
             {gameStarted &&
                 (<button
@@ -334,6 +386,7 @@ export default function FlappyBirdGame() {
 // score s'incremente par 2 --> done avec 7achwa /2 dans l'affichage
 //  bird quand il touche le sol le jeu ne stop pas --> done
 // restart ui handling  --> done
-// begin ui handling --> done 
-// chwiya ui ta3 canvas --> done 
-// adding difficulties
+// begin ui handling --> done
+// chwiya ui ta3 canvas --> done
+// adding difficulties   vitesse augmenente de 20% chque 10 de score --> done
+// pause with esc --> done
