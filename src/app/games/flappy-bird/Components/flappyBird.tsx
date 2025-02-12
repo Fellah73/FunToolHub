@@ -52,9 +52,9 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     const [bird, setBird] = useState<BirdConfig>({ ...birdConfig });
     const [pipes, setPipes] = useState<Pipe[]>([]);
     const [speed, setSpeed] = useState<number>(4.5); // ✅ Vitesse initiale du jeu
-    const [pipeSpacing, setPipeSpacing] = useState<number>(300); // ✅ Espace horizontal entre les tuyaux
+    // const [pipeSpacing, setPipeSpacing] = useState<number>(300); // ✅ Espace horizontal entre les tuyaux
 
-
+    const pipeSpacing = 300
     // Configuration des obstacles
     const pipeConfig: PipeConfig = {
         width: 70,
@@ -147,7 +147,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
         setSpeed(4.5);
 
-        setPipeSpacing(300);
+        //setPipeSpacing(300);
 
         setGameOver(false);
 
@@ -155,8 +155,8 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     };
 
     useEffect(() => {
-        console.log("score ", score, " speed ", speed, " pipeSpacing ", pipeSpacing);
-    }, [speed, score, pipeSpacing]);
+        console.log("score ", score, " speed ", speed,);
+    }, [speed, score]);
 
 
     // 🔥 Gestion du jeu (mise à jour du canvas)
@@ -224,7 +224,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
                                 // ✅ Augmenter la vitesse et l'espacement entre pipe si le score est un multiple de 20
                                 if (newScore % 10 === 0) {
                                     setSpeed(prevSpeed => prevSpeed + 0.4);
-                                    setPipeSpacing(prevSpacing => prevSpacing + 30);
+                                    // setPipeSpacing(prevSpacing => prevSpacing + 30);
                                 }
                                 return newScore;
                             });
@@ -288,6 +288,8 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
             });
         };
 
+        // ghdwa ndirour deep seek logic
+
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === 'z' || event.key === 'Z') {
                 handleJump();
@@ -326,15 +328,15 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     // use Effect to gather the score 
     useEffect(() => {
         if (gameOver) {
-            console.log("game over and score is ", score);
-            setFinalScore(score);
+            console.log("game over and score is ", score / 2);
+            setFinalScore(score / 2);
         }
     }, [gameOver]);
 
 
 
     return (
-        <div className="relative w-[80%] md:w-[70%] lg:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800">
+        <div className="relative w-[80%] md:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
             <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
             {gameStarted &&
                 (<button
@@ -390,3 +392,4 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 // chwiya ui ta3 canvas --> done
 // adding difficulties   vitesse augmenente de 20% chque 10 de score --> done
 // pause with esc --> done
+// correct collision detection logic --> dok haka chwiya
