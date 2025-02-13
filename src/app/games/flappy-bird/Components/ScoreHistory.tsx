@@ -37,7 +37,7 @@ export default function ScoreHistoryComponent({ newScore }: { newScore: number }
                         description: data.message,
                         variant: 'form',
                     })
-                   
+
                     console.warn(data.message);
                     return;
                 }
@@ -54,7 +54,7 @@ export default function ScoreHistoryComponent({ newScore }: { newScore: number }
                 if (res.ok && data.success) setScoreHistory(data.scores);
             } catch (error) {
                 console.error("Error fetching score history:", error);
-                
+
             }
         };
 
@@ -74,7 +74,7 @@ export default function ScoreHistoryComponent({ newScore }: { newScore: number }
 
     useEffect(() => {
         if (newScore > 0) {
-            setScoreHistory(prev => [{ score: newScore, playedAt: new Date().toISOString().split("T")[1].split(".")[0] }, ...prev]);
+            setScoreHistory(prev => [{ score: newScore, playedAt: new Date().toISOString().split("T")[1].split(".")[0].split(":").slice(0, 2).join(":") }, ...prev]);
         }
     }, [newScore]);
 
@@ -126,13 +126,23 @@ const ScoreItem = ({ score, bestScore, moyenne }: { score: Score, bestScore: Sco
     }
 
     return (
-        <div className="group hover:bg-purple-900/30 p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-pink-500/20 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                <Icon className={`w-6 h-6 ${color}`} />
-                <span className={`text-xl font-semibold ${color}`}>{score.score}</span>
+        <>
+            <div className="group hover:bg-purple-900/30 p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-pink-500/20 flex flex-col items-center justify-between">
+                {/* ✅ Contenu principal */}
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                        <Icon className={`w-6 h-6 ${color}`} />
+                        <span className={`text-xl font-semibold ${color}`}>{score.score}</span>
+                    </div>
+                    <p className="text-zinc-400 text-sm">{score.playedAt}</p>
+                </div>
+
+                {/* ✅ Barre d'animation bien positionnée */}
+                <div className="w-full h-0.5 bg-gradient-to-r from-zinc-800 via-red-500 to-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </div>
-            <p className="text-zinc-400 text-sm">{score.playedAt}</p>
-        </div>
+
+
+        </>
     );
 };
 

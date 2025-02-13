@@ -2,50 +2,42 @@ import { db } from "@/app/db";
 
 export async function GET(request: Request) {
   try {
-    console.log("score daily route entred");
+    console.log("best score route entred");
     const { searchParams } = new URL(request.url);
     const playerId = searchParams.get("playerId"); // ✅ Correct pour récupérer un query param
+    const limit = searchParams.get("limit");
 
     if (!playerId)
       return new Response(JSON.stringify({ message: "ID is required" }), {
         status: 404,
       });
 
-    const today = new Date().toISOString().split("T")[0];
 
     const scores = await db.flappyScore.findMany({
       where: {
         userId: playerId!,
-        playedAt: {
-          gte: new Date(`${today}T00:00:00.000Z`),
-          lte: new Date(`${today}T23:59:59.999Z`),
-        },
       },
       orderBy: {
-        playedAt: "desc",
+        score: "desc",
       },
+      take: limit ? parseInt(limit) : 10,
+      distinct: ["score"],
     });
 
     if (!scores || scores.length === 0)
       return new Response(
-        JSON.stringify({ message: "Player didn't play today" }),
+        JSON.stringify({ message: "Player didn't play flappy bird" }),
         { status: 404 }
       );
 
     // array containing the scores to return
     const scoresArray = scores.map((scoreRow) => ({
-      score: scoreRow.score,
-      playedAt: scoreRow.playedAt
-        .toISOString()
-        .split("T")[1]
-        .split(".")[0]
-        .split(":")
-        .slice(0, 2)
-        .join(":"),
+      value: scoreRow.score,
+      playedAt: scoreRow.playedAt.toISOString().split("T")[0],
     }));
 
     return new Response(
-      JSON.stringify({ scores: scoresArray, success: true }),
+      JSON.stringify({ bestScores: scoresArray, success: true }),
       {
         status: 200,
       }

@@ -336,7 +336,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
 
     return (
-        <div className="relative w-[80%] md:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
+        <div className="select-none relative w-[80%] md:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
             <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
             {gameStarted &&
                 (<button
