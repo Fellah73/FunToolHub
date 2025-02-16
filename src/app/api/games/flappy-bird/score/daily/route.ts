@@ -2,7 +2,6 @@ import { db } from "@/app/db";
 
 export async function GET(request: Request) {
   try {
-    console.log("score daily route entred");
     const { searchParams } = new URL(request.url);
     const playerId = searchParams.get("playerId"); // ✅ Correct pour récupérer un query param
 

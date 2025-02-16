@@ -2,17 +2,15 @@ import { db } from "@/app/db";
 
 export async function GET(request: Request) {
   try {
-    console.log("best score route entred");
     const { searchParams } = new URL(request.url);
-    const playerId = searchParams.get("playerId"); // ✅ Correct pour récupérer un query param
+    const playerId = searchParams.get("playerId");
     const limit = searchParams.get("limit");
 
     if (!playerId)
       return new Response(JSON.stringify({ message: "ID is required" }), {
         status: 404,
       });
-
-
+      
     const scores = await db.flappyScore.findMany({
       where: {
         userId: playerId!,

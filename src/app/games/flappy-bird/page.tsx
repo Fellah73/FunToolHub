@@ -1,61 +1,49 @@
-'use client'
-
+'use client';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '@/app/context/userContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import FlappyBirdGame from '@/app/games/flappy-bird/Components/flappyBird';
-import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
 import BestPersonnelScoreComponent from './Components/BestPersonnelScoreComponent';
 import ScoreHistoryComponent from './Components/ScoreHistory';
-export default function page() {
+import BestGlobalScoreComponent from './Components/BestGlobalScoreComponent';
+import { cn } from '@/lib/utils';
+import { Switch } from '@/components/ui/switch';
+import { Trophy, Users } from 'lucide-react';
 
+const Page = () => {
     const { user } = useUser();
     const [finalScore, setFinalScore] = useState(0);
     const [newRecord, setNewRecord] = useState(false);
     const [animateConfetti, setAnimateConfetti] = useState(false);
+    const [showGlobalComponent, setShowGlobalComponent] = useState(true);
 
+    // Gestion du score
     useEffect(() => {
         if (finalScore === 0) return;
-        // update the score in the database
-        const handleScoreUpadate = async () => {
-
+        const handleScoreUpdate = async () => {
             try {
-                const res = await fetch("/api/games/flappy-bird/score",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            id: user?.id,
-                            score: finalScore,
-                        })
-                    });
+                const res = await fetch("/api/games/flappy-bird/score", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: user?.id, score: finalScore })
+                });
 
-                if (!res.ok) {
-                    console.error('Failed to update score');
-                }
-
+                if (!res.ok) throw new Error('Failed to update score');
                 const data = await res.json();
-
                 if (data.success) {
-                    console.log('Score updated successfully : ', data.newScore);
+                    console.log('Score updated successfully:', data.newScore);
                 }
-
             } catch (error) {
                 console.error('Error updating score:', error);
             }
-        }
+        };
+        handleScoreUpdate();
+    }, [finalScore, user?.id]);
 
-        handleScoreUpadate();
-
-        console.log("function executed successfully");
-    }, [finalScore]);
-
-
+    // Gestion des animations de confetti
     useEffect(() => {
-        if (newRecord) {
-            setAnimateConfetti(true);
-        }
+        if (newRecord) setAnimateConfetti(true);
     }, [newRecord]);
 
     useEffect(() => {
@@ -67,11 +55,16 @@ export default function page() {
         }
     }, [animateConfetti]);
 
+    useEffect(() => {
+        console.log(showGlobalComponent ? "global" : "personnel");
+    }, [showGlobalComponent]);
+
     return (
-        <>
-            {/* ✅ Animation en dehors du grid */}
-            <div className='fixed inset-0 flex items-center justify-center pointer-events-none z-50'>
-                <Confetti active={animateConfetti}
+        <div className="min-h-screen  p-4">
+            {/* Confetti Animation */}
+            <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+                <Confetti
+                    active={animateConfetti}
                     config={{
                         angle: 300,
                         spread: 500,
@@ -82,28 +75,114 @@ export default function page() {
                         height: "25px",
                         colors: ["#a81bb5", "#470e66", "#6c1d7a", "#6a0fbf", "#6a0fbf", "#e356ce"],
                         duration: 12000
-                    }} />
+                    }}
+                />
             </div>
 
-            {/* ✅ La grille principale */}
-            <div className='relative w-[98%] mx-auto border border-white md:gap-x-2 lg:gap-x-4 grid grid-cols-1 md:grid-cols-5'>
-                <div className='hidden border border-neutral-500 lg:h-[90vh] lg:block lg:col-span-1'>
-                    <BestPersonnelScoreComponent newScore={finalScore} setNewRecord={setNewRecord} />
-                </div>
-                <div className='flex items-start border border-neutral-500 w-full col-span-1 md:col-span-3 pt-3 '>
+            {/* Main Grid */}
+            <div className="relative w-full mx-auto grid grid-cols-1 md:grid-cols-5 gap-x-4">
+                {/* Left Panel */}
+                <motion.div
+                    className="hidden xl:block xl:col-span-1 bg-gradient-to-br from-purple-950 via-fuchsia-950 to-purple-950 border-pink-500 rounded-xl shadow-lg"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className="flex flex-col space-y-2">
+                        {/* Switch Container */}
+                        <div className="flex items-center justify-between px-2 py-3 bg-gradient-to-br from-purple-950 via-fuchsia-950 to-purple-950 border-pink-500 rounded-lg">
+                            <div className="flex items-center space-x-3">
+                                <motion.div
+                                    animate={{ scale: showGlobalComponent ? 0.8 : 1 }}
+                                    className="text-blue-400"
+                                >
+                                    <Trophy size={24} />
+                                </motion.div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <span className={cn("text-sm font-medium transition-colors", {
+                                    "text-blue-400  text-lg pl-2": !showGlobalComponent,
+                                    "text-neutral-400": showGlobalComponent
+                                })}>Personnel</span>
+                                <Switch
+                                    checked={showGlobalComponent}
+                                    onCheckedChange={setShowGlobalComponent}
+                                    className={cn("transition-all m-2 duration-300 data-[state=checked]:bg-pink-500 data-[state=unchecked]:bg-blue-400")}
+
+                                />
+                                <span className={cn("text-sm font-medium transition-colors", {
+                                    "text-pink-400 text-lg": showGlobalComponent,
+                                    "text-gray-400": !showGlobalComponent
+                                })}>Global</span>
+                                <motion.div
+                                    animate={{ scale: showGlobalComponent ? 1 : 0.8 }}
+                                    className="text-pink-400"
+                                >
+                                    <Users size={24} />
+                                </motion.div>
+                            </div>
+                        </div>
+
+                        {/* Score Components */}
+                        <AnimatePresence mode="popLayout">
+                            <motion.div
+                                key="personnel"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className={cn('', {
+                                    'hidden': showGlobalComponent
+                                })}
+                            >
+                                <BestPersonnelScoreComponent newScore={finalScore} setNewRecord={setNewRecord} />
+                            </motion.div>
+                            <motion.div
+                                key="global"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className={cn('', {
+                                    'hidden': !showGlobalComponent
+                                })}
+                            >
+                                <BestGlobalScoreComponent finalScore={finalScore} />
+                            </motion.div>
+
+                        </AnimatePresence>
+                    </div>
+                </motion.div>
+
+                {/* Game Container */}
+                <motion.div
+                    className="col-span-1 md:col-span-3 bg-gray-800 rounded-xl shadow-lg"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
                     <FlappyBirdGame setFinalScore={setFinalScore} />
-                </div>
-                <div className='hidden md:block md:col-span-2 lg:col-span-1 border border-neutral-500 lg:h-[90vh] h-[90vh]'>
-                    <ScoreHistoryComponent newScore={finalScore} />
-                </div>
-            </div>
-        </>
+                </motion.div>
 
-    )
-}
+                {/* Score History */}
+                <motion.div
+                    className="hidden md:block md:col-span-2 xl:col-span-1 bg-gray-800 rounded-xl py-2 shadow-lg"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                    <ScoreHistoryComponent newScore={finalScore} />
+                </motion.div>
+            </div>
+        </div>
+    );
+};
+
+export default Page;
 
 
 // update prisma code --> done
 // handle getting the score  -- done
 // handle fetch the score  -- done
 // if the score is smallest of the minimum score fetched don't refetch -- done
+// handle the page UI

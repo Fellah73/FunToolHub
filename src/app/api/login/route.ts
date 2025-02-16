@@ -30,8 +30,6 @@ export async function POST(request: Request) {
     }
     const isSamePassword = await bcrypt.compare(password, userExists.password);
 
-    console.log("are they equals ", isSamePassword);
-
     if (!isSamePassword) {
       return new Response(
         JSON.stringify({ message: `Wrong password`, success: false }),

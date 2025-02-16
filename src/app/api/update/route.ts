@@ -8,14 +8,6 @@ export async function PATCH(request: Request) {
     const { id, email, name, password, bio, backgroundImage, profileImage } =
       body;
 
-    console.log("the user id ", id);
-    console.log("the user email ", email);
-    console.log("the user name ", name);
-    console.log("the user password ", password);
-    console.log("the user bio ", bio);
-    console.log("the user backgroundImage ", backgroundImage);
-    console.log("the user profileImage ", profileImage);
-
     const existingUser = await db.user.findUnique({
       where: {
         email,
@@ -32,10 +24,8 @@ export async function PATCH(request: Request) {
     const saltRounds = process.env.HASH_DEPTH
       ? parseInt(process.env.HASH_DEPTH)
       : 10;
-    console.log("the depth from register ", saltRounds);
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("the hashed password from register ", hashedPassword);
 
     const updatedUser = await db.user.update({
       where: {

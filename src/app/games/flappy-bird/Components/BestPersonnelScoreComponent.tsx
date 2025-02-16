@@ -60,8 +60,6 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
 
 
     useEffect(() => {
-        // bestScores not yet fetched
-        if (bestScores.length === 0) return
 
         // score null don't update    
         if (newScore === 0) return;
@@ -70,9 +68,9 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
         if (newScore < bestScores[bestScores.length - 1]?.value) return;
 
         // score exist in the best scores
-        if (bestScores.some((score) => score.value === newScore)){
+        if (bestScores.some((score) => score.value === newScore)) {
             console.log("newScore already exist in the best scores");
-           
+
             // update la date dans le best scores
             const updatedBestScores = bestScores.map((score) => {
                 if (score.value === newScore) {
@@ -106,20 +104,20 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
 
 
     return (
-        <Card className="w-full h-[600px] max-w-md bg-gradient-to-br from-indigo-950 via-purple-950 to-fuchsia-950 border-2 border-pink-500/50 shadow-xl shadow-pink-500/20">
+        <Card className="w-full h-[560px] max-w-md bg-gradient-to-br from-indigo-950 via-purple-950 to-fuchsia-950 border-2 border-pink-500/50 shadow-xl shadow-pink-500/20">
             <CardHeader className="border-b border-pink-500/20 pb-4">
                 <div className="flex items-center justify-center gap-2">
                     <Sparkles className="w-7 h-7 text-yellow-400" />
                     <CardTitle className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
-                        Personal Best Scores
+                        Personal Leaderboard
                     </CardTitle>
                 </div>
             </CardHeader>
 
-            <CardContent className="px-2 py-4 w-[100%] border-black border-4">
+            <CardContent className="px-2 py-4 w-[100%]">
                 {/* Conteneur avec scroll */}
                 <div className="flex flex-col p-2 gap-y-4 max-h-[400px] overflow-y-auto">
-                    { bestScores.map((score, index) => (
+                    {bestScores.map((score, index) => (
                         <ScoreItem key={index} score={score} index={index + 1} />
                     ))}
                 </div>
@@ -138,7 +136,7 @@ const ScoreItem = ({ score, index }: { score: ScoreRanking, index: number }) => 
             case 1: return <Crown className="w-6 h-6 text-yellow-400" />;
             case 2: return <Trophy className="w-6 h-6 text-gray-400" />;
             case 3: return <Medal className="w-6 h-6 text-amber-700" />;
-            default: return <Star className="w-6 h-6 text-purple-400" />;
+            default: return <Star className="w-6 h-6 text-purple-500" />;
         }
     };
 

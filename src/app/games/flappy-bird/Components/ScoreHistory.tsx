@@ -79,7 +79,7 @@ export default function ScoreHistoryComponent({ newScore }: { newScore: number }
     }, [newScore]);
 
     return (
-        <Card className="w-full max-w-2xl bg-gradient-to-tl from-purple-950 via-fuchsia-950 to-purple-950 border-pink-500 border-2 shadow-xl shadow-pink-800">
+        <Card className="w-full h-[600px] max-w-2xl bg-gradient-to-tl from-purple-950 via-fuchsia-950 to-purple-950 border-pink-500 border-2 shadow-xl shadow-pink-800">
             <CardHeader className="border-b border-pink-500/30">
                 <div className="flex flex-col items-center gap-2">
                     <CardTitle className="text-2xl font-bold text-white flex items-center gap-2">

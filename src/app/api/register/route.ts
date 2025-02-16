@@ -30,15 +30,11 @@ export async function POST(request: Request) {
       ? parseInt(process.env.HASH_DEPTH)
       : 10; // 10 comme valeur par défaut
 
-    console.log("the depth from register ", saltRounds);
-
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log("the hashed password from register ", hashedPassword);
 
     const token = jwt.sign({ email: email }, process.env?.AUTH_SECRET_KEY!, {
       expiresIn: "10m",
     });
-    console.log("the token from register ", token);
 
     const user = await db.user.create({
       data: {
@@ -51,8 +47,6 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("the user from register ", user);
-
     const { password: _, ...userWithouPass } = user;
 
     const headers = new Headers();
@@ -60,7 +54,6 @@ export async function POST(request: Request) {
       "Set-Cookie",
       `authToken=${token}; HttpOnly; Path=/; Max-Age=600`
     );
-    console.log("the headers from register ", headers);
 
     return new Response(JSON.stringify({ userWithouPass, success: true }), {
       status: 200,
