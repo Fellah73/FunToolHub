@@ -61,8 +61,8 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
 
     useEffect(() => {
 
-        // score null don't update    
-        if (newScore === 0) return;
+        // score null or negative don't update    
+        if (newScore <=  0) return;
 
         // score smallest than the last score don't update the best score rank
         if (newScore < bestScores[bestScores.length - 1]?.value) return;

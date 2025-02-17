@@ -145,6 +145,8 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
         setScore(0);
 
+        setFinalScore(-1);
+
         setSpeed(4.5);
 
         //setPipeSpacing(300);
@@ -192,6 +194,8 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
             // pas encore commence ou fini le jeu
             if (!gameStarted) {
+
+               // setFinalScore(-1);
 
                 return;
             }
@@ -336,7 +340,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
 
     return (
-        <div className="select-none relative w-[98%]  md:w-[100%] h-[50vh] md:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
+        <div className="select-none relative w-[98%]  sm:w-[100%] h-[50vh] sm:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
             <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
             {gameStarted &&
                 (<button

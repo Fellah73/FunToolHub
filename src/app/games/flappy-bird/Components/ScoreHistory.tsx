@@ -90,9 +90,9 @@ export default function ScoreHistoryComponent({ newScore }: { newScore: number }
                 </div>
             </CardHeader>
 
-            <CardContent className="p-4">
+            <CardContent className="py-4 px-3">
                 {/* Stats Section */}
-                <div className="grid grid-cols-3 gap-4 mb-4 p-4 bg-purple-950/50 rounded-lg border border-pink-500/20">
+                <div className="grid grid-cols-3 gap-4 mb-4 p-3 bg-purple-950/50 rounded-lg border border-pink-500/20">
                     <StatCard icon={Trophy} color="text-yellow-500" label="Best" value={bestScore.first} />
                     <StatCard icon={Medal} color="text-zinc-400" label="Second" value={bestScore.second} />
                     <StatCard icon={Award} color="text-blue-500" label="Average" value={moyenne.toFixed(1)} />
@@ -150,7 +150,7 @@ const ScoreItem = ({ score, bestScore, moyenne }: { score: Score, bestScore: Sco
 const StatCard = ({ icon: Icon, color, label, value }: { icon: any, color: string, label: string, value: any }) => {
     return (
         <div className="flex flex-col items-center">
-            <div className={`flex items-center gap-2 ${color}`}>
+            <div className={`flex items-center gap-x-1 ${color}`}>
                 <Icon className="w-5 h-5" />
                 <span className="text-sm">{label}</span>
             </div>

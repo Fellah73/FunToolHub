@@ -21,6 +21,8 @@ export default function BestGlobalScoreComponent({ finalScore }: { finalScore: n
   useEffect(() => {
     if (!user) return
 
+    if(finalScore < 0) return
+
     const fetchGlobalBestScore = async () => {
       try {
         const res = await fetch(`/api/games/flappy-bird/score/leaderboard?limit=${limit}`, {
@@ -39,7 +41,7 @@ export default function BestGlobalScoreComponent({ finalScore }: { finalScore: n
       }
     }
 
-    // attedre l'ajout du score dans la database puis re-fetch
+    // attendre l'ajout du score dans la database puis re-fetch
     if (finalScore > 0) {
       setTimeout(() => {
         fetchGlobalBestScore()
@@ -48,8 +50,11 @@ export default function BestGlobalScoreComponent({ finalScore }: { finalScore: n
       return
     }
 
-    fetchGlobalBestScore()
-    console.log('fetch without delay')
+    if (finalScore === 0) {
+      fetchGlobalBestScore()
+      console.log('fetch without delay')
+    }
+
 
   }, [user, finalScore])
 
@@ -169,3 +174,7 @@ const GlobalScoreItem = ({ score, index }: { score: GlobalBestScoreProps, index:
     </motion.div>
   )
 }
+
+
+
+
