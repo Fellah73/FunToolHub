@@ -17,21 +17,24 @@ export const services = [
 export const games = [
     {
         name: "Flappy Bird 🐦",   
+        video:"games/flappyBird.mp4",
         link: "games/flappy-bird",
-        description: "Volez et évitez les obstacles ! Aidez Flappy Bird à passer entre les tuyaux sans tomber ou toucher les bords.$Testez vos réflexes et obtenez le meilleur score dans ce jeu addictif et amusant !",
-        image: "/games/flappy-bird.jpg"
+        description: "Fly and avoid obstacles!Help Flappy Bird to pass between the pipes without falling or touching the edges. $ Test your reflexes and get the best score in this addictive and fun game !",
+        image: "/games/flappyBird.jpg"
     },
     {
         name: "Snake Game 🐍",
         link: "games/snake",
-        description: "Devenez le plus grand serpent ! Mangez des fruits pour grandir, mais attention à ne pas toucher votre queue.$Affrontez-vous en mode classique ou défi et battez votre propre record !",
-        image: "/games/snake-game.jpg"
+        description: "Become the largest serpent!Eat fruit to grow, but be careful not to touch your tail. $ Face in classic or challenge mode and break your own record!",
+        image: "/games/snakeGame.jpg",
+        video :"games/snakeGame.mp4"
     },
     {
         name: "Tic-Tac-Toe ❌⭕",
         link: "games/tic-tac-toe",
-        description: "Jouez au célèbre jeu de stratégie ! Alignez trois symboles identiques avant votre adversaire et gagnez la partie.$Affrontez l’ordinateur ou un ami et montrez votre intelligence tactique !",
-        image: "/games/tic-tac-toe.png"
+        description: "Play the famous strategy game!Align three identical symbols before your opponent and win the game. $Face a computer show your tactical intelligence!",
+        image: "/games/ticTacToe.webp",
+        video:"games/ticTacToe.mp4"
     }
 ];
 
