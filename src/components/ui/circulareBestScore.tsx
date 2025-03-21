@@ -17,9 +17,12 @@ const CircularBestScore: React.FC<CircularBestScoreProps> = ({
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference - (percentage / 100) * circumference;
+
+
+  
   
   return (
-    <div className="absolute bottom-28 right-24 p-4 z-20">
+    <div className="p-4 hidden md:block">
       <div className="relative flex items-center justify-center size-32">
         {/* Outer glow effect */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 opacity-30 blur-md"></div>
@@ -63,7 +66,7 @@ const CircularBestScore: React.FC<CircularBestScoreProps> = ({
           </defs>
         </svg>
         <div className='absolute inset-0 flex items-center justify-center'>
-         <p className='text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500'>{score}</p>
+         <p className='text-2xl lg:text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500'>{score}</p>
         </div>
         
       </div>
