@@ -70,7 +70,7 @@ export default function Page() {
   const prevSlide = () => {
     setActiveIndex((prev) => (prev - 1 + games.length) % games.length);
     setTimeout(() => {
-      setDisplayedIndex((prev) => (prev + 1) % games.length);
+      setDisplayedIndex((prev) => (prev - 1 + games.length) % games.length);
     }, 500)
   };
 
@@ -174,6 +174,8 @@ export default function Page() {
 
           </div>
 
+
+          {/* 🌟 Image de droite */}
           <div className="hidden lg:block lg:col-span-2 rounded-2xl shadow-2xl shadow-pink-600 my-24 overflow-hidden relative h-[500px] select-none">
             <AnimatePresence mode="wait">
               <motion.img
