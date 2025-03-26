@@ -38,7 +38,12 @@ export default function page() {
                     <p className='text-white text-2xl font-semibold'> Leaderboard pannel</p>
                 </div>
             </div>
-            <RotatePhonePrompt />
+            <RotatePhonePrompt
+                name='Snake Game'
+                primaryColor='from-[#0f0c29] via-[#302b63] to-[#24243e]'
+                secondaryColor='bg-cyan-500'
+                fontColor='text-cyan-500'
+                borderColor='border-cyan-500' />
 
             {/* snake game */}
             <div className='hidden sm:block sm:col-span-1 md:col-span-3 lg:col-span-4 bg-gray-800 rounded-t-2xl'>

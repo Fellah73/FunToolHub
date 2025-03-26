@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import { CustomizationValues } from '../page';
-import { BACKGROUND_GRADIENTS, FOOD_OPTIONS, SNAKE_COLORS } from '@/data/providedServices';
+import { BACKGROUND_GRADIENTS, FOOD_OPTIONS, SNAKE_BACKGROUND, SNAKE_COLORS } from '@/data/providedServices';
 
 interface CustomizationHubProps {
     setCustomization: Dispatch<SetStateAction<CustomizationValues>>;
@@ -39,9 +39,9 @@ export const CustomizationHub = ({ setCustomization, customization, isGameStarte
                 </h3>
 
                 <div className="flex space-x-8 mb-4 items-center justify-center">
-                    {SNAKE_COLORS.map((color) => (
+                    {SNAKE_COLORS.map((color, index) => (
                         <motion.button
-                            key={color.name}
+                            key={index}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setCustomization(
@@ -50,9 +50,7 @@ export const CustomizationHub = ({ setCustomization, customization, isGameStarte
                                     snakeColor: color.value
                                 })
                             )}
-                            className={` border border-fuchsia-600
-               bg-gradient-to-r from-${color.value.split(' ')[0]} via-${color.value.split(' ')[1]} to-${color.value.split(' ')[2]} 
-                size-14 rounded-full 
+                            className={`border border-fuchsia-600 ${SNAKE_COLORS[index].value.split(' ')[1]} size-14 rounded-full 
                 ${customization.snakeColor === color.value ? 'ring-4  ring-blue-300' : ''}
               `}
                         />
@@ -66,7 +64,7 @@ export const CustomizationHub = ({ setCustomization, customization, isGameStarte
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                
+
             >
                 <h3 className="text-xl font-semibold mb-2 flex items-center">
                     <Star className="mr-2 text-fuchsia-500" /> Food Selection
@@ -107,33 +105,34 @@ export const CustomizationHub = ({ setCustomization, customization, isGameStarte
 
                 <div className="grid grid-cols-2 grid-rows-2 gap-y-4 gap-x-12 mb-4">
                     {BACKGROUND_GRADIENTS.map((gradient, index) => (
-                        <>
-                            <motion.div className='flex flex-col gap-y-3 size-full'
-                                key={index}
-                                whileHover={{ y: [0, -5, 0, 5, 0] }}
-                                transition={{ y: { duration: 2, repeat: Infinity } }}>
-                                <motion.button
 
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setCustomization(
-                                        prev => ({
-                                            ...prev,
-                                            backgroundColor: gradient.value
-                                        })
-                                    )}
-                                    className={`
-                      bg-gradient-to-r  ${gradient.value}  h-16 rounded-lg 
-                ${customization.backgroundColor === gradient.value ? 'ring-4  ring-blue-300' : 'ring-2 ring-fuchsia-600'}
-              `}
-                                />
-                                <motion.h2
+                        <motion.div className='flex flex-col gap-y-3 size-full'
+                            key={index}
+                            whileHover={{ y: [0, -5, 0, 5, 0] }}
+                            transition={{ y: { duration: 2, repeat: Infinity } }}>
+                            <motion.button
 
-                                    className="text-xl text-white text-center">
-                                    {gradient.name}
-                                </motion.h2>
-                            </motion.div>
-                        </>))}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setCustomization(
+                                    prev => ({
+                                        ...prev,
+                                        backgroundColor: gradient.value
+                                    })
+                                )}
+                                className={`
+                                      bg-gradient-to-br  ${gradient.value}  h-16 rounded-lg 
+                                       ${customization.backgroundColor === gradient.value ? 'ring-4  ring-blue-300' : 'ring-2 ring-fuchsia-600'}
+                                   `}
+                            />
+                            <motion.h2
+
+                                className="text-xl text-white text-center">
+                                {gradient.name}
+                            </motion.h2>
+                        </motion.div>
+
+                    ))}
                 </div>
 
 

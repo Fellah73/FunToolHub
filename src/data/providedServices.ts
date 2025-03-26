@@ -60,20 +60,36 @@ export const BACKGROUND_GRADIENTS = [
 export const SNAKE_COLORS = [
   {
     name: "Neon Blue",
-    value: "indigo-500 purple-600 blue-500",
+    value: "bg-indigo-500 bg-purple-600 bg-blue-500",
   },
   {
-    name: "Neon2 Blue",
-    value: "blue-800 blue-900 blue-950",
+    name: "Dark Blue",
+    value: "bg-blue-800 bg-blue-900 bg-blue-950",
   },
-  { name: "Silver Gray",
-    value: "gray-600 gray-700 gray-800",
+  {
+    name: "Silver Gray",
+    value: "bg-gray-600 bg-gray-700 bg-gray-800",
   },
   {
     name: "Purple Gradient",
-    value: "purple-500 purple-600 purple-900",
+    value: "bg-purple-700 bg-purple-800 bg-purple-900",
   },
 ];
+
+export const SNAKE_BACKGROUND = [
+  {
+    value:'bg-purple-600',
+  },
+  {
+    value:"bg-blue-900",
+  },
+  {
+    value:'bg-gray-700'
+  },
+  {
+    value:'bg-purple-800'
+  }
+]
 
 export interface serviceProps {
   name: string;

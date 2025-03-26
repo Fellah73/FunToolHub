@@ -64,8 +64,13 @@ const Page = () => {
     return (
         <div className="min-h-screen p-4">
             {/* Rotate Phone Prompt - Will only show on small screens */}
-            <RotatePhonePrompt/>
-    
+            <RotatePhonePrompt
+                name='Flappy Bird'
+                primaryColor='from-indigo-900/50 via-purple-900/50 to-fuchsia-900/50'
+                secondaryColor='bg-pink-500/20'
+                fontColor='text-pink-500'
+                borderColor='border-pink-500/70' />
+
             {/* Confetti Animation */}
             <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
                 <Confetti
@@ -83,7 +88,7 @@ const Page = () => {
                     }}
                 />
             </div>
-    
+
             {/* Main Grid */}
             <div className="relative w-full mx-auto flex flex-col gap-y-4 sm:gap-y-6 sm:grid sm:grid-cols-5 gap-x-4">
                 {/* Left Panel */}
@@ -128,7 +133,7 @@ const Page = () => {
                                 </div>
                             </div>
                         </div>
-    
+
                         {/* Score Components */}
                         <AnimatePresence mode="popLayout">
                             <motion.div
@@ -158,7 +163,7 @@ const Page = () => {
                         </AnimatePresence>
                     </div>
                 </motion.div>
-    
+
                 {/* Game Container */}
                 <motion.div
                     className="hidden sm:block sm:order-1 sm:col-span-3 bg-gray-800 rounded-xl shadow-lg"
@@ -168,7 +173,7 @@ const Page = () => {
                 >
                     <FlappyBirdGame setFinalScore={setFinalScore} />
                 </motion.div>
-    
+
                 {/* Score History */}
                 <motion.div
                     className="hidden sm:order-2 sm:block sm:col-span-2 xl:col-span-1 bg-gray-800 rounded-xl py-2 shadow-lg"

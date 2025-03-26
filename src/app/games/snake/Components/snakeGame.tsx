@@ -113,11 +113,11 @@ export default function SnakeGame({
         const partitions = [snakeLength / 3, snakeLength / 3 * 2];
         const style = " animate-pulse shadow-[0_0_15px_#a855f7] ";
         if (snakeCaseIndex < partitions[0]) {
-            return style + `bg-${customization.snakeColor.split(" ")[0]}`;
+            return style + customization.snakeColor.split(' ')[0];
         } else if (snakeCaseIndex < partitions[1] && snakeCaseIndex >= partitions[0]) {
-            return style + `bg-${customization.snakeColor.split(" ")[1]}`;
+            return style + customization.snakeColor.split(' ')[1];
         } else {
-            return style + `bg-${customization.snakeColor.split(" ")[2]}`;
+            return style + customization.snakeColor.split(' ')[2];
         }
 
     }
