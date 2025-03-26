@@ -2,7 +2,7 @@
 
 import CircularBestScore from "@/components/ui/circulareBestScore";
 import { games } from "@/data/providedServices";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion,useSpring,useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/userContext";
 import FlappyBirdSection from "./Components/flappyBird";
@@ -25,6 +25,10 @@ export default function Page() {
     flappy: 0,
     ticTacToe: 0
   })
+
+
+  const {scrollYProgress} = useScroll();
+  const scaleX = useSpring(scrollYProgress)
 
 
   useEffect(() => {
@@ -77,7 +81,7 @@ export default function Page() {
   return (
     <>
       <div className="scroll-smooth">
-        <GamesNavbar userId={user ? user.id : ""} />
+        <GamesNavbar userId={user ? user.id : ""} scrollLength={scaleX!} />
         <GamesTitle />
         <div
           id="gamesContainer"
@@ -153,7 +157,7 @@ export default function Page() {
                   whileTap={{ scale: 0.9 }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 1, ease: "easeInOut" }}
                 >
                   Try it
                 </motion.button>

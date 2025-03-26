@@ -1,6 +1,7 @@
 // app/game/SnakeGame.tsx
 "use client";
 
+import { FOOD_OPTIONS } from "@/data/providedServices";
 import { AnimatePresence, motion } from "framer-motion";
 import { Gamepad2, Pause, RefreshCw, Trophy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -19,12 +20,30 @@ interface Coordinates {
     y: number;
 }
 
-interface SnakeBody {
-    segments: Coordinates[];
+
+interface CustomPreferences {
+    snakeColor: string;
+    foodObject: string;
+    backgroundColor: string;
 }
 
+interface GameStates {
+    isGameStarted: boolean;
+    setIsGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
+    isGameOver: boolean;
+    setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export default function SnakeGame() {
+// Fusionner les deux interfaces pour le composant
+interface SnakeGameProps extends GameStates {
+    customization: CustomPreferences;
+}
+
+export default function SnakeGame({ 
+    customization, 
+    isGameStarted, setIsGameStarted, 
+    isGameOver, setIsGameOver 
+}: SnakeGameProps) {
     // init cooridintes of the snake
     const [snake, setSnake] = useState<Coordinates[]>([
         { x: GRID_SIZE / 2, y: GRID_SIZE / 2 },
@@ -35,6 +54,7 @@ export default function SnakeGame() {
     const [direction, setDirection] = useState<Direction>(
         { x: 1, y: 0 },
     );
+
 
     // generate a food in a roandolom position in the grid
     const generateFood = () => {
@@ -52,8 +72,6 @@ export default function SnakeGame() {
     const [food, setFood] = useState<Coordinates>(generateFood);
 
     // init game state
-    const [isGameOver, setIsGameOver] = useState(false);
-    const [isGameStarted, setIsGameStarted] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
 
     // initial score
@@ -83,7 +101,7 @@ export default function SnakeGame() {
     };
 
     const togglePause = () => {
-        if (!isGameStarted || isGameOver) return;
+        if (! isGameStarted ||  isGameOver) return;
         setIsPaused(!isPaused);
     };
 
@@ -93,13 +111,13 @@ export default function SnakeGame() {
     // get Snake function
     const getSnakeCaseColor = (snakeCaseIndex: number, snakeLength: number) => {
         const partitions = [snakeLength / 3, snakeLength / 3 * 2];
-        const style = " animate-pulse shadow-[0_0_15px_#a855f7]";
+        const style = " animate-pulse shadow-[0_0_15px_#a855f7] ";
         if (snakeCaseIndex < partitions[0]) {
-            return style + " bg-indigo-500";
+            return style + `bg-${customization.snakeColor.split(" ")[0]}`;
         } else if (snakeCaseIndex < partitions[1] && snakeCaseIndex >= partitions[0]) {
-            return style + " bg-purple-600";
+            return style + `bg-${customization.snakeColor.split(" ")[1]}`;
         } else {
-            return style + " bg-blue-500";
+            return style + `bg-${customization.snakeColor.split(" ")[2]}`;
         }
 
     }
@@ -109,7 +127,7 @@ export default function SnakeGame() {
 
     // Mécanisme du jeu (déplacement du serpent)
     useEffect(() => {
-        if (isGameOver || !isGameStarted || isPaused) return;
+        if ( isGameOver || ! isGameStarted || isPaused) return;
 
         const moveSnake = () => {
             setSnake((prevSnake) => {
@@ -118,15 +136,17 @@ export default function SnakeGame() {
                     y: prevSnake[0].y + direction.y,
                 };
 
-                // Vérifier les collisions avec les bords ou lui-même
-                if (
-                    newHead.x < 0 || newHead.x >= GRID_SIZE ||
-                    newHead.y < 0 || newHead.y >= GRID_SIZE ||
-                    prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
-                ) {
-                    setIsGameOver(true);
+
+                // Si le serpent traverse un bord, il réapparaît de l'autre côté
+                newHead.x = (newHead.x + GRID_SIZE) % GRID_SIZE;
+                newHead.y = (newHead.y + GRID_SIZE) % GRID_SIZE;
+
+                // Vérifier la collision avec lui-même
+                if (prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+                     setIsGameOver(true);
                     return prevSnake;
                 }
+
 
                 // check if the snake eats the food
 
@@ -153,7 +173,7 @@ export default function SnakeGame() {
 
         const gameLoop = setInterval(moveSnake, speed); // Vitesse du jeu
         return () => clearInterval(gameLoop);
-    }, [direction, food, isGameOver, isGameStarted, isPaused, snake.length, speed]);
+    }, [direction, food,  isGameOver,  isGameStarted, isPaused, snake.length, speed]);
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
         switch (event.key) {
@@ -177,7 +197,7 @@ export default function SnakeGame() {
 
     // Écouter les touches du clavier
     useEffect(() => {
-        if (isGameOver || !isGameStarted) return
+        if ( isGameOver || ! isGameStarted) return
         const handleKeyPress = (event: KeyboardEvent) => {
             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Escape"].includes(event.key)) {
                 event.preventDefault(); // Bloque le scrolling
@@ -193,15 +213,13 @@ export default function SnakeGame() {
         console.log('speed changed : ', speed);
     }, [speed]);
 
-
-
     return (
         <div className="relative size-full flex flex-col items-center p-1 bg-[#0f0c29]">
             <motion.div
                 className="w-[75%] flex flex-row justify-between mb-4 mx-auto"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.5 }}
             >
                 <div className="flex items-center gap-2">
                     <Gamepad2 className="size-12 text-fuchsia-400 mr-4" />
@@ -217,7 +235,7 @@ export default function SnakeGame() {
                 </div>
             </motion.div>
 
-            <div className="relative grid grid-cols-12 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] rounded-xl p-1">
+            <div className={`relative grid grid-cols-12 bg-gradient-to-br ${customization.backgroundColor} rounded-xl p-1`}>
 
 
                 <button className="absolute top-4 right-4 z-50 p-3 bg-transparent backdrop:blur-sm text-white rounded-lg shadow-lg hover:bg-gray-700">
@@ -239,12 +257,9 @@ export default function SnakeGame() {
                                     ${isHead ? `rounded-${direction.x === 1 ? "r" : direction.x === -1 ? "l" : direction.y === 1 ? "b" : "t"}-full` : ""}
                                     ${isHead ? "flex text-pink-500" : ""}
                                     ${isHead && direction.x !== 0 ? `justify-${direction.x === 1 ? "end" : "start"} items-center` : ""}
-                                    ${isHead && direction.y !== 0 ? `justify-center items-${direction.y === 1 ? "end" : "start"}` : ""}
-                                    ${isFood ? `z-10 bg-gradient-to-br animate-pulse ${snake.length % 10 == 0 ? "scale-150 from-yellow-600 via-yellow-400 to-yellow-600 shadow-[0_0_15px_#f59e0b]" : "from-pink-800 via-red-500 to-pink-800 shadow-[0_0_15px_#ef4444]"} size-10 rounded-full`
-                                        : ""} 
+                                    ${isHead && direction.y !== 0 ? `justify-center items-${direction.y === 1 ? "end" : "start"}` : ""}                                                                     
+                                    ${isFood ? "size-12 flex justify-center items-center" : ""}
                                     `}
-
-
                             >
                                 {isHead && (
                                     <div className={`size-full relative flex justify-center items-center ${direction.y === 0 ? "flex-col gap-y-2" : "flex-row gap-x-2"}`}>
@@ -256,6 +271,23 @@ export default function SnakeGame() {
                                                 : direction.x == 1 && direction.y == 0 ? "left-3/4 top-[40%] z-10 px-3 py-[10%] rounded-l-full" : "right-3/4 top-[40%] z-10 px-3 py-[10%] rounded-r-full"} `} />
                                     </div>
                                 )}
+
+                                {isFood &&
+                                    ( customization.foodObject == FOOD_OPTIONS[0].name ? (
+                                        <p className={`${snake.length % 10 == 0 ? "scale-150" : ""} text-6xl animate-pulse`}>
+                                            🍎
+                                        </p>
+                                    ) :  customization.foodObject == FOOD_OPTIONS[1].name ? (
+                                        <p className={`${snake.length % 10 == 0 ? "scale-150" : ""} text-6xl animate-pulse`}>
+                                            ⭐
+                                        </p>
+                                    ) : (
+
+                                        <p className={`${snake.length % 10 == 0 ? "scale-150" : ""} text-6xl animate-pulse`}>
+                                            💎
+                                        </p>
+
+                                    ))}
                             </div>
                         );
                     })
@@ -279,6 +311,8 @@ export default function SnakeGame() {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
+                                animate={{ scale: [1, 1.10, 1] }}
+                                transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                                 className="px-8 py-3 bg-fuchsia-600 text-white text-xl font-bold rounded-lg shadow-lg shadow-fuchsia-900/50"
                                 onClick={togglePause}
                             >
@@ -288,7 +322,7 @@ export default function SnakeGame() {
                     </motion.div>
                 )}
 
-                {!isGameStarted && !isGameOver && (
+                {! isGameStarted && ! isGameOver && (
                     <motion.div
                         className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-10 size-full"
                         initial={{ opacity: 0 }}
@@ -299,7 +333,7 @@ export default function SnakeGame() {
                             className="bg-gradient-to-br from-[#0f0c29] to-fuchsia-800 p-8 rounded-xl shadow-2xl text-center w-[90%] md:w-[60%]"
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
                         >
                             <motion.h2
                                 className="text-2xl md:text-4xl font-bold mb-6 text-gradient bg-clip-text text-gray-300"
@@ -322,7 +356,7 @@ export default function SnakeGame() {
                     </motion.div>
                 )}
 
-                {isGameOver && (
+                { isGameOver && (
                     <motion.div
                         className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-10 size-full"
                         initial={{ opacity: 0 }}
@@ -337,8 +371,8 @@ export default function SnakeGame() {
                         >
                             <motion.h2
                                 className="text-xl md:text-4xl font-bold mb-2 text-neutral-200"
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ duration: 0.6 }}
+                                animate={{ scale: [1, 1.25, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
                             >
                                 Game Over
                             </motion.h2>
@@ -351,6 +385,8 @@ export default function SnakeGame() {
                             </div>
 
                             <motion.button
+                                animate={{ scale: [1, 1.25, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={restartGame}

@@ -1,7 +1,7 @@
 'use client';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Award, Heart, MousePointer2, RefreshCw } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface HighScore {
     id?: number;
@@ -14,6 +14,8 @@ interface HighScore {
 
 export default function FlappyBirdSection({ userId }: { userId: string | undefined }) {
     const [highScores, setHighScores] = useState<HighScore[]>([]);
+    const tableRef = useRef(null);
+    const isTableInView = useInView(tableRef, { once: true });
 
     const instructions = [
         {
@@ -72,6 +74,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
 
 
     useEffect(() => {
+        if (!isTableInView) return;
         const fetchFlappyScore = async () => {
             try {
                 const response = await fetch("/api/games/flappy-bird/score/leaderboard?limit=5", {
@@ -90,16 +93,17 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
         };
 
         fetchFlappyScore();
-    }, []);
+    }, [isTableInView]);
+
 
     useEffect(() => {
-        console.log('highScores Array : ', highScores);
-    }, [highScores]);
-
-
+        console.log('table in view : ', isTableInView);
+    }, [isTableInView]);
 
     return (
-        <section className="py-16 text-white overflow-hidden">
+        <motion.section
+            className="py-16 text-white overflow-hidden"
+            ref={tableRef}>
             <div className=" mx-auto mt-10 px-8">
                 <motion.h2
                     className="text-4xl font-bold text-center mb-12"
@@ -118,6 +122,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true, margin: "-100px" }}
+
                     >
                         {instructions.map((instruction, index) => (
                             <motion.div
@@ -194,6 +199,6 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                     </motion.div>
                 </div>
             </div>
-        </section>
+        </motion.section>
     );
 }
