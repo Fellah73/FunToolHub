@@ -87,7 +87,7 @@ export default function BestGlobalScoreComponent({ finalScore }: { finalScore: n
   )
 }
 
-const GlobalScoreItem = ({ score, index }: { score: GlobalBestScoreProps, index: number }) => {
+export const GlobalScoreItem = ({ score, index }: { score: GlobalBestScoreProps, index: number }) => {
   const getScoreIcon = (rank: number) => {
     switch (rank) {
       case 1: return <Crown className="w-6 h-6 text-yellow-400" />

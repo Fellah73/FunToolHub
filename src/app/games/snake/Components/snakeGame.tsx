@@ -1,12 +1,14 @@
 // app/game/SnakeGame.tsx
 "use client";
 
+import { useUser } from "@/app/context/userContext";
 import { FOOD_OPTIONS } from "@/data/providedServices";
 import { AnimatePresence, motion } from "framer-motion";
 import { Gamepad2, Pause, RefreshCw, Trophy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FaPlay } from "react-icons/fa";
-import { IoGameController } from "react-icons/io5";
+import { IoFlame, IoGameController, IoSpeedometerOutline } from "react-icons/io5";
+
 
 const GRID_SIZE = 12; // Taille de la grille (20x20)
 
@@ -28,6 +30,8 @@ interface CustomPreferences {
 }
 
 interface GameStates {
+    score: number;
+    setScore: React.Dispatch<React.SetStateAction<number>>;
     isGameStarted: boolean;
     setIsGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
     isGameOver: boolean;
@@ -39,10 +43,10 @@ interface SnakeGameProps extends GameStates {
     customization: CustomPreferences;
 }
 
-export default function SnakeGame({ 
-    customization, 
-    isGameStarted, setIsGameStarted, 
-    isGameOver, setIsGameOver 
+export default function SnakeGame({
+    customization,
+    isGameStarted, setIsGameStarted,
+    isGameOver, setIsGameOver, score, setScore
 }: SnakeGameProps) {
     // init cooridintes of the snake
     const [snake, setSnake] = useState<Coordinates[]>([
@@ -74,13 +78,10 @@ export default function SnakeGame({
     // init game state
     const [isPaused, setIsPaused] = useState(false);
 
-    // initial score
-    const [score, setScore] = useState<number>(0);
-
     //games speed
     const [speed, setSpeed] = useState<number>(150);
 
-
+    const { user } = useUser()
     const startGame = () => {
         setIsGameStarted(true);
         setIsGameOver(false);
@@ -101,7 +102,7 @@ export default function SnakeGame({
     };
 
     const togglePause = () => {
-        if (! isGameStarted ||  isGameOver) return;
+        if (!isGameStarted || isGameOver) return;
         setIsPaused(!isPaused);
     };
 
@@ -127,7 +128,7 @@ export default function SnakeGame({
 
     // Mécanisme du jeu (déplacement du serpent)
     useEffect(() => {
-        if ( isGameOver || ! isGameStarted || isPaused) return;
+        if (isGameOver || !isGameStarted || isPaused) return;
 
         const moveSnake = () => {
             setSnake((prevSnake) => {
@@ -143,7 +144,7 @@ export default function SnakeGame({
 
                 // Vérifier la collision avec lui-même
                 if (prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
-                     setIsGameOver(true);
+                    setIsGameOver(true);
                     return prevSnake;
                 }
 
@@ -173,7 +174,9 @@ export default function SnakeGame({
 
         const gameLoop = setInterval(moveSnake, speed); // Vitesse du jeu
         return () => clearInterval(gameLoop);
-    }, [direction, food,  isGameOver,  isGameStarted, isPaused, snake.length, speed]);
+    }, [direction, food, isGameOver, isGameStarted, isPaused, snake.length, speed]);
+
+
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
         switch (event.key) {
@@ -197,7 +200,7 @@ export default function SnakeGame({
 
     // Écouter les touches du clavier
     useEffect(() => {
-        if ( isGameOver || ! isGameStarted) return
+        if (isGameOver || !isGameStarted) return
         const handleKeyPress = (event: KeyboardEvent) => {
             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Escape"].includes(event.key)) {
                 event.preventDefault(); // Bloque le scrolling
@@ -209,14 +212,12 @@ export default function SnakeGame({
     }, [handleKeyDown, isPaused]);
 
 
-    useEffect(() => {
-        console.log('speed changed : ', speed);
-    }, [speed]);
+ 
 
     return (
         <div className="relative size-full flex flex-col items-center p-1 bg-[#0f0c29]">
             <motion.div
-                className="w-[75%] flex flex-row justify-between mb-4 mx-auto"
+                className="w-[75%] flex flex-row justify-between mb-2 mx-auto"
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -224,6 +225,29 @@ export default function SnakeGame({
                 <div className="flex items-center gap-2">
                     <Gamepad2 className="size-12 text-fuchsia-400 mr-4" />
                     <h2 className="text-4xl font-bold text-white">Snake Game</h2>
+                </div>
+
+                <div className="flex flex-row items-center gap-x-2">
+                    <motion.div
+                        initial={{ scale: 1 }}
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 5, repeat: Infinity, repeatType: "loop" }}
+                    >
+                        <IoSpeedometerOutline className={`size-12  ${snake.length % 10 == 1 ? "text-yellow-600 scale-110" : "text-yellow-400"}`} />
+
+                    </motion.div>
+                    {snake.length % 10 === 1 && (
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: [1, 1.2, 1] }}
+                            exit={{ scale: 0 }}
+                            transition={{ duration: 4, delay: 0.6, repeat: Infinity, repeatType: "loop" }}
+                            className="flex justify-center items-center"
+                        >
+                            <IoFlame className="size-12 text-red-600" />
+                        </motion.div>
+                    )}
+
                 </div>
 
                 <div className="flex items-center gap-4 mr-8">
@@ -238,7 +262,7 @@ export default function SnakeGame({
             <div className={`relative grid grid-cols-12 bg-gradient-to-br ${customization.backgroundColor} rounded-xl p-1`}>
 
 
-                <button className="absolute top-4 right-4 z-50 p-3 bg-transparent backdrop:blur-sm text-white rounded-lg shadow-lg hover:bg-gray-700">
+                <button className="absolute top-4 right-4 z-50 p-3 bg-transparent backdrop:blur-sm text-white rounded-lg shadow-lg hover:border-4 hover:border-white/50">
                     {isPaused ? <FaPlay size={30} onClick={togglePause} /> : <Pause size={30} onClick={togglePause} />}
                 </button>
 
@@ -273,11 +297,11 @@ export default function SnakeGame({
                                 )}
 
                                 {isFood &&
-                                    ( customization.foodObject == FOOD_OPTIONS[0].name ? (
+                                    (customization.foodObject == FOOD_OPTIONS[0].name ? (
                                         <p className={`${snake.length % 10 == 0 ? "scale-150" : ""} text-6xl animate-pulse`}>
                                             🍎
                                         </p>
-                                    ) :  customization.foodObject == FOOD_OPTIONS[1].name ? (
+                                    ) : customization.foodObject == FOOD_OPTIONS[1].name ? (
                                         <p className={`${snake.length % 10 == 0 ? "scale-150" : ""} text-6xl animate-pulse`}>
                                             ⭐
                                         </p>
@@ -322,7 +346,7 @@ export default function SnakeGame({
                     </motion.div>
                 )}
 
-                {! isGameStarted && ! isGameOver && (
+                {!isGameStarted && !isGameOver && (
                     <motion.div
                         className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-10 size-full"
                         initial={{ opacity: 0 }}
@@ -356,7 +380,7 @@ export default function SnakeGame({
                     </motion.div>
                 )}
 
-                { isGameOver && (
+                {isGameOver && (
                     <motion.div
                         className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-10 size-full"
                         initial={{ opacity: 0 }}

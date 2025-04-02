@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     });*/
     }
     
-    const scores = await db.flappyScore.findMany({
+    const scores = await db.snakeScore.findMany({
       include: {
         user: {
           select: {
