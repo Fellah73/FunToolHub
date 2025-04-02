@@ -29,7 +29,7 @@ interface SnakeMasterboardState {
 
 }
 
-const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboardProps) => {
+const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
     const [boardScores, setBoardScores] = useState<SnakeMasterboardState | null>({
         personalBest: score,
         players: [],
@@ -39,6 +39,23 @@ const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboard
     const { user } = useUser();
     const firstFetch = useRef<boolean>(false);
 
+
+    const extractLenghtFromScore = (score: number) => {
+        if (score <= 8) return score + 2;
+        let i = 12, length = 10, tour = 0;
+        while (i <= score) {
+            if (tour % 10 == 0 && tour > 0) {
+                i += 4;
+            } else {
+                i += 1;
+
+            }
+            length += 1;
+            tour += 1;
+        }
+        return length;
+    }
+
     useEffect(() => {
 
         if (!user) return;
@@ -47,11 +64,12 @@ const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboard
 
         if (!isGameOver) firstFetch.current = true;
 
+        console.log("fetching global leaderboard...");
 
         const fetchScores = async () => {
 
             try {
-                const gloablaLeaderboard = await fetch("/api/games/snake/score/leaderboard?limit=5", {
+                const gloablaLeaderboard = await fetch("/api/games/snake/score/leaderboard?limit=10", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -75,6 +93,13 @@ const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboard
         }
 
         setTimeout(() => {
+            if (score > boardScores?.personalBest!) {
+                console.log('do not need to refetch data');
+                setBoardScores((prevState) => ({
+                    ...prevState!,
+                    personalBest: score
+                }))
+            }
             fetchScores();
             setLoading(false);
 
@@ -82,59 +107,46 @@ const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboard
     }, [user, isGameOver]);
 
     useEffect(() => {
-         
-        if (score === 0) return;
+        if (!user) return;
 
-        setTimeout(() => { 
-            
-            console.log("wating for the leaderboard to update before Updating personal best score..."); 
+        setTimeout(() => {
 
-            // check if the user is in the leaderboard so avoid another fetch
-            const userIn = boardScores?.players.find((player) => player.id === user?.id);
-            if (userIn) {
-                setBoardScores((prevState) => ({
-                    ...prevState!,
-                    personalBest: userIn.score!,
-                }));
+            console.log("Fetching personal best...");
 
-                console.log("Personal best score was in the leaderboard");
-                // not in global leaderBorad so fetch
-            }else{
-                console.log("Personal best score was not in the leaderboard so we must fetch it");
-                const fetchPersonalBest = async () => {
-                    try {
-                        const bestPersoScore = await fetch(`/api/games/snake/score/best?playerId=${user?.id}&limit=1`, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            }
-                        });
-        
-                        const data = await bestPersoScore.json();
-                        if (!bestPersoScore.ok || !data.success) {
-                            console.error("Error fetching personal best:", data.message);
-                            return;
+            const fetchPersonalBest = async () => {
+                try {
+                    const bestPersoScore = await fetch(`/api/games/snake/score/best?playerId=${user?.id}&limit=1`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
                         }
-        
-                        setBoardScores((prevState) => ({
-                            ...prevState!,
-                            personalBest: data.bestScores[0].value,
-                        }));
-        
-                        console.log("Personal best fetched successfully:", data.bestScores[0].value);
-        
+                    });
+
+                    const data = await bestPersoScore.json();
+                    if (!bestPersoScore.ok || !data.success) {
+                        console.error("Error fetching personal best:", data.message);
+                        return;
                     }
-                    catch (error) {
-                        console.error("Error fetching personal best:", error);
-                    }
+
+                    setBoardScores((prevState) => ({
+                        ...prevState!,
+                        personalBest: data.bestScores[0].value,
+                    }));
+
+                    console.log("Personal best fetched successfully:", data.bestScores[0].value);
+
                 }
-
-
-                fetchPersonalBest();
+                catch (error) {
+                    console.error("Error fetching personal best:", error);
+                }
             }
-        },10000)
 
-    }, [boardScores?.players]);
+
+            fetchPersonalBest();
+
+        }, 2000)
+
+    }, [user]);
 
 
     return (
@@ -183,7 +195,7 @@ const SnakeMasterboard = ({ score, isGameOver, isGameStarted }: SnakeMasterboard
                                         transition={{ duration: 1.5, times: [0, 0.5, 1] }}
                                         className="text-4xl text-center tracking-wide font-bold text-fuchsia-200"
                                     >
-                                        {boardScores?.personalBest! * 2}
+                                        {extractLenghtFromScore(boardScores?.personalBest!)}
                                     </motion.span>
                                 </div>
                             </div>

@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       orderBy: {
         score: "desc",
       },
-      //distinct: ["score"],
+      distinct: ["score"],
       take: limit ? parseInt(limit) : 10,
     });
 
