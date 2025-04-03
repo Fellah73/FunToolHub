@@ -56,6 +56,8 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
         return length;
     }
 
+
+
     useEffect(() => {
 
         if (!user) return;
@@ -105,6 +107,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
 
         }, 2000);
     }, [user, isGameOver]);
+
 
     useEffect(() => {
         if (!user) return;

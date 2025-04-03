@@ -2,12 +2,13 @@
 
 import CircularBestScore from "@/components/ui/circulareBestScore";
 import { games } from "@/data/providedServices";
-import { AnimatePresence, motion,useSpring,useScroll } from "framer-motion";
+import { AnimatePresence, motion, useSpring, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/userContext";
 import FlappyBirdSection from "./Components/flappyBird";
 import GamesNavbar from "./Components/gamesNavbar";
 import GamesTitle from "./Components/gamesTitle";
+import SnakeGameSection from "./Components/snakeGame";
 
 interface Scores {
   snake: number,
@@ -27,7 +28,7 @@ export default function Page() {
   })
 
 
-  const {scrollYProgress} = useScroll();
+  const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress)
 
 
@@ -36,7 +37,7 @@ export default function Page() {
     if (!user) return;
     const fetchFlappyScore = async () => {
       try {
-        const response = await fetch(`/api/games/flappy-bird/score/best?playerId=${user?.id}&limit=15`, {
+        const response = await fetch(`/api/games/flappy-bird/score/best?playerId=${user?.id}&limit=1`, {
           method: 'GET',
         });
         const data = await response.json();
@@ -51,8 +52,27 @@ export default function Page() {
         console.error('Error fetching global score:', error);
       }
     };
+    const fetchSnakeGame = async () => {
+      try {
+        const response = await fetch(`/api/games/snake/score/best?playerId=${user?.id}&limit=1`, {
+          method: 'GET',
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          console.warn(data.message);
+          return;
+        }
+
+        setGlobalScore((prev) => ({ ...prev, snake: data.bestScores[0].value }));
+        console.log("data fetched succesfully");
+      } catch (error) {
+        console.error('Error fetching global score:', error);
+      }
+    };
 
     fetchFlappyScore();
+
+    fetchSnakeGame();
   }, [user]);
 
   useEffect(() => {
@@ -144,7 +164,7 @@ export default function Page() {
             <div className="w-full flex flex-col items-center gap-y-4 mb-10 md:flex-row md:justify-between md:px-28 md:mb-4 absolute bottom-20 z-20">
 
               {/* 🌟 Score */}
-              <CircularBestScore score={games[displayedIndex].name.endsWith("🐦") ? globalScore.flappy : 0} maxScore={200} />
+              <CircularBestScore score={games[displayedIndex].name.endsWith("🐦") ? globalScore.flappy : games[displayedIndex].name.endsWith("🐍") ? globalScore.snake : 0} maxScore={200} />
 
               {/* 📌 Titre du jeu */}
               <h3 className="font-bold text-3xl text-white text-center">{games[displayedIndex].name}</h3>
@@ -241,6 +261,9 @@ export default function Page() {
         </div>
         <div id="flappy-bird">
           <FlappyBirdSection userId={user?.id} />
+        </div>
+        <div id="snake-game" className="mt-20">
+          <SnakeGameSection userId={user?.id} />
         </div>
       </div>
     </>
