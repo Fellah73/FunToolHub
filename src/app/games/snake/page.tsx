@@ -46,14 +46,6 @@ export default function page() {
                 }),
             });
             const data = await response.json();
-
-            if (data.success) {
-                console.log("Score saved successfully!", data.newScore);
-
-            }
-            else {
-                console.log("Error saving score:", data.error);
-            }
         }
         saveScore()
 
@@ -91,7 +83,7 @@ export default function page() {
                 <motion.div
                     initial={{ translateY: -400 }}
                     animate={{ translateY: 0 }}
-                    transition={{ duration: 3, delay: 0.7, ease: "easeInOut" }}
+                    transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
                 >
                     <SnakeGame
                         score={score}

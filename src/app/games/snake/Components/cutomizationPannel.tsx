@@ -1,3 +1,4 @@
+import { BACKGROUND_GRADIENTS, FOOD_OPTIONS, SNAKE_COLORS } from '@/data/providedServices';
 import { motion } from 'framer-motion';
 import {
     Droplet,
@@ -7,7 +8,6 @@ import {
 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import { CustomizationValues } from '../page';
-import { BACKGROUND_GRADIENTS, FOOD_OPTIONS, SNAKE_BACKGROUND, SNAKE_COLORS } from '@/data/providedServices';
 
 interface CustomizationHubProps {
     setCustomization: Dispatch<SetStateAction<CustomizationValues>>;

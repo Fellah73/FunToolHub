@@ -1,4 +1,5 @@
 'use client'
+import { Trophy } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { FaPause, FaPlay } from "react-icons/fa";
 import { GiClick } from "react-icons/gi";
@@ -260,10 +261,6 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
             });
 
 
-            ctx.fillStyle = 'white';
-            ctx.font = '28px Arial';
-            ctx.fillText(`Score: ${score / 2}`, 10, 30);
-
             if (checkCollision()) {
                 setGameOver(true);
                 //     resetGame();
@@ -295,20 +292,22 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
         // ghdwa ndirour deep seek logic
 
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === 'z' || event.key === 'Z') {
+            if (event.key === ' ' || event.key === 'ArrowUp') {
+                event.preventDefault(); // Prevent the default scrolling behavior
+                console.log("space pressed");
                 handleJump();
             }
         };
 
         animationFrameId = requestAnimationFrame(render);
         canvas.addEventListener('click', handleJump);
-        canvas.addEventListener("keydown", handleKeyPress);
+        document.addEventListener("keydown", handleKeyPress);
 
 
         return () => {
 
             canvas.removeEventListener('click', handleJump);
-            canvas.removeEventListener('keydown', handleKeyPress);
+            document.removeEventListener('keydown', handleKeyPress);
 
             cancelAnimationFrame(animationFrameId);
         };
@@ -354,6 +353,13 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
                 </button>)
             }
             {
+                gameStarted  && (
+                    <div className="absolute top-4 left-2 backdrop-blur-sm flex items-center justify-center">
+                        <p className="text-pink-700 text-3xl lg:text-5xl font-bold flex flex-row gap-x-4 items-center"><Trophy size={50} className='text-pink-700'/> {score / 2}</p>
+                    </div>
+                )
+            }
+            {
                 !gameStarted && (
                     <div
                         onClick={handleJump}
@@ -387,13 +393,3 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 }
 
 
-// pause solved
-// pause ui handling -->  done
-// score s'incremente par 2 --> done avec 7achwa /2 dans l'affichage
-//  bird quand il touche le sol le jeu ne stop pas --> done
-// restart ui handling  --> done
-// begin ui handling --> done
-// chwiya ui ta3 canvas --> done
-// adding difficulties   vitesse augmenente de 20% chque 10 de score --> done
-// pause with esc --> done
-// correct collision detection logic --> dok haka chwiya

@@ -1,16 +1,18 @@
 export const services = [
   {
-    name: "Temps de Prière 🕌",
+    name: "Prayer time 🕌",
     link: "services/prayer-times",
+    video: "services/prayer.mp4",
     description:
-      "Consultez facilement les horaires de prière en temps réel, adaptés à votre localisation et au calendrier islamique. $Restez toujours informé des heures de prière et recevez des notifications pour ne jamais les manquer.",
-    image: "/services/prayer-times.jpeg",
+      "Easily consult prayer times in real time, adapted to your location and the Islamic calendar. $Restez toujours informé des heures de prière et recevez des notifications pour ne jamais les manquer.",
+    image: "/services/prayer.jpg",
   },
   {
     name: "To-Do List ✅",
     link: "services/todo-list",
+    video: "games/flappyBird.mp4",
     description:
-      "Organisez votre journée avec une to-do list intuitive. Ajoutez, modifiez et cochez vos tâches en un clic. $Boostez votre productivité et ne laissez plus rien au hasard grâce à une gestion efficace de vos tâches.",
+      "Organize your day with an intuitive to-do list.Add, change and check your tasks with one click.$Boostez votre productivité et ne laissez plus rien au hasard grâce à une gestion efficace de vos tâches.",
     image: "/services/to-do-list.jpg",
   },
 ];

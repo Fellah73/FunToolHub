@@ -5,9 +5,8 @@ import { CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { motion } from 'framer-motion';
 import { Earth, Moon, Ruler, SunMoon, Trophy } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GiSnake } from 'react-icons/gi';
-import { set } from 'zod';
 
 interface Player {
     id: string;
@@ -66,7 +65,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
 
         if (!isGameOver) firstFetch.current = true;
 
-        console.log("fetching global leaderboard...");
+
 
         const fetchScores = async () => {
 
@@ -88,7 +87,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
                     players: data.globalBestScores,
                 }));
 
-                console.log("Leaderboard data fetched successfully:", data.globalBestScores);
+
             } catch (error) {
                 console.error("Error fetching leaderboard data:", error);
             }
@@ -96,7 +95,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
 
         setTimeout(() => {
             if (score > boardScores?.personalBest!) {
-                console.log('do not need to refetch data');
+
                 setBoardScores((prevState) => ({
                     ...prevState!,
                     personalBest: score
@@ -114,7 +113,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
 
         setTimeout(() => {
 
-            console.log("Fetching personal best...");
+
 
             const fetchPersonalBest = async () => {
                 try {
@@ -135,8 +134,6 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
                         ...prevState!,
                         personalBest: data.bestScores[0].value,
                     }));
-
-                    console.log("Personal best fetched successfully:", data.bestScores[0].value);
 
                 }
                 catch (error) {
