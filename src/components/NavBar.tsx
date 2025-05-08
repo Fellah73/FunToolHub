@@ -4,8 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 export default function NavBar() {
 
+    const [isSticky, setIsSticky] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const fetch = useRef<boolean | null>(false);
+
+
+
     const [userId, setUserId] = useState<string | null>('f1ds2dsff');
     useEffect(() => {
         if (fetch.current) return
@@ -20,10 +24,20 @@ export default function NavBar() {
         fetch.current = true
     }, [])
 
+    useEffect(() => {
+
+        const handleScroll = () => {
+            setIsSticky(window.scrollY > 100);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
 
 
     return (
-        <nav className="sticky top-0 z-50 backdrop-blur-2xl w-full h-16 inset-x-0 my-2">
+        <nav className={`sticky transition-all duration-200 top-0 z-50 backdrop-blur-2xl w-[100%] h-16 inset-x-0 mx-auto `}>
             <MaxWidthWrapper className="flex items-center justify-between py-3 my-2 px-4 w-[90%] mx-auto border-primary border-b-2 rounded-xl bg-blue-950 text-white">
                 <Link href={'/'}>
                     <p className="text-xl md:text-2xl text-white tracking-tighter">Moh dev</p>

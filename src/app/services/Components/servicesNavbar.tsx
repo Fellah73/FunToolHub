@@ -42,7 +42,7 @@ export default function ServicesNavbar({ className, userId, scrollLength }: serv
                 <div className="max-w-6xl h-[35px] mx-auto flex flex-row mt-4 justify-between items-center gap-x-4 lg:gap-x-24">
                     {[
                         { path: "servicesContainer", label: "All Services" },
-                        { path: "salat", label: "Mawaqit Salat" },
+                        { path: "prayer", label: "Prayer times" },
                         { path: "todo", label: "To do list" },
                     ].map((item) => (
                         <a

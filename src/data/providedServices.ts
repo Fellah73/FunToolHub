@@ -10,7 +10,7 @@ export const services = [
   {
     name: "To-Do List ✅",
     link: "services/todo-list",
-    video: "games/flappyBird.mp4",
+    video: "services/to-do-list.mp4",
     description:
       "Organize your day with an intuitive to-do list.Add, change and check your tasks with one click.$Boostez votre productivité et ne laissez plus rien au hasard grâce à une gestion efficace de vos tâches.",
     image: "/services/to-do-list.jpg",

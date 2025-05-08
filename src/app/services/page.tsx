@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from '../context/userContext'
 import ServicesNavbar from './Components/servicesNavbar'
 import ServicesTitle from './Components/servicesTitle'
+import PrayerTimeSection from "./Components/prayerTime"
 import { FaPray } from "react-icons/fa";
 import { FcTodoList } from "react-icons/fc";
 
@@ -73,7 +74,7 @@ export default function page() {
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                     className={`absolute flex flex-col items-center justify-center rounded-xl shadow-2xl transition-all duration-500 overflow-hidden
-                  ${isActive ? "w-[80%] h-[100%] shadow-emerald-300" : "w-[70%] h-[90%] shadow-gray-700/50"}`}
+                  ${isActive ? `w-[80%] h-[100%] ${services[displayedIndex].name.endsWith('🕌') ? "shadow-emerald-400" : "shadow-cyan-300"}` : "w-[70%] h-[90%] shadow-gray-700/50"}`}
                   >
                     {card.video ? (
                       <video
@@ -105,7 +106,7 @@ export default function page() {
             <h3 className="font-bold text-3xl text-emerald-200 text-center">
               {services[displayedIndex].name.endsWith('🕌') ?
                 <span className="text-3xl text-emerald-200 flex items-center gap-x-2">{services[displayedIndex].name.split("🕌")[0]} <FaPray className="text-4xl text-emerald-200" /></span>
-                : <span className="text-3xl text-emerald-200 flex items-center gap-x-2">{services[displayedIndex].name.split("✅")[0]} <FcTodoList className="text-4xl text-emerald-200" /></span>
+                : <span className="text-3xl text-cyan-400 flex items-center gap-x-2">{services[displayedIndex].name.split("✅")[0]} <FcTodoList className="text-4xl text-cyan-400" /></span>
 
               }
             </h3>
@@ -113,7 +114,7 @@ export default function page() {
             {/* 🚀 Bouton Try it */}
             <a href={`${services[displayedIndex].link}?id=${user?.id}`}>
               <motion.button
-                className="px-6 py-3 bg-gradient-to-r from-sky-900 to-cyan-700 text-xl text-emerald-200  font-bold tracking-wider rounded-3xl"
+                className="px-6 py-3 bg-gradient-to-r from-sky-900 to-cyan-700 text-xl text-emerald-200  font-bold tracking-widest rounded-3xl"
                 whileHover={{ scale: 1.2, boxShadow: "0px 0px 10px rgba(255, 0, 255, 0.7)" }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -141,7 +142,7 @@ export default function page() {
 
 
         {/* 🌟 Image de droite */}
-        <div className="hidden lg:block lg:col-span-2 rounded-2xl shadow-2xl shadow-emerald-400 my-24 overflow-hidden relative h-[500px] select-none">
+        <div className={`hidden lg:block lg:col-span-2 rounded-2xl shadow-2xl ${services[activeIndex].name.endsWith("🕌") ? "shadow-emerald-400" : "shadow-cyan-300"} my-24 overflow-hidden relative h-[500px] select-none`}>
           <AnimatePresence mode="wait">
             <motion.img
               key={rightImage}
@@ -179,6 +180,9 @@ export default function page() {
 
 
         </div>
+      </div>
+      <div id="prayer">
+        <PrayerTimeSection />
       </div>
     </div>
   )
