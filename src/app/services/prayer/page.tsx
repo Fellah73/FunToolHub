@@ -1,12 +1,13 @@
 'use client'
 import { useUser } from '@/app/context/userContext';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { IoIosTimer } from "react-icons/io";
 import { LuCloudMoon } from "react-icons/lu";
 import { PiClockAfternoonBold } from "react-icons/pi";
 import { TbSunset2 } from "react-icons/tb";
-
 
 interface PrayerTimes {
     Fajr: string;
@@ -37,6 +38,9 @@ export default function PrayerPage() {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [displayedIndex, setDisplayedIndex] = useState<number>(0);
     const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
+    const [nextPrayer, setNextPrayer] = useState<string>("");
+    const [today, setToday] = useState<string | undefined>();
+    const [timeRemaining, setTimeRemaining] = useState<string>("00:00:00");
 
     const getTime = (prayer: keyof PrayerTimes) => {
         if (!prayerTime) return "00:00 AM";
@@ -84,7 +88,7 @@ export default function PrayerPage() {
         {
             name: "Asr",
             time: getTime("Asr"),
-            icon: <Sun className="size-12 md:size-16 text-amber-600" />,
+            icon: <Sun className="size-12 md:size-16 text-amber-500" />,
             image: "/services/prayers/asr.jpg",
             description: "Asr, the afternoon prayer, provides an opportunity to recenter as the day progresses. As the sun begins to descend, this prayer invites self-reflection, discipline, and a renewed intention. It acts as a bridge between the productivity of the day and the stillness of the evening. Asr teaches consistency, encouraging believers to stay mindful of their Creator throughout life's transitions and changing rhythms.",
 
@@ -106,6 +110,72 @@ export default function PrayerPage() {
 
         },
     ];
+
+    useEffect(() => {
+
+        let interval = setInterval(() => {
+
+            setupCountdownTimer();
+        }, 1000);
+
+        const t = moment()
+        setToday(t.format("MMMM Do YYYY | hh:mm"));
+
+        return () => {
+            clearInterval(interval);
+        }
+    }, [prayerTime]);
+
+
+
+    const setupCountdownTimer = () => {
+        const momentNow = moment();
+        let nextPrayer = null;
+
+
+
+        if (momentNow.isAfter(moment(prayerTime?.["Fajr"], 'HH:mm')) && momentNow.isBefore(moment(prayerTime?.["Dhuhr"], 'HH:mm'))) {
+            nextPrayer = 'Dhuhr';
+
+        } else if (momentNow.isAfter(moment(prayerTime?.["Dhuhr"], 'HH:mm')) && momentNow.isBefore(moment(prayerTime?.["Asr"], 'HH:mm'))) {
+            nextPrayer = 'Asr';
+
+        } else if (momentNow.isAfter(moment(prayerTime?.["Asr"], 'HH:mm')) && momentNow.isBefore(moment(prayerTime?.["Maghrib"], 'HH:mm'))) {
+            nextPrayer = 'Maghrib';
+
+        } else if (momentNow.isAfter(moment(prayerTime?.["Maghrib"], 'HH:mm')) && momentNow.isBefore(moment(prayerTime?.["Isha"], 'HH:mm'))) {
+            nextPrayer = 'Isha';
+
+        } else {
+            nextPrayer = 'Fajr';
+
+        }
+
+
+        setNextPrayer(nextPrayer);
+
+
+        const nextPrayerTime = prayerTime ? prayerTime[nextPrayer as keyof PrayerTimes] : null;
+
+
+        let remainingTime = moment(nextPrayerTime, 'HH:mm').diff(momentNow);
+
+        if (remainingTime < 0) {
+            const midNightDiff = moment("23:59:59", "HH:mm:ss").diff(momentNow);
+            const fajrtoMidnightDiff = moment(nextPrayerTime, 'HH:mm').diff(moment("00:00:00", "HH:mm:ss"));
+            const totalDiff = midNightDiff + fajrtoMidnightDiff;
+            remainingTime = totalDiff;
+
+        }
+
+        const remainingTimeDuration = moment.duration(remainingTime);
+
+
+
+        setTimeRemaining(`${remainingTimeDuration.hours()}:${remainingTimeDuration.minutes()}:${remainingTimeDuration.seconds()}`);
+
+
+    }
 
     const nextSlide = () => {
         setActiveIndex((prev) => (prev + 1) % prayerCards.length);
@@ -133,6 +203,7 @@ export default function PrayerPage() {
                 }
                 setPrayerTime(data.data.timings);
 
+
             } catch (error) {
                 console.error('Error fetching prayer times:', error);
             }
@@ -140,14 +211,13 @@ export default function PrayerPage() {
         getTimes();
     }, [user]);
 
-    useEffect(() => {
-        if (!prayerTime) return
-        console.log("prayerTime fetched successfully ", prayerTime);
-    }, [prayerTime]);
+
 
 
     return (
         <div className="min-h-screen w-full px-2 md:px-4 bg-gradient-to-b from-emerald-950 to-sky-950 text-white overflow-hidden">
+
+
 
             {/* Slider Section */}
             <div>
@@ -155,15 +225,38 @@ export default function PrayerPage() {
 
                     {/* Slider */}
                     <div className="relative flex w-full h-[650px] overflow-hidden items-center justify-center">
-                        <AnimatePresence>
-                            {prayerCards.map((card, index) => {
-                                const isActive = index === activeIndex;
-                                const isPrev = index === (activeIndex - 1 + prayerCards.length) % prayerCards.length;
-                                const isNext = index === (activeIndex + 1) % prayerCards.length;
 
-                                return (
+
+
+                        {prayerCards.map((card, index) => {
+                            const isActive = index === activeIndex;
+                            const isPrev = index === (activeIndex - 1 + prayerCards.length) % prayerCards.length;
+                            const isNext = index === (activeIndex + 1) % prayerCards.length;
+
+                            return (
+
+                                <>
+                                    {isActive && prayerTime && (<motion.div
+                                        key={prayerTime[card.name as keyof PrayerTimes]}
+                                        initial={{ opacity: 0, y: -30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4, delay: 0.2 }}
+                                        className="absolute hidden top-4 right-8 z-40 md:flex flex-col items-center gap-y-2"
+                                    >
+                                        <div className="relative flex items-center justify-between gap-x-4 rounded-xl  shadow-lg px-8 py-4 w-full mb-2 bg-black/40 backdrop-blur-md">
+                                            <div className={`absolute inset-0 bg-gradient-to-tr ${card.name == 'Fajr' ? "from-orange-200/40 via-transparent to-violet-600/50" : card.name == 'Sunsrise' ? "from-gray-200/10 via-transparent to-amber-200/80" : card.name == 'Dhuhr' ? "from-sky-500/40 via-transparent to-white/50" : card.name == "Asr" ? "from-orange-200/80 via-transparent to-sky-300/50 " : card.name == 'Maghrib' ? "from-rose-400/50 via-transparent to-fuchsia-500/40" : "from-cyan-400/40 via-transparent to-sky-400/80"} blur-md rounded-xl`}></div>
+                                            <h4 className="text-lg lg:text-2xl tracking-wider font-semibold text-emerald-50">Next Prayer</h4>
+                                            <span className={`text-2xl lg:text-4xl font-semibold text-white`}>{nextPrayer}</span>
+                                        </div>
+                                        <div className="flex items-center gap-x-4 py-3 px-4 shadow-2xl rounded-xl bg-black/40 backdrop-blur-md relative">
+                                            <div className={`absolute inset-0  blur-md rounded-xl bg-gradient-to-br ${card.name == 'Fajr' ? "from-orange-200/40 via-transparent to-violet-600/50" : card.name == 'Sunsrise' ? "from-gray-200/10 via-transparent to-amber-200/80" : card.name == 'Dhuhr' ? "from-sky-500/40 via-transparent to-white/80" : card.name == 'Asr' ? "from-orange-200/80 via-transparent to-sky-300/50" : card.name == 'Maghrib' ? "from-rose-400/50 via-transparent to-fuchsia-500/40" : "from-cyan-400/40 via-transparent to-sky-400/80"}`}></div>
+                                            <IoIosTimer className="text-3xl text-gray-200 z-10" size={60} />
+                                            <div className="text-5xl font-mono tracking-wider text-white z-10">{timeRemaining}</div>
+                                        </div>
+                                    </motion.div>)}
+
                                     <motion.div
-                                        key={card.name}
+                                        key={index}
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{
                                             opacity: isActive ? 1 : 0.6,
@@ -189,6 +282,7 @@ export default function PrayerPage() {
 
 
 
+
                                             {isActive && (<motion.div
                                                 initial={{ y: -20, opacity: 0 }}
                                                 animate={{ y: 0, opacity: 1 }}
@@ -203,7 +297,7 @@ export default function PrayerPage() {
                                                         background: isActive ? 'radial-gradient(circle, rgba(16,185,129,0.4) 0%, rgba(0,0,0,0) 70%)' : 'none'
                                                     }}>{card.icon}</div>
                                                 </div>
-                                                <h3 className={`bg-black/10  z-20  px-4 py-2 rounded-sm text-4xl lg:text-5xl font-bold ${card.name === "Fajr" ? "text-orange-300" : card.name == 'Sunsrise' ? "text-gray-800" : card.name === "Dhuhr" ? "text-black" : card.name === "Asr" ? "text-amber-700" : card.name === "Maghrib" ? "text-yellow-100" : "text-cyan-300"}  drop-shadow-lg`}>{card.name}</h3>
+                                                <h3 className={`bg-black/10  z-20  px-4 py-2 rounded-sm text-4xl lg:text-5xl font-bold ${card.name === "Fajr" ? "text-orange-300" : card.name == 'Sunsrise' ? "text-gray-800" : card.name === "Dhuhr" ? "text-black" : card.name === "Asr" ? "text-amber-500" : card.name === "Maghrib" ? "text-yellow-100" : "text-cyan-300"}  drop-shadow-lg`}>{card.name}</h3>
                                             </motion.div>)}
 
 
@@ -247,9 +341,8 @@ export default function PrayerPage() {
                                             </motion.div>)}
                                         </div>
                                     </motion.div>
-                                );
-                            })}
-                        </AnimatePresence>
+                                </>);
+                        })}
                     </div>
 
 

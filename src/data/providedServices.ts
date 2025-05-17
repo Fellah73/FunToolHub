@@ -1,7 +1,7 @@
 export const services = [
   {
     name: "Prayer time 🕌",
-    link: "services/prayer-times",
+    link: "services/prayer",
     video: "services/prayer.mp4",
     description:
       "Easily consult prayer times in real time, adapted to your location and the Islamic calendar. $Restez toujours informé des heures de prière et recevez des notifications pour ne jamais les manquer.",

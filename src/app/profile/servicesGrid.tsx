@@ -10,7 +10,7 @@ export default function ServicesGrid() {
 
     let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [activeCard, setActiveCard] = useState<serviceProps | null>(null);
-    const { currentUserId } = useUser()
+    const { user } = useUser()
 
     useEffect(() => {
         console.log("is active", activeCard);
@@ -49,7 +49,7 @@ export default function ServicesGrid() {
                         <ThreeDCardDemo key={index}
                             title={service.name}
                             description={service.description}
-                            link={`${service.link}?id=${currentUserId}`}
+                            link={`${service.link}?id=${user?.id}`}
                             image={service.image}
                             type="game"
                             borderGlow={true}
@@ -67,7 +67,7 @@ export default function ServicesGrid() {
                         description={activeCard.description}
                         image={activeCard.image}
                         ctaText="Try"
-                        ctaLink={`${activeCard.link}?id=${currentUserId}`}
+                        ctaLink={`${activeCard.link}?id=${user?.id}`}
                         onClose={() => setActiveCard(null)} />
                 )
             }
