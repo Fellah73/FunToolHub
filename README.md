@@ -1,4 +1,4 @@
-# 🌌 NovaNest
+# 🌌 FunToolHub
 > A vibrant full-stack platform offering **fun mini-games** and **useful daily tools** in a sleek dark-themed interface.
 [![License](https://img.shields.io/github/license/Fellah73/myWebsite)](./LICENSE)
 [![Made with Next.js](https://img.shields.io/badge/Next.js-14-blue?logo=next.js)](https://nextjs.org/)
