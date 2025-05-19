@@ -19,7 +19,7 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
 
     return (
         <UserProvider userId={id!}> {/* ✅ Passer `id` au UserProvider */}
-            <div className="min-h-screen bg-gray-900 text-white">
+            <div className="min-h-screen  text-white">
                 {children} {/* ✅ Toutes les sous-pages sont enveloppées */}
             </div>
         </UserProvider>

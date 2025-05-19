@@ -1,4 +1,5 @@
 import { MotionValue, motion } from "framer-motion";
+import { Bird, Gamepad2, icons, Worm, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface GamesNavbarProps {
@@ -34,24 +35,29 @@ export default function GamesNavbar({ className, userId, scrollLength }: GamesNa
         >
             <div className="relative w-full flex flex-col gap-y-8 justify-center items-center">
 
-                <motion.div className="absolute top-0 inset-x-0 mx-auto w-[95%] h-[10px] rounded-full bg-gradient-to-r from-pink-500 to-fuchsia-500" 
-                style={{ scaleX: scrollLength,
-                    transformOrigin: "left"
-                 }} />
+                <motion.div className="absolute top-0 inset-x-0 mx-auto w-[95%] h-[10px] rounded-full bg-gradient-to-r from-pink-500 to-fuchsia-500"
+                    style={{
+                        scaleX: scrollLength,
+                        transformOrigin: "left"
+                    }} />
                 <div className="max-w-6xl h-[35px] mx-auto flex flex-row mt-4 justify-between items-center gap-x-4 md:gap-x-12 lg:gap-x-24">
                     {[
-                        { path: "gamesContainer", label: "All Games" },
-                        { path: "flappy-bird", label: "Flappy Bird" },
-                        { path: "snake-game", label: "Snake Game" },
-                        { path: "tic-tac-toe", label: "Tic-Tac-Toe" }
+                        { path: "gamesContainer", label: "All Games", icon: <Gamepad2 size={30} className="ml-4" /> },
+                        { path: "flappy-bird", label: "Flappy Bird", icon: <Bird size={30} className="ml-4" /> },
+                        { path: "snake-game", label: "Snake Game", icon: <Worm size={30} className="ml-4" /> },
+                        { path: "tic-tac-toe", label: "Tic-Tac-Toe", icon: <X size={30} className="ml-4" /> },
                     ].map((item) => (
                         <a
                             key={item.path}
                             href={`/games?id=${userId}#${item.path}`}
-                            className={`relative nav-link text-white text-lg font-semibold transition-all duration-300 hover:text-pink-400 py-2 px-3 overflow-hidden group ${activeLink === item.path ? "text-pink-500" : ""
+                            className={`${item.path === "tic-tac-toe" && 'pointer-events-none'} relative nav-link text-white text-lg font-semibold transition-all duration-300 hover:text-pink-400 py-2 px-3 overflow-hidden group ${activeLink === item.path ? "text-pink-500" : ""
                                 }`}
                         >
-                            <span className="relative z-10">{item.label}</span>
+                            <div className={`relative flex items-center justify-center gap-x-2 ${item.path === 'tic-tac-toe' && 'opacity-50'}`}>
+                                <span className={`z-10`}>{item.label}</span>
+                                {item.icon}
+                            </div>
+
                             <span className="absolute bottom-0 left-0 w-0 h-1 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
                             <span className="absolute inset-0 bg-gray-800/30 scale-0 group-hover:scale-100 rounded-lg -z-10 transition-transform duration-300"></span>
                         </a>

@@ -9,6 +9,7 @@ import FlappyBirdSection from "./Components/flappyBird";
 import GamesNavbar from "./Components/gamesNavbar";
 import GamesTitle from "./Components/gamesTitle";
 import SnakeGameSection from "./Components/snakeGame";
+import { Bird, LoaderCircle, Worm, X } from "lucide-react";
 
 interface Scores {
   snake: number,
@@ -105,7 +106,7 @@ export default function Page() {
         <GamesTitle />
         <div
           id="gamesContainer"
-          className="min-h-screen bg-gray-900 grid grid-cols-1 lg:grid-cols-6 mx-2">
+          className="min-h-screen  grid grid-cols-1 lg:grid-cols-6 mx-2">
           {/* 🌟 Conteneur principal */}
           <div className="relative w-full flex items-center justify-center py-4 lg:col-span-4">
             {/* 🔹 Bouton précédent */}
@@ -164,22 +165,54 @@ export default function Page() {
             <div className="w-full flex flex-col items-center gap-y-4 mb-10 md:flex-row md:justify-between md:px-28 md:mb-4 absolute bottom-20 z-20">
 
               {/* 🌟 Score */}
-              <CircularBestScore score={games[displayedIndex].name.endsWith("🐦") ? globalScore.flappy : games[displayedIndex].name.endsWith("🐍") ? globalScore.snake : 0} maxScore={200} />
+              {
+                !games[displayedIndex].name.endsWith("❌⭕") ? (
+                  <CircularBestScore score={games[displayedIndex].name.endsWith("🐦") ? globalScore.flappy : games[displayedIndex].name.endsWith("🐍") ? globalScore.snake : 0} maxScore={200} />
+
+                ) : ""
+              }
+
 
               {/* 📌 Titre du jeu */}
-              <h3 className="font-bold text-3xl text-white text-center">{games[displayedIndex].name}</h3>
+              <h3 className="font-bold text-3xl text-white text-center">
+                {
+                  games[displayedIndex].name.endsWith("🐦") && (
+                    <span className="text-violet-900">
+                      {games[displayedIndex].name.split("🐦")[0]}
+                      <Bird size={50} className="inline-block text-violet-900" />
+                    </span>
+
+                  )}
+                {
+                  games[displayedIndex].name.endsWith("🐍") && (
+                    <span className="text-fuchsia-500">
+                      {games[displayedIndex].name.split("🐍")[0]}
+                      <Worm size={50} className="inline-block text-fuchsia-500" />
+                    </span>
+
+                  )}
+                {
+                  games[displayedIndex].name.endsWith("❌⭕") && (
+                    <span className="text-sky-400">
+                      {games[displayedIndex].name.split("❌⭕")[0]}
+                      <X size={50} className="inline-block text-sky-400" />
+                    </span>
+
+                  )}</h3>
 
               {/* 🚀 Bouton Try it */}
-              <a href={`${games[displayedIndex].link}?id=${user?.id}`}>
+              <a
+                className={`${games[displayedIndex].name.endsWith("❌⭕") && "pointer-events-none"}`}
+                href={`${games[displayedIndex].link}?id=${user?.id}`}>
                 <motion.button
-                  className="px-6 py-3 bg-gradient-to-r from-pink-500 to-fuchsia-500 border border-fuchsia-500 text-xl text-white font-bold tracking-wider rounded-3xl"
+                  className={`${games[displayedIndex].name.endsWith("❌⭕") && "pointer-events-none"} px-6 py-3 bg-gradient-to-r from-pink-500 to-fuchsia-500 border border-fuchsia-500 text-xl text-white font-bold tracking-wider rounded-3xl`}
                   whileHover={{ scale: 1.2, boxShadow: "0px 0px 10px rgba(255, 0, 255, 0.7)" }}
                   whileTap={{ scale: 0.9 }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, ease: "easeInOut" }}
                 >
-                  Try it
+                  {games[displayedIndex].name.endsWith("❌⭕") ? <LoaderCircle size={40} className="animate-spin text-violet-950" /> : "Try it!"}
                 </motion.button>
               </a>
 

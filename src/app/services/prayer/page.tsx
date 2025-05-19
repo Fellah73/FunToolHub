@@ -58,7 +58,7 @@ export default function PrayerPage() {
         return time;
     };
 
-    // Prayer cards with images
+    
     const prayerCards: PrayerCardInfo[] = [
         {
             name: "Fajr",
@@ -109,8 +109,9 @@ export default function PrayerPage() {
             description: "Isha is the final prayer of the day, bringing closure and spiritual renewal. Performed under the night sky, it invites peace, forgiveness, and introspection. Isha offers a quiet moment to let go of the day's worries and connect with divine presence. It fosters spiritual tranquility and prepares the soul for rest. Ending the day with Isha encourages mindfulness and trust in God before sleep.",
 
         },
-    ];
+    ].sort((a, b) => (a.name === nextPrayer ? -1 : b.name === nextPrayer ? 1 : 0));
 
+    
     useEffect(() => {
 
         let interval = setInterval(() => {
@@ -159,6 +160,7 @@ export default function PrayerPage() {
 
 
         let remainingTime = moment(nextPrayerTime, 'HH:mm').diff(momentNow);
+        console.log("remainingTime", remainingTime);
 
         if (remainingTime < 0) {
             const midNightDiff = moment("23:59:59", "HH:mm:ss").diff(momentNow);
@@ -228,7 +230,7 @@ export default function PrayerPage() {
 
 
 
-                        {prayerCards.map((card, index) => {
+                        {nextPrayer && prayerCards.map((card, index) => {
                             const isActive = index === activeIndex;
                             const isPrev = index === (activeIndex - 1 + prayerCards.length) % prayerCards.length;
                             const isNext = index === (activeIndex + 1) % prayerCards.length;

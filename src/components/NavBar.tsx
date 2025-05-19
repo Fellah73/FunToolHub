@@ -1,81 +1,62 @@
 'use client'
+import { Gamepad2, LogOut, UserRound, Wrench } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { IoMdLogIn } from "react-icons/io";
+import { MdComputer, MdCreate } from "react-icons/md";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-export default function NavBar() {
 
-    const [isSticky, setIsSticky] = useState(false);
+export default function NavBar() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [userId, setUserId] = useState<string | null>('f1ds2dsff');
     const fetch = useRef<boolean | null>(false);
 
-
-
-    const [userId, setUserId] = useState<string | null>('f1ds2dsff');
     useEffect(() => {
-        if (fetch.current) return
-        const connectionStatus = localStorage.getItem('connectionStatus')
-        connectionStatus?.startsWith('c') && connectionStatus.endsWith('c') ? setIsLoggedIn(true) : setIsLoggedIn(false)
+        if (fetch.current) return;
+        const connectionStatus = localStorage.getItem('connectionStatus');
+        connectionStatus?.startsWith('c') && connectionStatus.endsWith('c')
+            ? setIsLoggedIn(true)
+            : setIsLoggedIn(false);
         const extractedUserId = (userId: string) => {
-            return userId?.substring(1, userId?.length - 1)
-        }
-        const userId = extractedUserId(connectionStatus!)
-        setUserId(userId)
-
-        fetch.current = true
-    }, [])
-
-    useEffect(() => {
-
-        const handleScroll = () => {
-            setIsSticky(window.scrollY > 100);
+            return userId?.substring(1, userId?.length - 1);
         };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        const userId = extractedUserId(connectionStatus!);
+        setUserId(userId);
+        fetch.current = true;
     }, []);
 
-
-
     return (
-        <nav className={`sticky transition-all duration-200 top-0 z-50 backdrop-blur-2xl w-[100%] h-16 inset-x-0 mx-auto `}>
-            <MaxWidthWrapper className="flex items-center justify-between py-3 my-2 px-4 w-[90%] mx-auto border-primary border-b-2 rounded-xl bg-blue-950 text-white">
-                <Link href={'/'}>
-                    <p className="text-xl md:text-2xl text-white tracking-tighter">Moh dev</p>
+        <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-opacity-30 bg-gradient-to-r from-violet-950 via-transparent to-transparent shadow-lg shadow-fuchsia-900/50">
+            <MaxWidthWrapper className="flex items-center justify-between gap-x-4 py-3 px-4 w-[95%] mx-auto text-white">
+                {/* Logo and Name */}
+                <Link href={'/'} className="flex items-center gap-2">
+                    <MdComputer className="text-3xl text-fuchsia-600 mr-8" size={40} />
+                    <p className="text-xl md:text-2xl tracking-wide font-bold text-fuchsia-500">FunTool Hub</p>
                 </Link>
-                <div className="flex justify-between gap-2">
-                    {
-                        !isLoggedIn ? (
-                            <>
 
-                                <Link href="/register" className='font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 sm:flex sm:items-center sm:justify-center hidden' >
-                                    Sign Up
-                                </Link>
-                                <Link href='/login' className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    Login
-                                </Link>
+                {/* Desktop Navigation */}
+                <div className="hidden md:flex justify-between items-center gap-x-8">
+                    {!isLoggedIn ? (
+                        <>
+                            <Wrench size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/services` }} />
+                            <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/games` }} />
+                            <MdCreate size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/register` }} />
+                            <IoMdLogIn size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/login` }} />
 
-                            </>
-                        ) : (
-                            <>
-                                <Link href='/logout' className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    Logout
-                                </Link>
-                                <Link href={`/profile?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    Profil
-                                </Link>
-                                <Link href={`/games?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    games
-                                </Link>
-                                <Link href={`/services?id=${userId}`} className="font-semibold text-sm text-white bg-blue-950 rounded-xl border border-primary hover:bg-white hover:text-black py-2 px-6 flex items-center justify-center">
-                                    services
-                                </Link>
+                        </>
+                    ) : (
+                        <>
 
-                            </>
-                        )
-                    }
+                            <UserRound size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/profile?id=${userId}` }} />
+                            <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/games?id=${userId}` }} />
+                            <Wrench size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/services?id=${userId}` }} />
+                            <LogOut size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/logout?id=${userId}` }} />
+                        </>
+                    )}
                 </div>
+
+
             </MaxWidthWrapper>
         </nav>
-    )
+    );
 }
-{/* from Navbar to context */ }

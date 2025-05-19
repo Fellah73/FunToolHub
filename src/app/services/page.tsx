@@ -8,6 +8,7 @@ import ServicesTitle from './Components/servicesTitle'
 import PrayerTimeSection from "./Components/prayerTime"
 import { FaPray } from "react-icons/fa";
 import { FcTodoList } from "react-icons/fc";
+import { LoaderCircle } from "lucide-react"
 
 export default function page() {
 
@@ -112,7 +113,9 @@ export default function page() {
             </h3>
 
             {/* 🚀 Bouton Try it */}
-            <a href={`${services[displayedIndex].link}?id=${user?.id}`}>
+            <a
+              className={`${!services[displayedIndex].name.endsWith('🕌') && "pointer-events-none"}`}
+              href={`${services[displayedIndex].link}?id=${user?.id}`}>
               <motion.button
                 className="px-6 py-3 bg-gradient-to-r from-sky-900 to-cyan-700 text-xl text-emerald-200  font-bold tracking-widest rounded-3xl"
                 whileHover={{ scale: 1.2, boxShadow: "0px 0px 10px rgba(255, 0, 255, 0.7)" }}
@@ -121,7 +124,7 @@ export default function page() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeInOut" }}
               >
-                Try it
+                {services[displayedIndex].name.endsWith('🕌') ? "Try it" : <LoaderCircle size={40} className="animate-spin text-emerald-300" />}
               </motion.button>
             </a>
 
