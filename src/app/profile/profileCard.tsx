@@ -56,7 +56,7 @@ export default function profileCardComponent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-3xl mx-auto bg-gradient-to-br from-violet-950 to-indigo-950 rounded-xl shadow-xl shadow-fuchsia-900/50 overflow-hidden border-indigo-600 border-t-2"
+        className="w-full max-w-3xl mx-auto bg-gradient-to-br from-violet-950 to-indigo-950 rounded-lg shadow-md shadow-violet-950/80 overflow-hidden"
       >
         {/* Profile Header with Gradient Overlay */}
         <div className="relative h-52 md:h-60 ">
@@ -83,7 +83,7 @@ export default function profileCardComponent() {
           >
             <div className="relative size-36 md:size-40 lg:size-44 rounded-full border-4 border-violet-950 group">
               <img
-                src={user?.profileImage}
+                src={user?.profileImage || '/profile/defaultPorfleImage.jpg'}
                 alt="Profile picture"
                 className="size-full object-cover rounded-full pointer-events-none select-none"
               />

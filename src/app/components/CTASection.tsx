@@ -101,7 +101,7 @@ export default function CTASection() {
                                 whileTap={{ scale: 0.95 }}
                                 className="flex-1 sm:flex-initial"
                             >
-                                <Link href="/login" className="w-full sm:w-auto inline-flex items-center justify-center bg-purple-900 hover:bg-transparent hover:border hover:border-white text-white font-medium py-3 px-8 rounded-lg transition-all  duration-300">
+                                <Link href="/auth" className="w-full sm:w-auto inline-flex items-center justify-center bg-purple-900 hover:bg-transparent hover:border hover:border-white text-white font-medium py-3 px-8 rounded-lg transition-all  duration-300">
                                     Get Started <ArrowRight className="ml-2 w-5 h-5" />
                                 </Link>
                             </motion.div>

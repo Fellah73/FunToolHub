@@ -1,9 +1,8 @@
 'use client'
-import { Gamepad2, LogOut, UserRound, Wrench } from "lucide-react";
+import { Gamepad2, Lock, LockOpen, UserRound, Wrench } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { IoMdLogIn } from "react-icons/io";
-import { MdComputer, MdCreate } from "react-icons/md";
+import { MdComputer } from "react-icons/md";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 
 export default function NavBar() {
@@ -38,20 +37,16 @@ export default function NavBar() {
                 <div className="hidden md:flex justify-between items-center gap-x-8">
                     {!isLoggedIn ? (
                         <>
-                            <a href="/login">
+                            <a href="/auth">
                                 <Wrench size={40} className="text-fuchsia-600 hover:scale-125 cursor-pointer  transition-all duration-200"/>
                             </a>
-                            <a href="login">
+                            <a href="/auth">
                                 <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
                             </a>
-                            <a href="/register">
-                                <MdCreate size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+                            <a href="/auth">
+                                <Lock size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
 
                             </a>
-                            <a href="/login">
-                                <IoMdLogIn size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
-                            </a>
-
                         </>
                     ) : (
                         <>
@@ -66,13 +61,11 @@ export default function NavBar() {
                                 <Wrench size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
                             <a href="">
-                                <LogOut size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                                <LockOpen size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
                         </>
                     )}
                 </div>
-
-
             </MaxWidthWrapper>
         </nav>
     );
