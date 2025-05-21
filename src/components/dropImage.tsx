@@ -93,19 +93,19 @@ const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedIma
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div className="w-full max-w-md bg-gray-800 border-2 border-pink-800 rounded-lg p-6">
+            <div className="w-full max-w-md bg-gradient-to-br from-violet-950 to-indigo-950 border-2 border-blue-300 rounded-lg p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl text-white">Upload {type} Image</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-white">
+                    <button onClick={onClose} className="text-blue-300 hover:text-white">
                         <X size={24} />
                     </button>
                 </div>
 
-                <div className="relative h-64 border-2 border-dashed border-pink-800 rounded-lg mb-4">
+                <div className="relative h-64 border-2 border-dashed border-blue-300 rounded-lg mb-4">
                     {previewUrl ? (
                         <img src={previewUrl} alt="Preview" className="w-full h-full object-contain rounded-lg" />
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                        <div className="flex flex-col items-center justify-center h-full text-blue-300">
                             <p>Drag and drop or click to select</p>
                             <p className="text-sm">JPG, PNG, or WebP (max 5MB)</p>
                         </div>
@@ -123,7 +123,7 @@ const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedIma
                 <div className="flex justify-end gap-3">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-white bg-gray-700 rounded-md hover:bg-gray-600"
+                        className="px-4 py-2 border border-white text-white bg-fuchsia-600 rounded-md hover:bg-fuchsia-700 hover:scale-110 transition-colors duration-300"
                     >
                         Cancel
                     </button>
@@ -131,7 +131,7 @@ const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedIma
                     <button
                         onClick={handleSave}
                         disabled={!selectedImage}
-                        className="px-4 py-2 text-white bg-pink-700 rounded-md hover:bg-pink-600 disabled:bg-gray-600 disabled:cursor-not-allowed"
+                        className="px-4 py-2 text-blue-50 bg-indigo-900 rounded-md hover:bg-indigo-700 transition-all duration-300 hover:scale-110 border border-blue-300 disabled:bg-gray-600 disabled:cursor-not-allowed"
                     >
                         Save
                     </button>

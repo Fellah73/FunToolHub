@@ -22,20 +22,12 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <UserProvider userId={id}>
-      <div className="min-h-screen bg-gray-900 px-6 py-8 flex flex-col gap-y-10 md:gap-y-14 lg:gap-y-20">
-
-        {/* 🔥 ProfileCardComponent (Carte Profil) */}
+      <div className="min-h-screen px-6 py-8 flex flex-col gap-y-10 md:gap-y-14 lg:gap-y-20">
         <ProfileCardComponent />
-
-        {/* 🔥 Games Grid (Grid des Jeux) */}
         <GamesGrid />
-
-        {/* 🔥 Services Grid (Grid des Services) */}
         <ServicesGrid />
-
       </div>
     </UserProvider>
   );
 }
 
-// delete the fetch and don't pass the user

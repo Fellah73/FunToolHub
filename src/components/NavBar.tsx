@@ -38,19 +38,36 @@ export default function NavBar() {
                 <div className="hidden md:flex justify-between items-center gap-x-8">
                     {!isLoggedIn ? (
                         <>
-                            <Wrench size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/services` }} />
-                            <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/games` }} />
-                            <MdCreate size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/register` }} />
-                            <IoMdLogIn size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/login` }} />
+                            <a href="/login">
+                                <Wrench size={40} className="text-fuchsia-600 hover:scale-125 cursor-pointer  transition-all duration-200"/>
+                            </a>
+                            <a href="login">
+                                <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+                            </a>
+                            <a href="/register">
+                                <MdCreate size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+
+                            </a>
+                            <a href="/login">
+                                <IoMdLogIn size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+                            </a>
 
                         </>
                     ) : (
                         <>
 
-                            <UserRound size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/profile?id=${userId}` }} />
-                            <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/games?id=${userId}` }} />
-                            <Wrench size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/services?id=${userId}` }} />
-                            <LogOut size={40} className="text-fuchsia-600 hover:scale-125 transition-all duration-200" onClick={() => { window.location.href = `/logout?id=${userId}` }} />
+                            <a href={`/profile?id=${userId}`}>
+                                <UserRound size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                            </a>
+                            <a href={`/games?id=${userId}`}>
+                                <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                            </a>
+                            <a href={`/services?id=${userId}`}>
+                                <Wrench size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                            </a>
+                            <a href="">
+                                <LogOut size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                            </a>
                         </>
                     )}
                 </div>

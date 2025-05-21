@@ -1,6 +1,7 @@
 'use client'
 
-import { Calendar, Loader2, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Award, Calendar, Edit, Loader2, Mail } from 'lucide-react';
 import { useEffect } from 'react';
 import { useUser } from '../context/userContext';
 import ModalComponent from './modal/modal';
@@ -14,77 +15,169 @@ export default function profileCardComponent() {
   }, [user])
 
   if (loading) {
-    return <div className='min-h-screen flex items-center justify-center'>
-      <div className='flex flex-col items-center gap-y-2'>
-        <p className='text-white text-lg md:text-xl lg:text-3xl'>Loading</p>
-        <Loader2 className='animate-spin text-primary size-8' />
+    return (
+      <div className='min-h-screen flex items-center justify-center bg-violet-950/20'>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className='flex flex-col items-center gap-y-3 p-6 rounded-lg bg-violet-900/20 backdrop-blur-sm'
+        >
+          <p className='text-white tracking-wide text-lg md:text-xl lg:text-3xl font-medium'>
+            Loading your profile
+          </p>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            <Loader2 className='text-indigo-400 size-8' />
+          </motion.div>
+        </motion.div>
       </div>
-    </div>;
+    );
   }
 
   if (!user) {
-    return <div className='text-white text-2xl md:text-4xl'>No user data available</div>;
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className='text-white text-2xl md:text-4xl p-8 bg-violet-900/20 rounded-lg backdrop-blur-sm'
+      >
+        No user data available
+      </motion.div>
+    );
   }
 
 
 
   return (
-    <div className=" bg-gray-900 px-6 md:px-8 lg:px-10   ">
-      <div className="w-[90%] md:w-[85%] mx-auto bg-gray-800 rounded-lg shadow-lg shadow-pink-800 overflow-hidden border-pink-800  border-t-2">
+    <div className="px-6 md:px-8 lg:px-10 py-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="w-full max-w-3xl mx-auto bg-gradient-to-br from-violet-950 to-indigo-950 rounded-xl shadow-xl shadow-fuchsia-900/50 overflow-hidden border-indigo-600 border-t-2"
+      >
+        {/* Profile Header with Gradient Overlay */}
+        <div className="relative h-52 md:h-60 ">
+          <motion.div
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.2 }}
+            className="w-full h-full"
+          >
+            <img
+              src={user?.backgroundImage || '/profile/defaultBackground.webp'}
+              alt="Profile background"
+              className="w-full h-full object-cover pointer-events-none select-none"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-violet-950 via-violet-900/50 to-transparent"></div>
+          </motion.div>
 
-        {/* Profile Header */}
-        <div className="relative h-48 bg-gradient-to-l non-pointer-events select-none">
-          <img src={user?.backgroundImage || '/profile/defaultBackground.webp'} alt="web" className="w-full h-48 object-cover pointer-events-none select-none" />
-
-
-          <div className="absolute -bottom-12 md:-bottom-16 left-1/2 transform -translate-x-1/2">
-            <div className="relative size-36 md:size-40 lg:size-44 rounded-full border-4 border-gray-800">
+          {/* Profile Picture */}
+          <motion.div
+            className="absolute -bottom-14 left-1/2 transform -translate-x-1/2"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <div className="relative size-36 md:size-40 lg:size-44 rounded-full border-4 border-violet-950 group">
               <img
                 src={user?.profileImage}
-                alt="web"
-                className="size-full object-cover rounded-full pointer-events-none select-none "
+                alt="Profile picture"
+                className="size-full object-cover rounded-full pointer-events-none select-none"
               />
-              <div className="absolute inset-0 bg-black/50 rounded-full flex items-end justify-center">
-                <span className="text-2xl md:text-3xl lg:text-4xl text-gray-100 z-10 pb-4 hidden">
-                  {user?.name}
-                </span>
-              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
+
         {/* Profile Content */}
-        <div className="pt-11 pb-8 px-8">
+        <motion.div
+          className="pt-16 pb-8 px-8 md:px-10"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
           <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-white">{user?.name}</h1>
-              <p className="text-gray-400">{user?.pseudoname}</p>
-            </div>
-            <ModalComponent user={user!} setUser={setUser} />
+            <motion.div
+              initial={{ x: -10, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+            >
+              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200">
+                {user?.name}
+              </h1>
+              <p className="text-fuchsia-300 mt-1 font-medium">{user?.pseudoname}</p>
+            </motion.div>
+
+            <motion.div
+
+            >
+              <ModalComponent user={user!} setUser={setUser} />
+            </motion.div>
           </div>
-          {/* Profile Info */}
-          <div className="space-y-4">
-            <div className="flex items-center text-gray-300 gap-2">
-              <Mail size={18} />
-              <span>{user?.email}</span>
-            </div>
-            <div className="flex items-center text-gray-300 gap-2">
-              <Calendar size={18} />
-              <span>Joined  us in {new Date(user?.createdAt || 0).toLocaleDateString()}</span>
-            </div>
-          </div>
-          {/* Stats */}
-          <div className="mt-8 flex flex-col gap-y-3 sm:flex sm:flex-row sm:justify-between sm:px-5 border-t border-gray-700 pt-6">
-            <div className="text-center">
+
+          {/* Profile Info Cards */}
+          <motion.div
+            className="space-y-3 md:space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-center gap-3 p-3 rounded-lg bg-indigo-900/30 text-indigo-100"
+            >
+              <div className="bg-fuchsia-800/50 p-2 rounded-full">
+                <Mail size={18} className="text-fuchsia-300" />
+              </div>
+              <span className="text-sm md:text-base font-medium">{user?.email}</span>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ x: 5 }}
+              className="flex items-center gap-3 p-3 rounded-lg bg-indigo-900/30 text-indigo-100"
+            >
+              <div className="bg-fuchsia-800/50 p-2 rounded-full">
+                <Calendar size={18} className="text-fuchsia-300" />
+              </div>
+              <span className="text-sm md:text-base font-medium">
+                Joined {new Date(user?.createdAt || 0).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </span>
+            </motion.div>
+          </motion.div>
+
+          {/* Stats Section */}
+          <motion.div
+            className="mt-10 grid grid-cols-2 gap-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
+            <motion.div
+              whileHover={{ y: -5 }}
+              className="text-center p-4 rounded-lg bg-purple-900/30 backdrop-blur-sm border border-indigo-800/50"
+            >
+              <div className="flex justify-center mb-2">
+                <Award className="text-fuchsia-400 size-6" />
+              </div>
               <div className="text-2xl font-bold text-white">0</div>
-              <div className="text-gray-400">Credit</div>
-            </div>
-            <div className="text-center">
+              <div className="text-indigo-300 text-sm">Credits Available</div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ y: -5 }}
+              className="text-center p-4 rounded-lg bg-purple-900/30 backdrop-blur-sm border border-indigo-800/50"
+            >
+              <div className="flex justify-center mb-2">
+                <Edit className="text-fuchsia-400 size-6" />
+              </div>
               <div className="text-2xl font-bold text-white">0</div>
-              <div className="text-gray-400">Contributions</div>
-            </div>
-          </div>
-        </div>
-      </div>
+              <div className="text-indigo-300 text-sm">Contributions Made</div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

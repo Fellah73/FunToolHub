@@ -172,7 +172,7 @@ export const ModalFooter = ({
       )}
     >
 
-      <button className="px-2 py-1 bg-pink-800 text-white border-gray-800 border-2 rounded-md text-sm w-28"
+      <button className="px-2 py-1 bg-fuchsia-700 text-white ring-1 ring-white rounded-md text-sm w-28"
         onClick={() => {reset();  setOpen(false)}}>
         Cancel
       </button>
