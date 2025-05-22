@@ -20,16 +20,16 @@ model User {
   bio             String    @default("")
   flappyScores    FlappyScore[]
   snakeScores     SnakeScore[]
+  testimonials    Testimonial[]  
 }
+
 model FlappyScore {
   id        String   @id @default(uuid())
   score     Int
   playedAt  DateTime @default(now())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-
 }
-
 
 model SnakeScore {
   id        String   @id @default(uuid())
@@ -37,5 +37,15 @@ model SnakeScore {
   playedAt  DateTime @default(now())
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+}
 
+model Testimonial {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  rating    Int      @default(5) 
+  createdAt DateTime @default(now())
+  isVisible Boolean  @default(true)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

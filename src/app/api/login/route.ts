@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     const token = jwt.sign({ email: email }, process.env?.AUTH_SECRET_KEY!, {
-      expiresIn: "5m",
+      expiresIn: "15m",
     });
 
     const { password: _, ...userWithouPass } = userExists;

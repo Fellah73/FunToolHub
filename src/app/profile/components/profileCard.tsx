@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion';
 import { Award, Calendar, Edit, Loader2, Mail } from 'lucide-react';
 import { useEffect } from 'react';
-import { useUser } from '../context/userContext';
-import ModalComponent from './modal/modal';
+import { useUser } from '../../context/userContext';
+import ModalComponent from '../modal/modal';
 export default function profileCardComponent() {
 
   const { user, setUser, loading } = useUser()
@@ -51,7 +51,7 @@ export default function profileCardComponent() {
 
 
   return (
-    <div className="px-6 md:px-8 lg:px-10 py-8">
+    <div className="px-6 md:px-8 lg:px-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

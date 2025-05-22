@@ -35,8 +35,8 @@ export async function PATCH(request: Request) {
         name,
         password: hashedPassword,
         bio,
-        backgroundImage,
-        profileImage,
+        backgroundImage  : backgroundImage || existingUser.backgroundImage, 
+        profileImage : profileImage || existingUser.profileImage,
       },
     });
 

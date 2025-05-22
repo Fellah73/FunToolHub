@@ -4,7 +4,8 @@ import { floatingProfileElements } from '@/data/featureData';
 import decryptId from '@/lib/auth';
 import { motion } from 'framer-motion';
 import { UserProvider } from '../context/userContext';
-import ProfileCardComponent from './profileCard';
+import ProfileCardComponent from './components/profileCard';
+import TestimonialForm from './components/addTestement';
 
 interface PageProps {
   searchParams: { [key: string]: string | undefined };
@@ -17,9 +18,6 @@ export default function Page({ searchParams }: PageProps) {
   if (!id) {
     return (
       <div className="relative min-h-screen overflow-hidden flex items-center justify-center">
-
-
-
         {/* Orbes lumineux */}
         <motion.div
           className="absolute top-1/4 -left-20 w-80 h-80 rounded-full bg-fuchsia-400/20 blur-3xl"
@@ -71,7 +69,7 @@ export default function Page({ searchParams }: PageProps) {
             No identifier provided to access the profile
           </motion.p>
           <motion.a
-             href='/auth'
+            href='/auth'
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.5 }}
@@ -89,8 +87,6 @@ export default function Page({ searchParams }: PageProps) {
   return (
     <UserProvider userId={id}>
       <div className="relative min-h-screen overflow-hidden">
-
-
         {/* Éléments flottants animés */}
         {floatingProfileElements.map((elem, index) => (
           <motion.div
@@ -131,19 +127,61 @@ export default function Page({ searchParams }: PageProps) {
           }}
           transition={{ duration: 10, repeat: Infinity, delay: 2 }}
         />
+        {/* Title for the page dashboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+          className="w-[90%] mx-auto max-w-4xl mt-16"
+        >
+          <div className="bg-gradient-to-br from-violet-950/30 to-indigo-950/30 p-8 rounded-lg shadow-lg shadow-violet-900/20 border border-violet-800/20 backdrop-blur-sm text-center">
+            <motion.h3
+              initial={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="text-2xl md:text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200"
+            >
+              Welcome to Your Profile Dashboard
+            </motion.h3>
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+              className="text-violet-200 max-w-2xl mx-auto"
+            >
+              Manage your account, track your progress, and share your experience with our community.
+              Your feedback helps us create better tools and experiences for everyone.
+            </motion.p>
+          </div>
+        </motion.div>
 
         {/* Contenu principal */}
-        <div className="container relative z-10 mx-auto px-4 min-h-screen flex flex-col justify-start py-12 items-center">
-          {/* Zone centrale avec profil */}
-          <div className="w-full max-w-4xl">
+        <div className="container relative z-10 mx-auto px-4 min-h-screen flex flex-col justify-start py-8 items-center">
+          {/* Layout en deux colonnes sur desktop, empilé sur mobile */}
+          <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+
+            {/* Colonne gauche - Profile Card (plus compacte) */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5, duration: 0.7 }}
+              className="w-full lg:col-span-3"
             >
               <ProfileCardComponent />
             </motion.div>
+
+            {/* Colonne droite - Testimonial Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="w-full lg:col-span-2 lg:sticky lg:top-8"
+            >
+              <TestimonialForm />
+            </motion.div>
           </div>
+
+
         </div>
       </div>
     </UserProvider>
