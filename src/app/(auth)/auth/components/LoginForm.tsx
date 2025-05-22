@@ -9,7 +9,6 @@ import { Button } from '../../../../components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../../../components/ui/card'
 import { ArrowRight, Mail, Lock, Loader2 } from 'lucide-react'
 
-// Schema validation
 const loginSchema = z.object({
     email: z.string().email("Invalid email address")
         .endsWith("@gmail.com", 'only gmail accounts are allowed'),
@@ -114,10 +113,8 @@ export default function LoginForm({
                 toast({
                     title: 'Login successful',
                     description: 'Welcome back to FunTool Hub!'
-                })
-                // Keep the existing login flow
-                localStorage.setItem('connectionStatus', `c${data.userWithouPass.id}c`)
-                window.location.href = (`/redirect`)
+                })  
+                window.location.href = (`/profile`)
             }
 
         } catch (err) {

@@ -69,7 +69,7 @@ export default function SnakeGameSection() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <a href="/games/snake" className="inline-flex items-center bg-gradient-to-r from-purple-600 to-indigo-500 hover:bg-purple-500 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+                <a href="games/snake" className="inline-flex items-center bg-gradient-to-r from-purple-600 to-indigo-500 hover:bg-purple-500 text-white font-medium py-3 px-6 rounded-lg transition-colors">
                   Try Now <ArrowRight className="ml-2 w-5 h-5" />
                 </a>
               </motion.div>

@@ -115,7 +115,7 @@ export default function page() {
             {/* 🚀 Bouton Try it */}
             <a
               className={`${!services[displayedIndex].name.endsWith('🕌') && "pointer-events-none"}`}
-              href={`${services[displayedIndex].link}?id=${user?.id}`}>
+              href={`${services[displayedIndex].link}`}>
               <motion.button
                 className="px-6 py-3 bg-gradient-to-r from-sky-900 to-cyan-700 text-xl text-emerald-200  font-bold tracking-widest rounded-3xl"
                 whileHover={{ scale: 1.2, boxShadow: "0px 0px 10px rgba(255, 0, 255, 0.7)" }}

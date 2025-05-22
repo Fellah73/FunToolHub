@@ -128,11 +128,7 @@ export default function RegisterForm({
                     description: data.message
                 })
 
-                // Store user ID in local storage
-                const userId = `c${data.userWithouPass.id}c`
-                localStorage.setItem('connectionStatus', userId)
-
-                window.location.href = (`/redirect`)
+                window.location.href = (`/profile`)
             }
 
         } catch (err) {

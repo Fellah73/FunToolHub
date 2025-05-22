@@ -1,4 +1,3 @@
-// app/page.tsx
 import CTASection from './components/CTASection';
 import FeatureSection from './components/FeatureSection';
 import FlappyBirdSection from './components/flappyBirdSection';
@@ -11,7 +10,7 @@ import { TestimonialSection } from './components/TestimonialsSection';
 export default function Page() {
   return (
     <div className="min-h-screen  text-white">
-
+      
       <main>
         <HeroSection />
         <FeatureSection />

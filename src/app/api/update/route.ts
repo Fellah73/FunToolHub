@@ -48,7 +48,7 @@ export async function PATCH(request: Request) {
 
     updatedUser.password = "";
 
-    console.log("User updated successfully", updatedUser);
+    
 
     // every update will delete the cache and refresh the profil page fetch
     revalidateTag("user-profile");

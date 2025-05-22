@@ -76,7 +76,7 @@ export default function FlappyBirdSection() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Link href="/games/flappy-bird" className="inline-flex items-center bg-fuchsia-800/50 hover:bg-fuchsia-800 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+              <Link href="games/flappy-bird" className="inline-flex items-center bg-fuchsia-800/50 hover:bg-fuchsia-800 text-white font-medium py-3 px-6 rounded-lg transition-colors">
                 Play Now <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </motion.div>

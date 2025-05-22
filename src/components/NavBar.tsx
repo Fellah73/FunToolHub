@@ -1,28 +1,63 @@
 'use client'
-import { Gamepad2, Lock, LockOpen, UserRound, Wrench } from "lucide-react";
+import { User } from "@prisma/client";
+import { Gamepad2, Lock, LogOut, UserRound, Wrench } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdComputer } from "react-icons/md";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 
 export default function NavBar() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-    const [userId, setUserId] = useState<string | null>('f1ds2dsff');
-    const fetch = useRef<boolean | null>(false);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        if (fetch.current) return;
-        const connectionStatus = localStorage.getItem('connectionStatus');
-        connectionStatus?.startsWith('c') && connectionStatus.endsWith('c')
-            ? setIsLoggedIn(true)
-            : setIsLoggedIn(false);
-        const extractedUserId = (userId: string) => {
-            return userId?.substring(1, userId?.length - 1);
-        };
-        const userId = extractedUserId(connectionStatus!);
-        setUserId(userId);
-        fetch.current = true;
-    }, []);
+
+        if (user) return;
+        const checkAuth = async () => {
+            try {
+                const res = await fetch(`/api/me`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+                const data = await res.json();
+                console.log(data);
+
+                if (!res.ok || !data.success) {
+                    setIsLoggedIn(false);
+                    return;
+                } else {
+                    setIsLoggedIn(true);
+                    setUser(data.user);
+                }
+
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        }
+        checkAuth();
+        console.log("fetching user");
+    }, [user]);
+
+    useEffect(() => {
+        console.log("user in navbar", isLoggedIn);
+    }, [isLoggedIn]);
+
+
+    const handleLogout = async () => {
+        try {
+            const res = await fetch(`/api/logout`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const data = await res.json();
+            if(!res.ok || !data.success) throw new Error(data.message);
+            setIsLoggedIn(false);
+            setUser(null);
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-opacity-30 bg-gradient-to-r from-violet-950 via-transparent to-transparent shadow-lg shadow-fuchsia-900/50">
@@ -38,30 +73,29 @@ export default function NavBar() {
                     {!isLoggedIn ? (
                         <>
                             <a href="/auth">
-                                <Wrench size={40} className="text-fuchsia-600 hover:scale-125 cursor-pointer  transition-all duration-200"/>
+                                <Wrench size={40} className="text-fuchsia-600 hover:scale-125 cursor-pointer  transition-all duration-200" />
                             </a>
                             <a href="/auth">
-                                <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+                                <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
                             <a href="/auth">
-                                <Lock size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200"/>
+                                <Lock size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
 
                             </a>
                         </>
                     ) : (
                         <>
-
-                            <a href={`/profile?id=${userId}`}>
+                            <a href={`/profile`}>
                                 <UserRound size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
-                            <a href={`/games?id=${userId}`}>
+                            <a href={`/games`}>
                                 <Gamepad2 size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
-                            <a href={`/services?id=${userId}`}>
+                            <a href={`/services`}>
                                 <Wrench size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
-                            <a href="">
-                                <LockOpen size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
+                            <a href="" onClick={handleLogout}>
+                                <LogOut size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
                         </>
                     )}

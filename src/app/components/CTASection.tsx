@@ -1,4 +1,3 @@
-// app/components/home/CTASection.tsx
 'use client';
 
 import { motion } from 'framer-motion';
@@ -21,7 +20,7 @@ const stats = [
     },
     {
         icon: <MonitorSmartphone className="size-10 text-sky-400" />,
-        value: "24/7",
+        value : "2",
         label: "Fully responsive platform",
         color: "text-sky-400"
     },
@@ -79,10 +78,10 @@ export default function CTASection() {
                                     viewport={{ once: true }}
                                     className="bg-violet-900/40 border border-violet-700/30 rounded-xl p-6 text-center"
                                 >
-                                    <div className="flex justify-center mb-3">
+                                    <div className="flex justify-center items-center mb-3">
                                         {stat.icon}
                                     </div>
-                                    <h3 className={`text-2xl md:text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</h3>
+                                    <h3 className={`text-2xl md:text-3xl font-bold  ${stat.color} mb-1`}>{stat.value }</h3>
                                     <p className={` tracking-wide ${stat.color}`}>{stat.label}</p>
                                 </motion.div>
                             ))}
@@ -101,7 +100,7 @@ export default function CTASection() {
                                 whileTap={{ scale: 0.95 }}
                                 className="flex-1 sm:flex-initial"
                             >
-                                <Link href="/auth" className="w-full sm:w-auto inline-flex items-center justify-center bg-purple-900 hover:bg-transparent hover:border hover:border-white text-white font-medium py-3 px-8 rounded-lg transition-all  duration-300">
+                                <Link href="/profile" className="w-full sm:w-auto inline-flex items-center justify-center bg-purple-900 hover:bg-transparent hover:border hover:border-white text-white font-medium py-3 px-8 rounded-lg transition-all  duration-300">
                                     Get Started <ArrowRight className="ml-2 w-5 h-5" />
                                 </Link>
                             </motion.div>

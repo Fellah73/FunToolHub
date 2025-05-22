@@ -1,4 +1,3 @@
-// app/components/home/FeatureSection.tsx
 'use client';
 
 import { motion } from 'framer-motion';
@@ -124,7 +123,7 @@ export default function FeatureSection() {
             features={gameFeatures}
             iconColor="text-fuchsia-400"
             bgColor="bg-fuchsia-800/50"
-            type='game'
+            type='games'
           />
         </div>
       </div>

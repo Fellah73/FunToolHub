@@ -6,26 +6,41 @@ export async function POST(request: Request) {
 
     const { id, rating, content } = body;
 
-    const newTestemonial = await db.testimonial.create({
-      data: {
-        userId: id,
-        content: content,
-        rating: rating,
-        title: "test",
-      },
+   
+    const existingTestimonial = await db.testimonial.findFirst({
+      where: { userId: id },
     });
 
-    if (!newTestemonial)
-      return new Response(
-        "impossible d'ecrire le score dans la base de donées",
-        { status: 500 }
-      );
+    let responseMessage;
 
-    return new Response(JSON.stringify({ success: true }), {
+    if (existingTestimonial) {
+      
+      await db.testimonial.update({
+        where: { id: existingTestimonial.id },
+        data: {
+          content: content,
+          rating: rating,
+        },
+      });
+      responseMessage = "Testimonial Updated successfully.";
+    } else {
+      
+      await db.testimonial.create({
+        data: {
+          userId: id,
+          content: content,
+          rating: rating,
+          title: "test",
+        },
+      });
+      responseMessage = "Testimonial added successfully.";
+    }
+
+    return new Response(JSON.stringify({ success: true, message: responseMessage }), {
       status: 200,
     });
   } catch (error) {
     console.error(error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response("Erreur interne du serveur", { status: 500 });
   }
 }

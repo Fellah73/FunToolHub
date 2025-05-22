@@ -203,7 +203,7 @@ export default function Page() {
               {/* 🚀 Bouton Try it */}
               <a
                 className={`${games[displayedIndex].name.endsWith("❌⭕") && "pointer-events-none"}`}
-                href={`${games[displayedIndex].link}?id=${user?.id}`}>
+                href={`${games[displayedIndex].link}`}>
                 <motion.button
                   className={`${games[displayedIndex].name.endsWith("❌⭕") && "pointer-events-none"} px-6 py-3 bg-gradient-to-r from-pink-500 to-fuchsia-500 border border-fuchsia-500 text-xl text-white font-bold tracking-wider rounded-3xl`}
                   whileHover={{ scale: 1.2, boxShadow: "0px 0px 10px rgba(255, 0, 255, 0.7)" }}

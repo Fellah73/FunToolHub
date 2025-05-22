@@ -1,4 +1,3 @@
-// app/components/home/HeroSection.tsx
 'use client';
 
 import { motion } from 'framer-motion';
@@ -40,7 +39,7 @@ export default function HeroSection() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <motion.a 
-               href='/register'
+               href='/profile'
                 initial={{ scale: 1 }}
                 whileHover={{ scale: 1.09 }}
                 whileTap={{ scale: 0.95 }}

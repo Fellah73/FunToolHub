@@ -41,6 +41,8 @@ export default function TestimonialForm() {
 
             const data = await response.json();
             if (!response.ok || !data.success) throw new Error(data.message);
+
+            console.log(data.message);
         } catch (error) {
             console.error(error);
         }

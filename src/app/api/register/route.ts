@@ -1,16 +1,11 @@
 import { db } from "@/app/db";
 import bcrypt from "bcryptjs";
-import { console } from "inspector";
 import jwt from "jsonwebtoken";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { email, name, password } = body;
-
-    {
-      /* check if user exists (email)*/
-    }
 
     const userExists = await db.user.findUnique({
       where: {
@@ -25,15 +20,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Version sécurisée et plus propre
+    
     const saltRounds = process.env.HASH_DEPTH
       ? parseInt(process.env.HASH_DEPTH)
-      : 10; // 10 comme valeur par défaut
-
+      : 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const token = jwt.sign({ email: email }, process.env?.AUTH_SECRET_KEY!, {
-      expiresIn: "10m",
+      expiresIn: "15m",
     });
 
     const user = await db.user.create({
@@ -52,7 +46,7 @@ export async function POST(request: Request) {
     const headers = new Headers();
     headers.append(
       "Set-Cookie",
-      `authToken=${token}; HttpOnly; Path=/; Max-Age=600`
+      `authToken=${token}; HttpOnly; Path=/; Max-Age=900`
     );
 
     return new Response(JSON.stringify({ userWithouPass, success: true }), {

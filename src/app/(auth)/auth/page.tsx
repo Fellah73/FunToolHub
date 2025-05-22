@@ -5,47 +5,67 @@ import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import LoginForm from './components/LoginForm'
+import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 
 export default function Page() {
-    const fetch = useRef<boolean | null>(false);
+    const fetched = useRef<boolean | null>(false);
     const router = useRouter();
     const [activeForm, setActiveForm] = useState<'login' | 'register'>('login');
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
     useEffect(() => {
-        if (fetch.current) return;
-        const connectionStatus = localStorage.getItem('connectionStatus');
-        if ((connectionStatus?.startsWith('c') && connectionStatus.endsWith('c'))) {
-            const extractedUserId = (userId: string) => {
-                return userId?.substring(1, userId?.length - 1);
+        if (fetched.current) return;
+        const fetchUser = async () => {
+            try {
+                const res = await fetch(`/api/me`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    setIsLoggedIn(false);
+
+                } else {
+                    setIsLoggedIn(true);
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
             }
-            const userId = extractedUserId(connectionStatus);
-            router.push(`/profile?id=${userId}`);
         }
-        fetch.current = true;
+
+        fetchUser();
+
+        fetched.current = true;
     }, []);
 
-    // Animation variants for page transition
+    useEffect(() => {
+        if (isLoggedIn === null) return;
+        if (isLoggedIn) {
+            router.push('/');
+        }
+    }, [isLoggedIn]);
+
+
     const pageVariants = {
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
             opacity: 1,
             transition: { duration: 0.5 }
         },
-        exit: { 
+        exit: {
             opacity: 0,
             transition: { duration: 0.3 }
         }
     };
 
-    // Animation variants for form switching
+
     const formContainerVariants = {
-        login: { 
+        login: {
             rotateY: 0,
             transition: { duration: 0.6, ease: "easeOut" }
         },
-        register: { 
+        register: {
             rotateY: -180,
             transition: { duration: 0.6, ease: "easeOut" }
         }
@@ -106,7 +126,7 @@ export default function Page() {
             />
 
             {/* Main content */}
-            <motion.div 
+            <motion.div
                 className="container relative z-10 mx-auto px-4 h-[850px] flex flex-col justify-start items-center"
                 initial="hidden"
                 animate="visible"
@@ -146,7 +166,7 @@ export default function Page() {
                 </div>
 
                 {/* Tabs for switching between login and register */}
-                <motion.div 
+                <motion.div
                     className="relative w-full max-w-md flex justify-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -155,11 +175,10 @@ export default function Page() {
                     <div className="bg-indigo-900/30 backdrop-blur-sm p-1 rounded-lg flex items-center">
                         <button
                             onClick={() => setActiveForm('login')}
-                            className={`relative px-6 py-2 rounded-md transition-all duration-300 ${
-                                activeForm === 'login' 
-                                    ? 'text-white font-medium' 
+                            className={`relative px-6 py-2 rounded-md transition-all duration-300 ${activeForm === 'login'
+                                    ? 'text-white font-medium'
                                     : 'text-indigo-300 hover:text-white'
-                            }`}
+                                }`}
                         >
                             {activeForm === 'login' && (
                                 <motion.div
@@ -172,11 +191,10 @@ export default function Page() {
                         </button>
                         <button
                             onClick={() => setActiveForm('register')}
-                            className={`relative px-6 py-2 rounded-md transition-all duration-300 ${
-                                activeForm === 'register' 
-                                    ? 'text-white font-medium' 
+                            className={`relative px-6 py-2 rounded-md transition-all duration-300 ${activeForm === 'register'
+                                    ? 'text-white font-medium'
                                     : 'text-indigo-300 hover:text-white'
-                            }`}
+                                }`}
                         >
                             {activeForm === 'register' && (
                                 <motion.div
@@ -201,9 +219,9 @@ export default function Page() {
                         <div className={`w-full absolute backface-hidden ${activeForm === 'register' ? 'invisible' : ''}`}>
                             <LoginForm className="dark:text-white" onRegisterClick={() => setActiveForm('register')} />
                         </div>
-                        
+
                         {/* Register form - back side (flipped) */}
-                        <div 
+                        <div
                             style={{ transform: 'rotateY(180deg)' }}
                             className={`w-full absolute backface-hidden  ${activeForm === 'login' ? 'invisible' : ''}`}
                         >
