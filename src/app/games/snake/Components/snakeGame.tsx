@@ -1,4 +1,3 @@
-// app/game/SnakeGame.tsx
 "use client";
 
 import { useUser } from "@/app/context/userContext";
@@ -10,7 +9,7 @@ import { FaPlay } from "react-icons/fa";
 import { IoFlame, IoGameController, IoSpeedometerOutline } from "react-icons/io5";
 
 
-const GRID_SIZE = 12; // Taille de la grille (20x20)
+const GRID_SIZE = 12; 
 
 interface Direction {
     x: number;
@@ -38,7 +37,6 @@ interface GameStates {
     setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// Fusionner les deux interfaces pour le composant
 interface SnakeGameProps extends GameStates {
     customization: CustomPreferences;
 }
@@ -48,21 +46,18 @@ export default function SnakeGame({
     isGameStarted, setIsGameStarted,
     isGameOver, setIsGameOver, score, setScore
 }: SnakeGameProps) {
-    // init cooridintes of the snake
     const [snake, setSnake] = useState<Coordinates[]>([
         { x: GRID_SIZE / 2, y: GRID_SIZE / 2 },
         { x: GRID_SIZE / 2 - 1, y: GRID_SIZE / 2 },
     ]);
 
-    // init direction of the snake to right
+   
     const [direction, setDirection] = useState<Direction>(
         { x: 1, y: 0 },
     );
 
 
-    // generate a food in a roandolom position in the grid
     const generateFood = () => {
-        // Genrate a random position out of the snake
         let x = Math.floor(Math.random() * GRID_SIZE);
         let y = Math.floor(Math.random() * GRID_SIZE);
         while (snake.some(segment => segment.x === x && segment.y === y)) {
@@ -72,13 +67,10 @@ export default function SnakeGame({
         return { x, y };
     }
 
-    // init coordinates of the food
     const [food, setFood] = useState<Coordinates>(generateFood);
 
-    // init game state
     const [isPaused, setIsPaused] = useState(false);
 
-    //games speed
     const [speed, setSpeed] = useState<number>(150);
 
     const { user } = useUser()
@@ -91,7 +83,6 @@ export default function SnakeGame({
         setSpeed(150);
     };
 
-    // Réinitialiser le jeu
     const restartGame = () => {
         setSnake([{ x: 1, y: GRID_SIZE / 2 }, { x: 0, y: GRID_SIZE / 2 }]);
         setDirection({ x: 1, y: 0 });
@@ -109,7 +100,6 @@ export default function SnakeGame({
 
 
 
-    // get Snake function
     const getSnakeCaseColor = (snakeCaseIndex: number, snakeLength: number) => {
         const partitions = [snakeLength / 3, snakeLength / 3 * 2];
         const style = " animate-pulse shadow-[0_0_15px_#a855f7] ";
@@ -123,10 +113,8 @@ export default function SnakeGame({
 
     }
 
-    // mouvment handler
 
 
-    // Mécanisme du jeu (déplacement du serpent)
     useEffect(() => {
         if (isGameOver || !isGameStarted || isPaused) return;
 
@@ -138,23 +126,18 @@ export default function SnakeGame({
                 };
 
 
-                // Si le serpent traverse un bord, il réapparaît de l'autre côté
                 newHead.x = (newHead.x + GRID_SIZE) % GRID_SIZE;
                 newHead.y = (newHead.y + GRID_SIZE) % GRID_SIZE;
 
-                // Vérifier la collision avec lui-même
                 if (prevSnake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
                     setIsGameOver(true);
                     return prevSnake;
                 }
 
 
-                // check if the snake eats the food
 
-                // add a new head to the snake
                 let newSnake = [newHead, ...prevSnake];
 
-                //if he eats the food we generate a new one , add score and leave the new head of the snake
                 if (newHead.x === food.x && newHead.y === food.y) {
                     setFood(generateFood);
                     if (snake.length % 10 == 0) {
@@ -163,7 +146,6 @@ export default function SnakeGame({
                     } else {
                         setScore(score + 1);
                     }
-                    // he didn't eat the food we remove the added head
                 } else {
                     newSnake.pop();
                 }
@@ -181,7 +163,6 @@ export default function SnakeGame({
     const handleKeyDown = useCallback((event: KeyboardEvent) => {
         switch (event.key) {
             case "ArrowUp":
-                // only if it is moving horizontally
                 if (direction.y === 0) setDirection({ x: 0, y: -1 });
                 break;
             case "ArrowDown":
@@ -198,7 +179,6 @@ export default function SnakeGame({
         }
     }, [direction, togglePause]);
 
-    // Écouter les touches du clavier
     useEffect(() => {
         if (isGameOver || !isGameStarted) return
         const handleKeyPress = (event: KeyboardEvent) => {
@@ -402,9 +382,9 @@ export default function SnakeGame({
                             </motion.h2>
 
                             <div className="my-6 flex flex-col gap-2">
-                                <div className="flex justify-between items-center p-2 bg-gray-700/50 rounded-lg">
-                                    <span className={`text-gray-300 text-lg md:text-2xl`}>Score</span>
-                                    <span className="text-xl font-bold text-white">{score}</span>
+                                <div className="flex justify-between items-center p-2 rounded-lg">
+                                    <span className={`text-gray-50 text-lg md:text-2xl`}>Score</span>
+                                    <span className="text-2xl font-bold text-white">{score}</span>
                                 </div>
                             </div>
 

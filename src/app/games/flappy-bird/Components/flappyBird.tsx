@@ -158,12 +158,6 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     };
 
     useEffect(() => {
-        console.log("score ", score, " speed ", speed,);
-    }, [speed, score]);
-
-
-    // 🔥 Gestion du jeu (mise à jour du canvas)
-    useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -179,7 +173,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
                 if (lastFrameImage) {
                     ctx.putImageData(lastFrameImage, 0, 0); // ✅ Restaurer l'image du dernier frame
-                    console.log("image restored");
+                   
                 }
                 return
             }
@@ -293,8 +287,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
         const handleKeyPress = (event: KeyboardEvent) => {
             if (event.key === ' ' || event.key === 'ArrowUp') {
-                event.preventDefault(); // Prevent the default scrolling behavior
-                console.log("space pressed");
+                event.preventDefault();
                 handleJump();
             }
         };
@@ -331,7 +324,6 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
     // use Effect to gather the score 
     useEffect(() => {
         if (gameOver) {
-            console.log("game over and score is ", score / 2);
             setFinalScore(score / 2);
         }
     }, [gameOver]);

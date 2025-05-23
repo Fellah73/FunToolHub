@@ -84,7 +84,7 @@ export const CustomizationHub = ({ setCustomization, customization, isGameStarte
                                 }))}
                             className={`
                 text-4xl p-2 rounded-lg flex items-center justify-center
-                ${customization.foodObject === food.name ? ' bg-fuchsia-900 ring-2 ring-purple-600' : 'hover:bg-fuchsia-800'}
+                ${customization.foodObject === food.name ? ' bg-violet-900 ring-2 ring-purple-600' : 'hover:bg-fuchsia-800'}
               `}
                         >
                             {food.icon}

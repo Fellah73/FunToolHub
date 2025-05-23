@@ -26,15 +26,10 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
             const updatedScores = [...prevScores, scores].sort((a, b) => b.value - a.value);
             return updatedScores.slice(0, limit); // Garde uniquement les top scores
         });
-
-        console.log(`${scores.value} was added successfully`)
     };
 
     useEffect(() => {
         if (!user) return;
-
-        console.log("Fetching best scores...");
-
         const fetchBestScores = async () => {
             try {
                 const res = await fetch(`/api/games/flappy-bird/score/best?playerId=${user.id}&limit=${limit}`);
@@ -69,7 +64,7 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
 
         // score exist in the best scores
         if (bestScores.some((score) => score.value === newScore)) {
-            console.log("newScore already exist in the best scores");
+            
 
             // update la date dans le best scores
             const updatedBestScores = bestScores.map((score) => {
@@ -79,29 +74,17 @@ export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: 
                 return score;
             });
             setBestScores(updatedBestScores);
-            console.log("score updated :", bestScores.find((score) => score.value === newScore)?.playedAt);
             return
         }
 
         // score bigger than the best score so it's a new record
         if (newScore > bestScores[0]?.value) setNewRecord(true);
 
-        // so the best scores must be sorted
-
-        console.log("newScore will enter in the ranked scores", newScore);
-
         const newBestScore = { value: newScore, playedAt: new Date().toISOString().split("T")[0] };
 
         sortScoresRanking(newBestScore);
 
     }, [newScore]);
-
-    useEffect(() => {
-        if (bestScores.length === 0) return;
-
-        console.log("bestScores (après mise à jour) :", bestScores);
-    }, [bestScores]);
-
 
     return (
         <Card className="w-full h-[560px] max-w-md bg-gradient-to-br from-indigo-950 via-purple-950 to-fuchsia-950 border-2 border-pink-500/50 shadow-xl shadow-pink-500/20">

@@ -20,7 +20,7 @@ export default function NavBar() {
                     headers: { "Content-Type": "application/json" },
                 });
                 const data = await res.json();
-                console.log(data);
+             
 
                 if (!res.ok || !data.success) {
                     setIsLoggedIn(false);
@@ -35,13 +35,7 @@ export default function NavBar() {
             }
         }
         checkAuth();
-        console.log("fetching user");
     }, [user]);
-
-    useEffect(() => {
-        console.log("user in navbar", isLoggedIn);
-    }, [isLoggedIn]);
-
 
     const handleLogout = async () => {
         try {

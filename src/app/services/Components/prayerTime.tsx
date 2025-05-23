@@ -1,18 +1,12 @@
-import { useUser } from '@/app/context/userContext';
 import { motion } from 'framer-motion';
-import { Clock, Earth, MapPin, Moon, Sun } from 'lucide-react';
+import { Clock, Earth, Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { FaPray } from 'react-icons/fa';
 import { LuCloudMoon } from "react-icons/lu";
 import { PiClockAfternoonBold } from "react-icons/pi";
 import { TbSunset2 } from "react-icons/tb";
 
-interface PrayerInfo {
-    name: string;
-    time: string;
-}
 
-// Define the type for prayer times
 interface PrayerTimes {
     Fajr: string;
     Sunrise: string;
@@ -28,10 +22,9 @@ interface PrayerTimes {
 }
 
 export default function PrayerTimeSection() {
-    const { user } = useUser()
     const prayerInfo = [
         {
-            icon: <Sun className="w-10 h-10 text-emerald-300" />,
+            icon: <Sun className="w-10 h-10 text-blue-300" />,
             title: "Fajr & Sunrise",
             description: "Start your day with morning prayers and track precise sunrise times for your location."
         },
@@ -41,12 +34,12 @@ export default function PrayerTimeSection() {
             description: "Get accurate prayer times for Dhuhr, Asr and Maghrib based on your geographic location."
         },
         {
-            icon: <Moon className="w-10 h-10 text-cyan-300" />,
+            icon: <Moon className="w-10 h-10 text-blue-100" />,
             title: "Isha & Night",
             description: "Evening prayer times and night period calculations to complete your daily worship."
         },
         {
-            icon: <Earth className="w-10 h-10 text-green-100" />,
+            icon: <Earth className="w-10 h-10 text-sky-200" />,
             title: "Location Choice",
             description: "Manually select your location or allows manual settings for precise prayer times."
         }
@@ -57,7 +50,7 @@ export default function PrayerTimeSection() {
     const getTime = (prayer: keyof PrayerTimes) => {
         if (!prayerTime) return "00:00 AM";
         let time = prayerTime[prayer] || "00:00 AM";
-        // Convert time to 12-hour format if needed
+  
         const [hours, minutes] = time.split(":").map((Number));
         const realMinute = time.split(":")[1];
         if (hours > 12) {
@@ -132,7 +125,7 @@ export default function PrayerTimeSection() {
     };
 
     useEffect(() => {
-        if (!user) return;
+        
         const getTimes = async () => {
             try {
                 const date = new Date();
@@ -154,13 +147,7 @@ export default function PrayerTimeSection() {
             }
         };
         getTimes();
-    }, [user]);
-
-    useEffect(() => {
-        if (!prayerTime) return;
-        console.log("Prayer times fetched successfully:", prayerTime);
-    }, [prayerTime]);
-
+    }, []);
 
     return (
         <motion.section
@@ -169,12 +156,12 @@ export default function PrayerTimeSection() {
         >
             <div className="mx-auto px-8">
                 <motion.h2
-                    className="text-4xl font-bold text-center mb-2"
+                    className="text-4xl font-bold text-center tracking-wider mb-2"
                     initial={{ opacity: 0, y: -30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    Mawaqit <span className="text-emerald-500">Salat</span>
+                    Mawaqit <span className="text-blue-600 tracking-wider">Salat</span>
                 </motion.h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
@@ -189,7 +176,7 @@ export default function PrayerTimeSection() {
                         {prayerInfo.map((info, index) => (
                             <motion.div
                                 key={index}
-                                className="bg-gradient-to-br from-emerald-950 via-teal-900 to-sky-900 backdrop-blur-md p-6 rounded-xl border-l-4 border-emerald-700 hover:shadow-lg hover:shadow-emerald-300/50 transition-all duration-300"
+                                className="bg-gradient-to-br from-indigo-950 via-blue-900 to-sky-900 backdrop-blur-md p-6 rounded-xl border-l-4 border-blue-800 hover:shadow-lg hover:shadow-blue-700/80 transition-all duration-300"
                                 variants={item}
                             >
                                 <div className="flex flex-col items-start gap-4">
@@ -197,14 +184,14 @@ export default function PrayerTimeSection() {
                                         {info.icon}
                                     </div>
                                     <h3 className="text-xl font-semibold text-sky-200">{info.title}</h3>
-                                    <p className="text-gray-300">{info.description}</p>
+                                    <p className="text-slate-300">{info.description}</p>
                                 </div>
                             </motion.div>
                         ))}
                     </motion.div>
                     {/* High Scores - 2 columns */}
                     <motion.div
-                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-bl from-emerald-800 via-teal-700 to-emerald-900 hover:shadow-md hover:shadow-emerald-300/50  backdrop-blur-md rounded-xl p-6 border-t-4 border-emerald-900"
+                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-br from-indigo-950 via-blue-900 to-sky-900 hover:shadow-md hover:shadow-blue-500/80  backdrop-blur-md rounded-xl p-6"
                         variants={scoreContainer}
                         initial="hidden"
                         whileInView="show"
@@ -249,8 +236,8 @@ export default function PrayerTimeSection() {
                             transition={{ delay: 1.2 }}
                         >
                             <a
-                                href={`services/prayer?id=${user?.id!}`}
-                                className="inline-block bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                href={`services/prayer`}
+                                className="inline-block bg-gradient-to-r from-blue-950 to-blue-800 border border-white px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
                             >
                                 View All Prayer Times
                             </a>

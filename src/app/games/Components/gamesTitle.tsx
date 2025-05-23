@@ -12,22 +12,22 @@ export default function GamesTitle() {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.1, 1.2, 1.2, 1] }}
+          transition={{ duration: 3, repeat: Infinity }}
         >
-          <FaGamepad className="text-pink-500 text-4xl md:text-5xl" />
+          <FaGamepad className="hidden md:block text-pink-500 text-4xl md:text-5xl" />
         </motion.span>
-        Explore & Play Our  
+        Explore & Play Our
         <span className="bg-gradient-to-r from-pink-500 to-fuchsia-500 text-transparent bg-clip-text">
           Best Games
         </span>
         <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
+          initial={{ y: 0 }}
+          animate={{ y: [0, -4, -8, -4, 0, 4, 8, 4, 0] }}
+          transition={{ duration: 5, repeat: Infinity }}
         >
-          <FaTrophy className="text-yellow-400 text-4xl md:text-5xl" />
+          <FaTrophy className="hidden md:block text-yellow-400 text-4xl md:text-5xl" />
         </motion.span>
       </motion.h1>
 
@@ -41,7 +41,7 @@ export default function GamesTitle() {
 
       {/* 🎮 Subtitle with Animated Icon */}
       <motion.p
-        className="text-lg md:text-xl text-gray-400 mt-4 flex items-center gap-2"
+        className="text-lg md:text-xl text-gray-200 mt-4 flex items-center gap-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1 }}

@@ -28,7 +28,7 @@ export default function GamesNavbar({ className, scrollLength }: GamesNavbarProp
     return (
         <nav
             className={`w-full px-6 pb-3  fixed top-0 transition-all duration-500 ${isSticky
-                ? "translate-y-0 bg-gradient-to-r from-purple-900/95 via-indigo-800/95 to-blue-900/95 backdrop-blur-md shadow-lg z-50"
+                ? "translate-y-0 bg-gradient-to-r from-purple-950/95 via-indigo-900/95 to-blue-900/95 backdrop-blur-md shadow-lg z-50"
                 : "translate-y-[-100%]"
                 } ${className}`}
         >
@@ -41,7 +41,7 @@ export default function GamesNavbar({ className, scrollLength }: GamesNavbarProp
                     }} />
                 <div className="max-w-6xl h-[35px] mx-auto flex flex-row mt-4 justify-between items-center gap-x-4 md:gap-x-12 lg:gap-x-24">
                     {[
-                        { path: "gamesContainer", label: "All Games", icon: <Gamepad2 size={30} className="ml-4" /> },
+                        { path: "All", label: "All Games", icon: <Gamepad2 size={30} className="ml-4" /> },
                         { path: "flappy-bird", label: "Flappy Bird", icon: <Bird size={30} className="ml-4" /> },
                         { path: "snake-game", label: "Snake Game", icon: <Worm size={30} className="ml-4" /> },
                         { path: "tic-tac-toe", label: "Tic-Tac-Toe", icon: <X size={30} className="ml-4" /> },

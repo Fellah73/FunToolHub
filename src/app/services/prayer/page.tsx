@@ -1,5 +1,4 @@
 'use client'
-import { useUser } from '@/app/context/userContext';
 import { motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';
 import moment from 'moment';
@@ -32,8 +31,7 @@ interface PrayerCardInfo {
 }
 
 export default function PrayerPage() {
-    const { user } = useUser();
-
+    
     const [prayerTime, setPrayerTime] = useState<PrayerTimes | null>(null);
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [displayedIndex, setDisplayedIndex] = useState<number>(0);
@@ -160,7 +158,6 @@ export default function PrayerPage() {
 
 
         let remainingTime = moment(nextPrayerTime, 'HH:mm').diff(momentNow);
-        console.log("remainingTime", remainingTime);
 
         if (remainingTime < 0) {
             const midNightDiff = moment("23:59:59", "HH:mm:ss").diff(momentNow);
@@ -188,7 +185,7 @@ export default function PrayerPage() {
     };
 
     useEffect(() => {
-        if (!user) return;
+     
         const getTimes = async () => {
             try {
                 const date = new Date();
@@ -211,25 +208,15 @@ export default function PrayerPage() {
             }
         };
         getTimes();
-    }, [user]);
-
-
-
+    }, []);
 
     return (
-        <div className="min-h-screen w-full px-2 md:px-4 bg-gradient-to-b from-emerald-950 to-sky-950 text-white overflow-hidden">
-
-
-
+        <div className="min-h-screen w-full px-2 md:px-4 bg-blue-950 text-white overflow-hidden">
             {/* Slider Section */}
             <div>
                 <div className="relative w-full flex items-center justify-center">
-
                     {/* Slider */}
                     <div className="relative flex w-full h-[650px] overflow-hidden items-center justify-center">
-
-
-
                         {nextPrayer && prayerCards.map((card, index) => {
                             const isActive = index === activeIndex;
                             const isPrev = index === (activeIndex - 1 + prayerCards.length) % prayerCards.length;
@@ -247,7 +234,7 @@ export default function PrayerPage() {
                                     >
                                         <div className="relative flex items-center justify-between gap-x-4 rounded-xl  shadow-lg px-8 py-4 w-full mb-2 bg-black/40 backdrop-blur-md">
                                             <div className={`absolute inset-0 bg-gradient-to-tr ${card.name == 'Fajr' ? "from-orange-200/40 via-transparent to-violet-600/50" : card.name == 'Sunsrise' ? "from-gray-200/10 via-transparent to-amber-200/80" : card.name == 'Dhuhr' ? "from-sky-500/40 via-transparent to-white/50" : card.name == "Asr" ? "from-orange-200/80 via-transparent to-sky-300/50 " : card.name == 'Maghrib' ? "from-rose-400/50 via-transparent to-fuchsia-500/40" : "from-cyan-400/40 via-transparent to-sky-400/80"} blur-md rounded-xl`}></div>
-                                            <h4 className="text-lg lg:text-2xl tracking-wider font-semibold text-emerald-50">Next Prayer</h4>
+                                            <h4 className="text-lg lg:text-2xl tracking-wider font-semibold text-blue-50">Next Prayer</h4>
                                             <span className={`text-2xl lg:text-4xl font-semibold text-white`}>{nextPrayer}</span>
                                         </div>
                                         <div className="flex items-center gap-x-4 py-3 px-4 shadow-2xl rounded-xl bg-black/40 backdrop-blur-md relative">
@@ -273,7 +260,7 @@ export default function PrayerPage() {
                                     >
 
                                         <div className="relative w-full h-full">
-                                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-transparent to-transparent z-10" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-transparent to-transparent z-10" />
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <img
                                                     src={card.image}
@@ -312,7 +299,7 @@ export default function PrayerPage() {
                                                         initial={{ opacity: 0, y: 30 }}
                                                         animate={{ opacity: 1, y: 0 }}
                                                         transition={{ duration: 0.8, delay: 0.4 }}
-                                                        className="bg-black/20 backdrop-blur-sm p-4 rounded-xl mt-2 max-w-3xl mx-auto border border-emerald-500/20"
+                                                        className="bg-black/20 backdrop-blur-sm p-4 rounded-xl mt-2 max-w-3xl mx-auto border border-blue-500/20"
                                                     >
                                                         <p className={`text-sm md:text-base text-gray-100 leading-relaxed`}>
                                                             {card.description.length > 150 && !showFullDescription ?
@@ -326,7 +313,7 @@ export default function PrayerPage() {
                                                                     e.stopPropagation();
                                                                     setShowFullDescription(!showFullDescription);
                                                                 }}
-                                                                className={`mt-2  ${card.name === "Fajr" ? "text-fuchsia-400" : card.name == 'Sunsrise' ? "text-orange-200" : card.name == 'Dhuhr' ? "text-blue-200" : card.name == 'Asr' ? "text-amber-200" : card.name == 'Maghrib' ? "text-red-300" : "text-cyan-300"} hover:text-emerald-100 underline transition-colors`}
+                                                                className={`mt-2  ${card.name === "Fajr" ? "text-fuchsia-400" : card.name == 'Sunsrise' ? "text-orange-200" : card.name == 'Dhuhr' ? "text-blue-200" : card.name == 'Asr' ? "text-amber-200" : card.name == 'Maghrib' ? "text-red-300" : "text-cyan-300"} hover:text-blue-100 underline transition-colors`}
                                                             >
                                                                 {showFullDescription ? "Show less" : "Show more"}
                                                             </button>

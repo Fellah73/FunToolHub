@@ -1,5 +1,5 @@
 'use client';
-import { motion, useInView } from 'framer-motion';
+import { delay, motion, useInView } from 'framer-motion';
 import { Award, Heart, MousePointer2, RefreshCw } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 
@@ -12,8 +12,9 @@ interface HighScore {
     image: string;
 }
 
-export default function FlappyBirdSection({ userId }: { userId: string | undefined }) {
+export default function FlappyBirdSection() {
     const [highScores, setHighScores] = useState<HighScore[]>([]);
+    const [hasBeenViewed, setHasBeenViewed] = useState(false);
     const tableRef = useRef(null);
     const isTableInView = useInView(tableRef, { once: true });
 
@@ -50,10 +51,6 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
         }
     };
 
-    const item = {
-        hidden: { y: 20, opacity: 0 },
-        show: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } }
-    };
 
     const scoreContainer = {
         hidden: { opacity: 0, x: 50 },
@@ -74,7 +71,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
 
 
     useEffect(() => {
-        if (!isTableInView) return;
+
         const fetchFlappyScore = async () => {
             try {
                 const response = await fetch("/api/games/flappy-bird/score/leaderboard?limit=5", {
@@ -86,19 +83,19 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                     return;
                 }
                 setHighScores(data.globalBestScores);
-                console.log("data fetched succesfully");
             } catch (error) {
                 console.error('Error fetching global score:', error);
             }
         };
 
         fetchFlappyScore();
-    }, [isTableInView]);
-
+    }, []);
 
     useEffect(() => {
-        console.log('table in view : ', isTableInView);
-    }, [isTableInView]);
+        if (isTableInView && !hasBeenViewed) {
+            setHasBeenViewed(true);
+        }
+    }, [isTableInView, hasBeenViewed]);
 
     return (
         <motion.section
@@ -118,17 +115,16 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                     {/* Instructions - 4 columns */}
                     <motion.div
                         className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 sm:p-6 sm:gap-12"
-                        variants={container}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true, margin: "-100px" }}
+                        initial={{ opacity: 0, translateX: -200 }}
+                        animate={hasBeenViewed ? { opacity: 1, translateX: 0 } : {}}
+                        transition={{ staggerChildren: 0.1, duration: 1.5, delay: 0.4 }}
+                        viewport={{ once: true, amount: 0.3 }}
 
                     >
                         {instructions.map((instruction, index) => (
                             <motion.div
                                 key={index}
                                 className="bg-gradient-to-br from-purple-950 via-purple-900 to-purple-800 backdrop-blur-md p-6 rounded-xl border-l-4 border-purple-700 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
-                                variants={item}
                             >
                                 <div className="flex flex-col items-start gap-4">
                                     <div className="p-3">
@@ -143,7 +139,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
 
                     {/* High Scores - 2 columns */}
                     <motion.div
-                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-br from-fuchsia-950 to-fuchsia-900 backdrop-blur-md rounded-xl p-6 border-t-4 border-fuchsia-500"
+                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-br from-violet-900 via-purple-900 to-fuchsia-900 backdrop-blur-md rounded-xl p-6 border-t-4 border-fuchsia-500"
                         variants={scoreContainer}
                         initial="hidden"
                         whileInView="show"
@@ -160,7 +156,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                             whileInView="show"
                             viewport={{ once: true }}
                         >
-                            <div className="grid grid-cols-4 text-lg text-gray-300 border-b border-gray-700 pb-2">
+                            <div className="grid grid-cols-4 text-lg text-gray-100 border-b border-gray-700 pb-2">
                                 <div>Rank</div>
                                 <div>Player</div>
                                 <div className="text-center">Name</div>
@@ -171,14 +167,14 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                                 highScores.map((score, index) => (
                                     <motion.div
                                         key={index}
-                                        className={`grid grid-cols-4  items-center ${index >= 3 ? "text-gray-100" : index == 0 ? "text-yellow-500" : index == 1 ? "text-slate-400" : "text-amber-600"}`}
+                                        className={`grid grid-cols-4  items-center ${index >= 3 ? "text-gray-100" : index == 0 ? "text-amber-400" : index == 1 ? "text-slate-300" : "text-yellow-600"}`}
                                         variants={scoreItem}
                                         transition={{ delay: 0.1 * index }}
                                     >
-                                        <div className="font-bold">#{index + 1}</div>
+                                        <div className="font-bold text-lg">#{index + 1}</div>
                                         <img src={score.image} alt={score.name} className="size-20 rounded-full object-cover border-2 border-gray-500" />
-                                        <div className='text-center'>{score.name}</div>
-                                        <div className="text-center font-mono">{score.score}</div>
+                                        <div className='text-center text-lg'>{score.name}</div>
+                                        <div className="text-center font-mono text-lg">{score.score}</div>
                                     </motion.div>
                                 ))}
                         </motion.div>
@@ -190,7 +186,7 @@ export default function FlappyBirdSection({ userId }: { userId: string | undefin
                             transition={{ delay: 1.2 }}
                         >
                             <a
-                                href={`/games/flappy-bird?id=${userId}`}
+                                href={`/games/flappy-bird`}
                                 className="inline-block bg-gradient-to-r from-fuchsia-700 to-fuchsia-500 px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
                             >
                                 Play Now

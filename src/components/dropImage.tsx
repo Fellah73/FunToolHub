@@ -65,22 +65,12 @@ const ImageUploadModal = ({ isOpen, onClose, type, selectedImage, setSelectedIma
                 return { ...prev, [`${type}Image`]: file };
             });
             setPreviewUrl(URL.createObjectURL(file));
-            console.log(file);
             setError(null);
         }
     };
 
     const handleSave = async () => {
         if (selectedImage) {
-            // Here you would typically upload the image to your server
-            // and get back a URL. This is a mock implementation
-
-            {/*
-                setFormData((prev) => {
-            return { ...prev, [`${type}Image`]: URL.createObjectURL(selectedImage) };
-          });
-                */}
-
             setFormData((prev) => {
                 return { ...prev, [`${type}Image`]: URL.createObjectURL(selectedImage[`${type}Image`]!) };
             });

@@ -1,4 +1,4 @@
-// components/SnakeMasterboard.tsx
+
 import { useUser } from '@/app/context/userContext';
 import { ScoreItem } from '@/components/scroreComponent';
 import { CardTitle } from '@/components/ui/card';
@@ -150,7 +150,7 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
 
 
     return (
-        <div className={`${darkMode ? 'bg-violet-950' : 'bg-fuchsia-900'} rounded-2xl text-white min-h-screen py-6 font-sans select-none`}>
+        <div className={`bg-gradient-to-br ${darkMode ? 'from-violet-950 to-violet-900' : 'from-fuchsia-950 to-purple-800'} rounded-2xl text-white min-h-screen py-6 font-sans select-none`}>
             <div className="relative max-w-4xl mx-auto flex flex-col gap-y-8 px-4">
 
                 <h1 className="flex items-center text-2xl font-bold text-center text-fuchsia-400 ">
@@ -207,11 +207,11 @@ const SnakeMasterboard = ({ score, isGameOver }: SnakeMasterboardProps) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="flex-col flex gap-y-4 border-x-4 border-x-fuchsia-400 border-y-2 border-y-fuchsia-500 rounded-xl p-3"
+                            className="flex-col flex gap-y-4 border-2 border-fuchsia-500 rounded-xl p-3"
                         >
                             <div className="flex items-center justify-start gap-x-4">
 
-                                <CardTitle className="text-3xl font-semibold tracking-wider text-fuchsia-200">
+                                <CardTitle className="text-3xl font-semibold tracking-wider text-fuchsia-300">
                                     Global Leaderboard
                                 </CardTitle>
                                 <Earth className="size-10 text-fuchsia-300 animate-pulse" />

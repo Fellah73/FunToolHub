@@ -1,7 +1,7 @@
 "use client";
 
-import { UserProvider } from "../context/userContext";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { UserProvider } from "../context/userContext";
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
 

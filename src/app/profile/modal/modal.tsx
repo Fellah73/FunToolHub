@@ -1,14 +1,15 @@
 "use client";
+import { useUser } from "@/app/context/userContext";
 import ImageUploadModal from "@/components/dropImage";
 import { useToast } from "@/components/ui/use-toast";
 import { useEdgeStore } from "@/lib/edgestore";
 import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Loader2 } from "lucide-react";
+import { Edit, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Edit } from "lucide-react";
+import { z } from 'zod';
 import {
     Modal,
     ModalBody,
@@ -16,8 +17,6 @@ import {
     ModalFooter,
     ModalTrigger
 } from "../../../components/ui/animated-modal";
-import { useUser } from "@/app/context/userContext";
-import { z } from 'zod';
 
 const updateSchema = z.object({
     name: z.string()
@@ -147,16 +146,10 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
         confirmPassword: false
     });
 
-
-    //check user
-    useEffect(() => {
-        console.log('user in Modal Comoponent:', user);
-    }, [user]);
-
     //reset the form data after closing the modal
     useEffect(() => {
         if (!isOpen) {
-            console.log('Modal closed and all reset');
+            document.body.style.overflow = "auto";
             resetFormData();
             resetPasswordEyes();
             setErrors({ ...{} });
@@ -261,7 +254,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                             ...prev,
                             [type]: 0
                         }));
-                    }, 1000);
+                    }, 200);
 
 
                     setPreviewUrls((prev) => ({
@@ -310,7 +303,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                 toast({
                     title: 'Wrong access data',
                     description: data.message,
-                    variant: 'form',
+                    variant: 'customize',
                 });
                 throw new Error(data.message);
             }
@@ -361,7 +354,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
                 toast({
                     title: 'Error updating profile',
                     description: updateData.message + ` please ${validatedData.name} try again`,
-                    variant: 'form',
+                    variant: 'customize',
                 })
             }
 
@@ -369,7 +362,7 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
             toast({
                 title: 'Profile updated successfully',
                 description: updateData.message,
-                variant: 'form',
+                variant: 'success',
             });
 
             // Close the modal

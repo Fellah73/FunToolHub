@@ -35,9 +35,7 @@ const Page = () => {
 
                 if (!res.ok) throw new Error('Failed to update score');
                 const data = await res.json();
-                if (data.success) {
-                    console.log('Score updated successfully:', data.newScore);
-                }
+                
             } catch (error) {
                 console.error('Error updating score:', error);
             }
@@ -58,10 +56,7 @@ const Page = () => {
             }, 5000);
         }
     }, [animateConfetti]);
-
-    useEffect(() => {
-        console.log(showGlobalComponent ? "global" : "personnel");
-    }, [showGlobalComponent]);
+    
 
     const handleToggleAnimation = () => {
         setAnimationStarted(!animationStarted);

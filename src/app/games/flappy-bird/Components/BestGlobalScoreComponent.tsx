@@ -46,24 +46,15 @@ export default function BestGlobalScoreComponent({ finalScore }: { finalScore: n
       setTimeout(() => {
         fetchGlobalBestScore()
       }, 5000)
-      console.log('fetch with delay')
       return
     }
 
     if (finalScore === 0) {
       fetchGlobalBestScore()
-      console.log('fetch without delay')
     }
 
 
   }, [user, finalScore])
-
-  useEffect(() => {
-
-    if (!globalBestScore) return
-
-    console.log('the leaderboard is updated', globalBestScore!.map((score) => score.score))
-  }, [globalBestScore])
 
   return (
     <Card className="w-full h-[560px] max-w-md bg-gradient-to-br from-rose-950 via-pink-950 to-fuchsia-950 border-2 border-pink-500/50 shadow-xl shadow-pink-500/20">

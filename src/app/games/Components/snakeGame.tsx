@@ -13,7 +13,7 @@ interface HighScore {
     image: string;
 }
 
-export default function SnakeGameSection({ userId }: { userId: string | undefined }) {
+export default function SnakeGameSection() {
     const tableRef = useRef(null);
     const isTableInView = useInView(tableRef, { once: true });
     const [highScores, setHighScores] = useState<HighScore[]>([]);
@@ -61,7 +61,7 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
                     return;
                 }
                 setHighScores(data.globalBestScores);
-                console.log("data fetched succesfully");
+          
             } catch (error) {
                 console.error('Error fetching global score:', error);
             }
@@ -69,12 +69,6 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
 
         fetchFlappyScore();
     }, [isTableInView]);
-
-    useEffect(() => {
-        if (!highScores) return
-        console.log(highScores)
-    }, [highScores]);
-
 
     return (
         <motion.section
@@ -93,9 +87,9 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
 
                 <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
                     <motion.div
-                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-br from-fuchsia-950 to-purple-800 backdrop-blur-md rounded-xl p-6 border-t-4 border-fuchsia-400"
-                        initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
-                        animate={hasBeenViewed ? { opacity: 1, rotate: 0, scale: 1 } : {}}
+                        className="mx-4 lg:mx-0 lg:col-span-2 bg-gradient-to-bl from-violet-900 via-purple-900 to-fuchsia-900 backdrop-blur-md rounded-xl p-6 border-t-4 border-fuchsia-400"
+                        initial={{ opacity: 0, scale: 0.7 }}
+                        animate={hasBeenViewed ? { opacity: 1, scale: 1 } : {}}
                         transition={{ duration: 1.5, delay: 0.3 }}
                         viewport={{ once: true, amount: 0.3 }}
 
@@ -109,7 +103,7 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
                             whileInView="show"
                             viewport={{ once: true }}
                         >
-                            <div className="grid grid-cols-4 text-lg text-fuchsia-400 border-b border-fuchsia-400 pb-2">
+                            <div className="grid grid-cols-4 text-lg text-fuchsia-300 border-b border-fuchsia-400 pb-2">
                                 <div>Rank</div>
                                 <div>Player</div>
                                 <div className="text-center">Name</div>
@@ -120,7 +114,7 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
                                 highScores.map((score, index) => (
                                     <motion.div
                                         key={index}
-                                        className={`grid grid-cols-4 text-lg  items-center ${index >= 3 ? "text-gray-100" : index == 0 ? "text-yellow-500" : index == 1 ? "text-slate-400" : "text-amber-600"}`}
+                                        className={`grid grid-cols-4  items-center ${index >= 3 ? "text-gray-100" : index == 0 ? "text-amber-400" : index == 1 ? "text-slate-300" : "text-yellow-600"}`}
                                         transition={{ delay: 0.1 * index }}
                                     >
                                         <div className="font-bold">#{index + 1}</div>
@@ -132,7 +126,7 @@ export default function SnakeGameSection({ userId }: { userId: string | undefine
                         </motion.div>
                         <motion.div className="mt-8 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
                             <a
-                                href={`/games/snake?id=${userId}`}
+                                href={`/games/snake`}
                                 className="inline-block bg-gradient-to-r from-fuchsia-700 to-fuchsia-400 px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
                             >
                                 Play Now

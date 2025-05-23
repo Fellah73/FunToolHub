@@ -16,10 +16,10 @@ export default function ServicesTitle() {
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <FaClipboardList className="text-emerald-500 text-4xl md:text-5xl" />
+          <FaClipboardList className="text-blue-400 text-4xl md:text-5xl" />
         </motion.span>
         Discover & Use Our
-        <span className="bg-gradient-to-r from-emerald-500 to-sky-500 text-transparent bg-clip-text">
+        <span className="bg-gradient-to-r from-blue-500 to-indigo-600 text-transparent bg-clip-text">
           Services
         </span>
         <motion.span
@@ -27,13 +27,13 @@ export default function ServicesTitle() {
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <FaStar className="text-sky-400 text-4xl md:text-5xl" />
+          <FaStar className="text-slate-400 text-4xl md:text-5xl" />
         </motion.span>
       </motion.h1>
 
       {/* 🔥 Glowing Underline */}
       <motion.div
-        className="w-36 h-1 bg-emerald-500 rounded-full mt-2"
+        className="w-36 h-1 bg-blue-500 rounded-full mt-2 shadow-lg shadow-blue-500/50"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -52,7 +52,7 @@ export default function ServicesTitle() {
           animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
           transition={{ duration: 1, repeat: Infinity }}
         >
-          <FaBolt className="text-emerald-500 text-2xl" />
+          <FaBolt className="text-blue-400 text-2xl" />
         </motion.span>
       </motion.p>
     </div>

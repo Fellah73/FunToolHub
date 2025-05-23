@@ -30,10 +30,6 @@ export function TestimonialSection() {
 
     }, []);
 
-    useEffect(() => {
-        console.log(testimonials);
-    }, [testimonials]);
-
     if(testimonials.length === 0) return 
 
     return <AnimatedTestimonials testimonials={testimonials} autoplay={true} />;

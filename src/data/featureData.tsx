@@ -1,4 +1,3 @@
-// app/data/featureData.tsx
 import {
   Bird,
   Box,

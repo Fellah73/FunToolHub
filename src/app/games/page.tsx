@@ -48,7 +48,6 @@ export default function Page() {
         }
 
         setGlobalScore((prev) => ({ ...prev, flappy: data.bestScores[0].value }));
-        console.log("data fetched succesfully");
       } catch (error) {
         console.error('Error fetching global score:', error);
       }
@@ -65,7 +64,6 @@ export default function Page() {
         }
 
         setGlobalScore((prev) => ({ ...prev, snake: data.bestScores[0].value }));
-        console.log("data fetched succesfully");
       } catch (error) {
         console.error('Error fetching global score:', error);
       }
@@ -75,11 +73,6 @@ export default function Page() {
 
     fetchSnakeGame();
   }, [user]);
-
-  useEffect(() => {
-    console.log(globalScore);
-  }, [globalScore]);
-
 
   useEffect(() => {
     setRightImage(games[activeIndex].image);
@@ -105,7 +98,7 @@ export default function Page() {
         <GamesNavbar  scrollLength={scaleX!} />
         <GamesTitle />
         <div
-          id="gamesContainer"
+          id="All"
           className="min-h-screen  grid grid-cols-1 lg:grid-cols-6 mx-2">
           {/* 🌟 Conteneur principal */}
           <div className="relative w-full flex items-center justify-center py-4 lg:col-span-4">
@@ -293,10 +286,10 @@ export default function Page() {
           </div>
         </div>
         <div id="flappy-bird">
-          <FlappyBirdSection userId={user?.id} />
+          <FlappyBirdSection  />
         </div>
         <div id="snake-game" className="mt-20">
-          <SnakeGameSection userId={user?.id} />
+          <SnakeGameSection  />
         </div>
       </div>
     </>
