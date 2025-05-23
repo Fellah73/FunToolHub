@@ -149,31 +149,18 @@ export default function profileCardComponent() {
 
           {/* Stats Section */}
           <motion.div
-            className="mt-10 grid grid-cols-2 gap-4"
+            className="mt-10 grid  gap-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
           >
             <motion.div
               whileHover={{ y: -5 }}
-              className="text-center p-4 rounded-lg bg-purple-900/30 backdrop-blur-sm border border-indigo-800/50"
+              className=" p-4 rounded-lg bg-purple-900/30 backdrop-blur-sm border border-indigo-800/50"
             >
-              <div className="flex justify-center mb-2">
-                <Award className="text-fuchsia-400 size-6" />
-              </div>
-              <div className="text-2xl font-bold text-white">0</div>
-              <div className="text-indigo-300 text-sm">Credits Available</div>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="text-center p-4 rounded-lg bg-purple-900/30 backdrop-blur-sm border border-indigo-800/50"
-            >
-              <div className="flex justify-center mb-2">
-                <Edit className="text-fuchsia-400 size-6" />
-              </div>
-              <div className="text-2xl font-bold text-white">0</div>
-              <div className="text-indigo-300 text-sm">Contributions Made</div>
+              <p className='text-violet-300 tracking-wider text-lg'>
+                {user.bio}
+              </p>
             </motion.div>
           </motion.div>
         </motion.div>

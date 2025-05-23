@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     const token = jwt.sign({ email: email }, process.env?.AUTH_SECRET_KEY!, {
-      expiresIn: "5m",
+      expiresIn: "20m",
     });
 
     const { password: _, ...userWithouPass } = userExists;
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     const headers = new Headers();
     headers.append(
       "Set-Cookie",
-      `authToken=${token}; HttpOnly; Path=/; Max-Age=300; SameSite=Strict; Secure`
+      `authToken=${token}; HttpOnly; Path=/; Max-Age=1200; SameSite=Strict; Secure`
     );
 
     return new Response(JSON.stringify({ userWithouPass, success: true }), {

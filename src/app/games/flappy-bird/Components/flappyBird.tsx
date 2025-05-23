@@ -202,7 +202,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
             }
 
             // pendant le jeu
-            ctx.fillStyle = '#491280';
+            ctx.fillStyle = '#42107a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             setBird(prev => ({
@@ -339,7 +339,7 @@ export default function FlappyBirdGame({ setFinalScore }: FlappyBirdGameProps) {
 
 
     return (
-        <div className="select-none relative w-[98%]  sm:w-[100%] h-[50vh] sm:h-[80vh] mx-auto shadow-2xl lg:shadow-3xl shadow-pink-800 rounded-lg">
+        <div className="select-none relative w-[98%]  sm:w-[100%] h-[50vh] sm:h-[80vh] mx-auto rounded-lg">
             <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
             {gameStarted &&
                 (<button

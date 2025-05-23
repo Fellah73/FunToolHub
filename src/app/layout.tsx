@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { Recursive } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const recursive = Recursive({ subsets: ["latin"] });
 
@@ -41,9 +40,7 @@ export default async function RootLayout({
         <NavBar />
         <main className="flex flex-col grainy-light min-h-[calc(100vh-3.5rem-1px)]">
           <div className="flex flex-1 flex-col h-full">
-          <EdgeStoreProvider>
             {children}
-          </EdgeStoreProvider>
           </div>
           <Footer />
         </main>

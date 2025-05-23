@@ -102,7 +102,7 @@ export default function Page() {
   return (
     <>
       <div className="scroll-smooth">
-        <GamesNavbar userId={user ? user.id : ""} scrollLength={scaleX!} />
+        <GamesNavbar  scrollLength={scaleX!} />
         <GamesTitle />
         <div
           id="gamesContainer"

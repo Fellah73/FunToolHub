@@ -1,15 +1,14 @@
-import { MotionValue, motion } from "framer-motion";
-import { Bird, Gamepad2, icons, Worm, X } from "lucide-react";
+import { motion, MotionValue } from "framer-motion";
+import { Bird, Gamepad2, Worm, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface GamesNavbarProps {
     className?: string;
-    userId?: string;
     scrollLength?: MotionValue<number>;
 
 }
 
-export default function GamesNavbar({ className, userId, scrollLength }: GamesNavbarProps) {
+export default function GamesNavbar({ className, scrollLength }: GamesNavbarProps) {
     const [isSticky, setIsSticky] = useState(false);
     const [activeLink, setActiveLink] = useState("");
 
@@ -49,7 +48,7 @@ export default function GamesNavbar({ className, userId, scrollLength }: GamesNa
                     ].map((item) => (
                         <a
                             key={item.path}
-                            href={`/games?id=${userId}#${item.path}`}
+                            href={`/games#${item.path}`}
                             className={`${item.path === "tic-tac-toe" && 'pointer-events-none'} relative nav-link text-white text-lg font-semibold transition-all duration-300 hover:text-pink-400 py-2 px-3 overflow-hidden group ${activeLink === item.path ? "text-pink-500" : ""
                                 }`}
                         >

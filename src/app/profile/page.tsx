@@ -2,13 +2,11 @@
 
 import { floatingProfileElements } from '@/data/featureData';
 import { motion } from 'framer-motion';
-import { UserProvider } from '../context/userContext';
 import TestimonialForm from './components/addTestement';
 import ProfileCardComponent from './components/profileCard';
 
 export default function Page() {
   return (
-    <UserProvider>
       <div className="relative min-h-screen overflow-hidden">
         {/* Éléments flottants animés */}
         {floatingProfileElements.map((elem, index) => (
@@ -103,10 +101,7 @@ export default function Page() {
               <TestimonialForm />
             </motion.div>
           </div>
-
-
         </div>
       </div>
-    </UserProvider>
   );
 }

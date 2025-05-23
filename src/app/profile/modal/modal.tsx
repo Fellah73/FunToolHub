@@ -401,11 +401,11 @@ export default function ModalComponent({ user, setUser }: ModalComponentProps) {
     return (
         <div className="select-none z-20">
             <Modal>
-                <ModalTrigger className="bg-indigo-900 text-indigo-200 flex justify-center group/modal-btn px-4 py-2 rounded-lg border border-indigo-600 hover:bg-indigo-800 transition-colors">
+                <ModalTrigger className="bg-purple-900/30 text-violet-300 flex justify-center group/modal-btn px-4 py-2 rounded-lg border border-indigo-600 hover:bg-indigo-800 transition-colors">
                     <span className="group-hover/modal-btn:translate-x-40 text-center transition duration-500">
                         Update profile
                     </span>
-                    <div onClick={() => setIsOpen(true)} className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-indigo-200 z-20">
+                    <div onClick={() => setIsOpen(true)} className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-violet-300 z-20">
                         <Edit size={18} />
                     </div>
                 </ModalTrigger>

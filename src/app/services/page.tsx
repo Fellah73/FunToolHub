@@ -1,20 +1,18 @@
 'use client'
 import { services } from "@/data/providedServices"
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { LoaderCircle } from "lucide-react"
 import { useEffect, useState } from 'react'
-import { useUser } from '../context/userContext'
+import { FaPray } from "react-icons/fa"
+import { FcTodoList } from "react-icons/fc"
+import PrayerTimeSection from "./Components/prayerTime"
 import ServicesNavbar from './Components/servicesNavbar'
 import ServicesTitle from './Components/servicesTitle'
-import PrayerTimeSection from "./Components/prayerTime"
-import { FaPray } from "react-icons/fa";
-import { FcTodoList } from "react-icons/fc";
-import { LoaderCircle } from "lucide-react"
 
 export default function page() {
 
   const { scrollYProgress } = useScroll();
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const { user } = useUser();
   const [rightImage, setRightImage] = useState<string | null>(services[0].image);
   const [displayedIndex, setDisplayedIndex] = useState<number>(0);
   const nextSlide = () => {
@@ -39,7 +37,7 @@ export default function page() {
   const scaleX = useSpring(scrollYProgress)
   return (
     <div className='sroll-smooth w-full p-8 bg-emerald-900/50'>
-      <ServicesNavbar userId={user ? user.id : ""} scrollLength={scaleX!} />
+      <ServicesNavbar  scrollLength={scaleX!} />
       <ServicesTitle />
       <div
         id="servicesContainer"

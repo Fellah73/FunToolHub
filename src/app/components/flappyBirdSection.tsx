@@ -32,7 +32,7 @@ export default function FlappyBirdSection() {
             viewport={{ once: true }}
             className="relative rounded-xl overflow-hidden aspect-video  border border-indigo-700/30"
           >
-            <video src="games/flappyBird.mp4" className='inset-0 size-full' autoPlay loop muted />
+            <video src="/games/flappyBird.mp4" className='inset-0 size-full' autoPlay loop muted />
             <div className="absolute inset-0 bg-gradient-to-t from-fuchsia-500/20 via-transparent to-transparent"></div>
             <div className="absolute bottom-4 left-4 text-white">
               <span className="bg-fuchsia-800 text-xs font-medium py-1 px-2 rounded">FLAPPY BIRD</span>

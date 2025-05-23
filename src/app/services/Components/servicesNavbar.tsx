@@ -6,11 +6,10 @@ import { FaPray } from "react-icons/fa";
 
 interface servicesNavbarProps {
     className?: string;
-    userId?: string;
     scrollLength?: MotionValue<number>;
 }
 
-export default function ServicesNavbar({ className, userId, scrollLength }: servicesNavbarProps) {
+export default function ServicesNavbar({ className, scrollLength }: servicesNavbarProps) {
     const [isSticky, setIsSticky] = useState(false);
     const [activeLink, setActiveLink] = useState("");
 
@@ -49,7 +48,7 @@ export default function ServicesNavbar({ className, userId, scrollLength }: serv
                     ].map((item) => (
                         <a
                             key={item.path}
-                            href={`/services?id=${userId}#${item.path}`}
+                            href={`/services#${item.path}`}
                             className={`${item.path === 'todo' && 'pointer-events-none'} relative nav-link text-white text-lg font-semibold transition-all duration-300 hover:text-sky-400 py-2 px-3 overflow-hidden group ${activeLink === item.path ? "text-emerald-500" : ""
                                 }`}
                         >
