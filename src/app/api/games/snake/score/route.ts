@@ -19,6 +19,8 @@ export async function POST(request: Request) {
         { status: 500 }
       );
 
+    {
+      /* 
       const cleanupResponse = await fetch("http://localhost:3000/api/games/cleanup-db", {
         method: "GET",
       });
@@ -28,7 +30,8 @@ export async function POST(request: Request) {
       if (!data.success) {
         return new Response(JSON.stringify({ message: data.message, success: false }), { status: 500 });
       }
-
+*/
+    }
     return new Response(JSON.stringify({ newScore, success: true }), {
       status: 200,
     });
