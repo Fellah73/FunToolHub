@@ -1,5 +1,5 @@
 'use client'
-import { Code, Facebook, Gamepad2, Github, House, Mail, Wrench } from 'lucide-react';
+import { Code, Gamepad2, Github, House, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { MdComputer } from "react-icons/md";
@@ -41,16 +41,8 @@ const Footer: React.FC = () => {
                         </div>
                         <div className='flex flex-col gap-y-8'>
                             <a className='flex items-center flex-row gap-x-8'>
-                                <Mail size={30} className='text-fuchsia-500 cursor-pointer' />
-                                <p className="text-fuchsia-500 text-xl tracking-wider">mouhflh73@gmail.com</p>
-                            </a>
-                            <a className='flex items-center flex-row gap-x-8'>
                                 <Github size={30} className='text-fuchsia-500 cursor-pointer' />
                                 <p className="text-fuchsia-500 text-xl tracking-widest">Fellah73</p>
-                            </a>
-                            <a className='flex items-center flex-row gap-x-8'>
-                                <Facebook size={30} className='text-fuchsia-500 cursor-pointer' />
-                                <p className="text-fuchsia-500 text-lg tracking-wide">Fellah73</p>
                             </a>
                         </div>
                     </div>

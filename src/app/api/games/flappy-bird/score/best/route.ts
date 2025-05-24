@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return new Response(JSON.stringify({ message: "ID is required" }), {
         status: 404,
       });
-      
+
     const scores = await db.flappyScore.findMany({
       where: {
         userId: playerId!,
@@ -28,7 +28,6 @@ export async function GET(request: Request) {
         { status: 404 }
       );
 
-    // array containing the scores to return
     const scoresArray = scores.map((scoreRow) => ({
       value: scoreRow.score,
       playedAt: scoreRow.playedAt.toISOString().split("T")[0],

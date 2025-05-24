@@ -20,7 +20,7 @@ export default function NavBar() {
                     headers: { "Content-Type": "application/json" },
                 });
                 const data = await res.json();
-             
+
 
                 if (!res.ok || !data.success) {
                     setIsLoggedIn(false);
@@ -35,7 +35,7 @@ export default function NavBar() {
             }
         }
         checkAuth();
-    }, [user]);
+    }, [user, isLoggedIn]);
 
     const handleLogout = async () => {
         try {
@@ -44,7 +44,7 @@ export default function NavBar() {
                 headers: { "Content-Type": "application/json" },
             });
             const data = await res.json();
-            if(!res.ok || !data.success) throw new Error(data.message);
+            if (!res.ok || !data.success) throw new Error(data.message);
             setIsLoggedIn(false);
             setUser(null);
             window.location.href = "/";
@@ -88,9 +88,9 @@ export default function NavBar() {
                             <a href={`/services`}>
                                 <Wrench size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
                             </a>
-                            <a href="" onClick={handleLogout}>
+                            <button onClick={handleLogout}>
                                 <LogOut size={40} className="text-fuchsia-600 hover:scale-125 hover:curosr-pointer transition-all duration-200" />
-                            </a>
+                            </button>
                         </>
                     )}
                 </div>

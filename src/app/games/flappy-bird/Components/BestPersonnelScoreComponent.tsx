@@ -17,7 +17,7 @@ interface ScoreRanking {
 export default function BestPersonnelScoreComponent({ newScore, setNewRecord }: PersonalScoresProps) {
 
     const [bestScores, setBestScores] = useState<ScoreRanking[]>([]);
-    const [limit, setLimit] = useState(15);
+    const [limit, setLimit] = useState(10);
 
     const { user } = useUser();
 

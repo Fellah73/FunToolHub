@@ -37,7 +37,7 @@ export const toolFeatures: Feature[] = [
     icon: <List className="h-6 w-6" />,
     title: "Todo List Management",
     description: "Stay focused and organized every day with your personal task board$ Easily add, track, and complete tasks in a clean interface designed for productivity lovers. Dark theme and glowing design included.",
-    link: "services/todo",
+    link: "",
   },
 ];
 
@@ -58,7 +58,7 @@ export const gameFeatures: Feature[] = [
     icon: <X className="h-6 w-6" />,
     title: "Tic Tac Toe Game",
     description: "Outplay your friends in this glowing twist on a classic$ Play with style, from beginner to pro. Bright animations, smart logic, and dark-mode beauty for a casual but addictive experience",
-    link: "games/tic-tac-toe",
+    link: "",
   },
 ];
 

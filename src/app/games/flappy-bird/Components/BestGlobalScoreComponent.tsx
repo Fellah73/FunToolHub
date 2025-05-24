@@ -15,7 +15,7 @@ interface GlobalBestScoreProps {
 
 export default function BestGlobalScoreComponent({ finalScore }: { finalScore: number }) {
   const [globalBestScore, setGlobalBestScore] = useState<GlobalBestScoreProps[] | null>(null)
-  const [limit, setLimit] = useState<number>(15)
+  const [limit, setLimit] = useState<number>(10)
   const { user } = useUser()
 
   useEffect(() => {

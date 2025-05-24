@@ -9,25 +9,7 @@ export async function GET(request: Request) {
       return new Response(JSON.stringify({ message: "ID is required" }), {
         status: 404,
       });
-
-    // update the db request later cause i've only 2 players so i made this wrong request to increase the leaderboard list
-    // get the best score for each player
-    {
-      /*
-    const scores = await db.user.findMany({
-      include: {
-        flappyScores: {
-          orderBy: {
-            score: "desc",
-          },
-          take: 1,
-        },
-      },
-      distinct: ["id"],
-      take: limit ? parseInt(limit) : 10,
-    });*/
-    }
-
+      
     const scores = await db.flappyScore.findMany({
       include: {
         user: {

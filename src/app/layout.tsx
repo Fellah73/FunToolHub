@@ -21,9 +21,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "FunToolHub",
-  description: "A vibrant web app offering fun games, useful daily tools like prayer times and to-do list, with user profiles.",
+  title: "FunToolHub | Play, Plan, and Pray",
+  description: "FunToolHub offers exciting games like Flappy Bird and Snake, and helpful tools like prayer times and to-do list. Login to track your progress and customize your experience.",
+  keywords: ["fun games", "Flappy Bird", "Snake game", "to-do list", "prayer times", "Muslim tools", "leaderboard", "profile", "Islamic daily planner", "gamified productivity"],
 };
+
 
 export default async function RootLayout({
   children,

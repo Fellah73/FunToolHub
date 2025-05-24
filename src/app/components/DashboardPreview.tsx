@@ -58,7 +58,7 @@ export default function DashboardPreview() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="bg-violet-950/50 backdrop-blur p-3 rounded-lg border border-violet-800/50 hover:border-violet-600/50 cursor-pointer group transition-all"
+                      className={`bg-violet-950/50 backdrop-blur p-3 rounded-lg border border-violet-800/50 hover:border-violet-600/50 cursor-pointer group transition-all ${tool.title === 'Todo List Management' && 'pointer-events-none'}`}
                       whileHover={{ scale: 1.02 }}
                       onClick={() => window.location.href = tool.link}
                     >
@@ -79,7 +79,7 @@ export default function DashboardPreview() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="bg-violet-950/50 backdrop-blur p-3 rounded-lg border border-violet-800/50 hover:border-pink-600/50 cursor-pointer group transition-all"
+                      className={`bg-violet-950/50 backdrop-blur p-3 rounded-lg border border-violet-800/50 hover:border-pink-600/50 cursor-pointer group transition-all ${game.title === 'Tic Tac Toe Game' && 'pointer-events-none'}`}
                       whileHover={{ scale: 1.02 }}
                       href={game.link}
                     >

@@ -3,7 +3,7 @@ import { db } from "@/app/db";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const playerId = searchParams.get("playerId"); // ✅ Correct pour récupérer un query param
+    const playerId = searchParams.get("playerId");
 
     if (!playerId)
       return new Response(JSON.stringify({ message: "ID is required" }), {

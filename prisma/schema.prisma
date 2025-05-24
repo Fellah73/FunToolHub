@@ -49,3 +49,11 @@ model Testimonial {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model CleanupLog {
+  id          String   @id @default(uuid())
+  cleanupDate DateTime @unique @db.Date
+  createdAt   DateTime @default(now())
+  
+  @@index([cleanupDate])
+}

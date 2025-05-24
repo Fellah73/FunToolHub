@@ -112,7 +112,8 @@ export default function LoginForm({
             } else {
                 toast({
                     title: 'Login successful',
-                    description: 'Welcome back to FunTool Hub!'
+                    description: 'Welcome back to FunTool Hub!',
+                    variant: 'success'
                 })  
                 window.location.href = (`/profile`)
             }

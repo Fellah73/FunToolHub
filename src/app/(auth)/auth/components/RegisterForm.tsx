@@ -125,7 +125,8 @@ export default function RegisterForm({
             } else {
                 toast({
                     title: 'User created successfully',
-                    description: data.message
+                    description: data.message,
+                    variant: 'success'
                 })
 
                 window.location.href = (`/profile`)

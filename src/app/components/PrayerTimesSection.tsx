@@ -87,7 +87,7 @@ export default function PrayerTimesSection() {
                         <video src="services/prayer.mp4" className='inset-0 size-full' autoPlay loop muted />
                         <div className="absolute inset-0 bg-gradient-to-t from-sky-900/80 to-transparent"></div>
                         <div className="absolute bottom-4 left-4 text-white">
-                            <span className="bg-sky-600 text-xs font-medium py-1 px-2 rounded">SPIRITUAL TOOL</span>
+                            <span className="bg-sky-600 text-xs font-medium py-1 px-2 rounded">PRAYER TIMES</span>
                         </div>
                     </motion.div>
                 </div>
