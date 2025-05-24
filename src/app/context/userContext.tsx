@@ -21,7 +21,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         if (isFetching.current) return
         const fetchUser = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/me`, {
+                const res = await fetch(`/api/me`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -44,7 +44,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     const revalidateUser = async () => {
         console.log("revalidating user process...");
-        const res = await fetch(`http://localhost:3000/api/me`, {
+        const res = await fetch(`/api/me`, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
